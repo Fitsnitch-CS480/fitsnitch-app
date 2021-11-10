@@ -1,23 +1,26 @@
 import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import UserDataService from '../backend/services/UserDataService';
 import User from '../models/User';
 
 export type Props = {
   user: User;
 };
 
+const dummyCurrentUser = new User("currentUser","Current","User");
+
 const Profile: React.FC<Props> = ({
   user
 }) => {
 
-  const isCurrentUser = () => {
-    
+  const isCurrentUser = ():boolean => {
+    return user.id === dummyCurrentUser.id;
   }
-  const isCurrentUserTrainer = () => {
-
+  const isCurrentUserTrainer = ():boolean => {
+    return new UserDataService().isUserTrainerOfUser(dummyCurrentUser,user);
   }
-  const isCurrentUserPartner = () => {
-
+  const isCurrentUserPartner = ():boolean => {
+    return new UserDataService().isUserPartnerOfUser(dummyCurrentUser,user);
   }
 
   return (
