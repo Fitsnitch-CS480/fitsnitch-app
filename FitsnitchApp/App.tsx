@@ -1,50 +1,58 @@
 import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { Button, Settings, StyleSheet, Text, View } from 'react-native';
+import SnitchesView from './views/SnitchesView';
+import UserProfileView from './views/UserProfileView';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import PeopleView from './views/PeopleView';
+import SettingsView from './views/SettingsView';
 
-export type Props = {
-  name: string;
-  baseEnthusiasmLevel?: number;
-};
-
-const Hello: React.FC<Props> = ({
-  name,
-  baseEnthusiasmLevel = 0
-}) => {
-  const [enthusiasmLevel, setEnthusiasmLevel] = React.useState(
-    baseEnthusiasmLevel
-  );
-
-  const onIncrement = () =>
-    setEnthusiasmLevel(enthusiasmLevel + 1);
-  const onDecrement = () =>
-    setEnthusiasmLevel(
-      enthusiasmLevel > 0 ? enthusiasmLevel - 1 : 0
-    );
-
-  const getExclamationMarks = (numChars: number) =>
-    numChars > 0 ? Array(numChars + 1).join('!') : '';
+const Hello: React.FC = () => {
+  const Tab = createBottomTabNavigator();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.greeting}>
-        Hello {name}
-        {getExclamationMarks(enthusiasmLevel)}
-      </Text>
-      <View>
-        <Button
-          title="Increase enthusiasm"
-          accessibilityLabel="increment"
-          onPress={onIncrement}
-          color="blue"
-        />
-        <Button
-          title="Decrease enthusiasm"
-          accessibilityLabel="decrement"
-          onPress={onDecrement}
-          color="red"
-        />
-      </View>
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+      initialRouteName="Profile"
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName = "";
+
+            switch (route.name) {
+              case "Snitches":
+                iconName = 'campaign';
+                break;
+                
+              case "Profile":
+                iconName = 'person';
+                break;
+
+              case "People":
+                iconName = 'people';
+                break;
+                
+              case "Settings":
+                iconName = 'settings';
+                break;
+            
+              default:
+                break;
+            }
+
+            return <Icon name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: 'tomato',
+          tabBarInactiveTintColor: 'gray',
+        })}
+      >
+        <Tab.Screen name="Snitches" component={SnitchesView} />
+        <Tab.Screen name="Profile" component={UserProfileView} />
+        <Tab.Screen name="People" component={PeopleView} />
+        <Tab.Screen name="Settings" component={SettingsView} />
+      </Tab.Navigator>
+    </NavigationContainer>
+
   );
 };
 
