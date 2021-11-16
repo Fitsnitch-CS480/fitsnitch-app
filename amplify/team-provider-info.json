@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-fitsnitchfrontend-dev-131902-authRole",
+      "UnauthRoleArn": "arn:aws:iam::383367762271:role/amplify-fitsnitchfrontend-dev-131902-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::383367762271:role/amplify-fitsnitchfrontend-dev-131902-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-fitsnitchfrontend-dev-131902-deployment",
+      "UnauthRoleName": "amplify-fitsnitchfrontend-dev-131902-unauthRole",
+      "StackName": "amplify-fitsnitchfrontend-dev-131902",
+      "StackId": "arn:aws:cloudformation:us-west-2:383367762271:stack/amplify-fitsnitchfrontend-dev-131902/47f38640-4651-11ec-9197-0a5b109659bd",
+      "AmplifyAppId": "d3987jl5rpx12o"
+    }
+  }
+}
