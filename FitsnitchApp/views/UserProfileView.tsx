@@ -33,33 +33,6 @@ const UserProfileView: React.FC = () => {
 
         <ScrollView style={styles.scrollView}>
           <View style={{}}>
-            {/* <View style={[styles.body]}>
-              <Text>
-                Trainer: Add A Trainer
-              </Text>
-              <Text>
-                5 Partners: Chef Rush, +4
-              </Text>
-              <View style={[styles.rowContainer, {justifyContent: 'space-around'}]}>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 17, fontWeight: 'bold'}}>
-                      Your Goals
-                  </Text>
-                </View>
-                <View style={{}}>
-                  <Text>
-                    Edit
-                  </Text>
-                </View>
-              </View>
-              <View style={[styles.rowContainer, {backgroundColor: 'white', padding: 10}]}>
-                <View style={styles.progressCircle}/>
-                <View style={styles.progressCircle}/>
-                <View style={styles.progressCircle}/>
-                <View style={styles.progressCircle}/>
-              </View>
-            </View> */}
-
             <View style={[styles.body]}>
               <Text style={{fontSize: 15, paddingBottom: 5}}>
                 Trainer: Add A Trainer
@@ -79,7 +52,7 @@ const UserProfileView: React.FC = () => {
                   </Text>
                 </View>
               </View>
-              <View style={[styles.rowContainer, {backgroundColor: 'white', padding: 10, backgroundColor: 'lightgrey'}]}>
+              <View style={[styles.rowContainer, {padding: 10, backgroundColor: 'lightgrey'}]}>
                 <View style={styles.progressCircle}/>
                 <View style={styles.progressCircle}/>
                 <View style={styles.progressCircle}/>
@@ -117,9 +90,8 @@ const UserProfileView: React.FC = () => {
               <View style={[styles.rowContainer, {backgroundColor: 'lightgrey'}]}>
               <Text style={{fontSize: 15, padding: 20}}>No Cheats to report</Text>
               </View>
-            {/* </View> */}
 
-            {/* <View style={[styles.body]}> */}
+
               <View style={styles.updateHeader}>
                 <View style={{flex: 1}}>
                   <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
@@ -182,7 +154,6 @@ const UserProfileView: React.FC = () => {
                 </Text>
               </View>
               <Text></Text>
-            {/* </View> */}
             </View>
           </View>
         </ScrollView>
@@ -238,11 +209,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     justifyContent: 'space-around'
-  },
-  body2: {
-    flex: 2,
-    backgroundColor: 'white',
-    padding: 20,
   },
   progressCircle: {
     flexDirection: 'row',
