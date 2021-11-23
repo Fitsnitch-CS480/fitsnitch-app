@@ -1,0 +1,35 @@
+{
+  "paths": [
+    {
+      "name": "/items",
+      "lambdaFunction": "lambdaApiFunctionFit",
+      "privacy": {
+        "open": true
+      },
+      "policyResourceName": "/items"
+    }
+  ],
+  "resourceName": "apiFit",
+  "apiName": "apiFit",
+  "functionArns": [
+    {
+      "lambdaFunction": "lambdaApiFunctionFit"
+    }
+  ],
+  "privacy": {
+    "auth": 0,
+    "unauth": 0,
+    "authRoleName": "amplify-fitsnitchfrontend-dev-211809-authRole",
+    "unAuthRoleName": "amplify-fitsnitchfrontend-dev-211809-unauthRole"
+  },
+  "dependsOn": [
+    {
+      "category": "function",
+      "resourceName": "lambdaApiFunctionFit",
+      "attributes": [
+        "Name",
+        "Arn"
+      ]
+    }
+  ]
+}
