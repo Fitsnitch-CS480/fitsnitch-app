@@ -7,14 +7,22 @@
  */ 
  export default class ServerFacade{
 
-  const instance;
+  /** */
+  private instance: ServerFacade;
     
     constructor(){
-        if (null == instance) {
-            instance = new ServerFacade();               
-            instance.constructor = null; // Note how the constructor is hidden to prevent instantiation
+      this.instance = this.getInstance();
+        if (null == this.instance) {
+            this.instance = new ServerFacade();               
+            this.instance.constructor = null; // Note how the constructor is hidden to prevent instantiation
+        }else{
+          this.instance = new ServerFacade();  
         }
-        return instance; //return the singleton instance
+        return this.instance; //return the singleton instance
+    }
+
+    async getInstance(){
+      return this.instance;
     }
     
     //Probably out of first interactions of the app

@@ -1,49 +1,64 @@
 import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View, Alert } from 'react-native';
+import ServerFacade from '../backend/ServerFacade';
 
 export type Props = {
   name: string;
   baseEnthusiasmLevel?: number;
+  // server: ServerFacade;
 };
 
 const SnitchesView: React.FC<Props> = ({
   name,
-  baseEnthusiasmLevel = 0
+  // server,
 }) => {
-  const [enthusiasmLevel, setEnthusiasmLevel] = React.useState(
-    baseEnthusiasmLevel
-  );
+  // const [enthusiasmLevel, getUserLocation] = React.useState(
+  //   server
+  // );
+  const server = new ServerFacade();
 
-  const onIncrement = () =>
-    setEnthusiasmLevel(enthusiasmLevel + 1);
-  const onDecrement = () =>
-    setEnthusiasmLevel(
-      enthusiasmLevel > 0 ? enthusiasmLevel - 1 : 0
-    );
+  const onSnitch = async () =>
+    {
+      if(await server.getUserLocation()){
+        Alert.alert(
+          'Attention',
+          'This is a test!',
+          [
+              {text: 'cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+          ],
+          { cancelable: false }
+      )
+      }
+    }
+  // getSnitchLocation(enthusiasmLevel + 1);
+  // const onFalseAlarm = () =>
+  //   setEnthusiasmLevel(
+  //     enthusiasmLevel > 0 ? enthusiasmLevel - 1 : 0
+  //   );
 
-  const getExclamationMarks = (numChars: number) =>
-    numChars > 0 ? Array(numChars + 1).join('!') : '';
+  // const getLocationCheck = (numChars: number) =>
+  //   numChars > 0 ? Array(numChars + 1).join('!') : '';
 
   return (
     <View style={styles.container}>
       {/* This code remains as an example of using state and variables, but will be removed. */}
       <Text style={styles.greeting}>
         Snitching on {name||"User"}
-        {getExclamationMarks(enthusiasmLevel)}
+        {server.getUserLocation()}
       </Text>
       <View>
         <Button
-          title="Increase enthusiasm"
-          accessibilityLabel="increment"
-          onPress={onIncrement}
+          title="Snitch"
+          accessibilityLabel="snitch"
+          onPress={onSnitch}
           color="blue"
         />
-        <Button
-          title="Decrease enthusiasm"
-          accessibilityLabel="decrement"
-          onPress={onDecrement}
+        {/* <Button
+          title="False Alarm"
+          accessibilityLabel="falseAlarm"
+          onPress={onFalseAlarm}
           color="red"
-        />
+        /> */}
       </View>
     </View>
   );
