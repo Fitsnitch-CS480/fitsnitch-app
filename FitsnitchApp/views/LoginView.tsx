@@ -1,32 +1,57 @@
-import React from 'react';
-import { Button, StyleSheet, Text, View, Image} from 'react-native';
+import React, {useContext, useState} from 'react';
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import SignUpView from './SignUpView';
-import { Screen } from 'react-native-screens';
-import MaterialButtonPrimary from "../components/MaterialButtonPrimary";
-import MaterialUnderlineTextbox from "../components/MaterialUnderlineTextbox";
-import { TextInput } from 'react-native-gesture-handler';
-import { placeholder } from '@babel/types';
-import AppNavigator from '../navigation/appNavigator';
+import {Auth} from '@aws-amplify/auth';
+import {userContext} from '../navigation/mainNavigator';
 
 const LoginView : React.FC = () => {
 
   const navigation = useNavigation();
+  const [email, onChangeEmail] = useState('');
+  const [password, onChangePassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  
+  //Get user from Context from mainNavigator
+  const {usertest, setUser} = useContext(userContext);
+
+  const signInFunction = async () => {
+
+    //If email and password are good, attempt login. Read errors and respond acordingly.
+    if (email.length > 4 && password.length > 2) {
+      await Auth.signIn(email, password)
+        //If we get a user back, setUser in mainNavigator.
+        .then((user) => {
+          setUser(user);
+        })
+        //Handle the multiple errors
+        .catch((err) => {
+          console.log(':',err);
+          if (!err.message) {
+            console.log('1 Error when signing in: ', err);
+            Alert.alert('Error when signing in: ', err);
+          } else {
+            if (err.code === 'UserNotConfirmedException') {
+              console.log('User not confirmed');
+              navigation.navigate('confirmation', {
+                email,
+              });
+            }
+            if (err.message) {
+              setErrorMessage(err.message);
+            }
+          }
+        });
+    } else {
+      setErrorMessage('Provide a valid email and password');
+      Alert.alert('Error:', errorMessage);
+    }
+  };
+
   return (
-    // <View>
-    //   <Text>
-    //     Hello this is Login Screenss
-    //   </Text>
-    //   <Button title="Login" onPress={() => navigation.navigate('signup')} />
-    // </View>
     <View style={styles.container}>
       
       <View style={styles.materialButtonPrimary}>
-        <MaterialButtonPrimary
-        //style={styles.materialButtonPrimary} 
-        //onPress={() => navigation.navigate('signup')}
-        text="Log In"
-      ></MaterialButtonPrimary>
+        <Button title="Log In" onPress={signInFunction}></Button>
       </View>
       
       <Text style={styles.or2}>--------------- OR ---------------</Text>
@@ -56,22 +81,14 @@ const LoginView : React.FC = () => {
         <Text style={styles.logInWithTwitter}>Log in with Twitter</Text>
       </View>
       <View style={styles.materialUnderlineTextboxStack}>
-        <MaterialUnderlineTextbox
-          // style={styles.materialUnderlineTextbox}
-          placeholder="Username"
-        ></MaterialUnderlineTextbox>
-        <MaterialUnderlineTextbox
-        // style={styles.materialUnderlineTextbox1}
-        placeholder="Password"
-        secureTextEntry
-      ></MaterialUnderlineTextbox>
+        <TextInput placeholder="Username" onChangeText={onChangeEmail}></TextInput>
+        <TextInput placeholder="Password" secureTextEntry onChangeText={onChangePassword}></TextInput>
       </View>
       <Image
         source={require("../assets/images/image_bnui..png")}
         resizeMode="contain"
         style={styles.image}
       ></Image>
-      
     </View>
   );
 };
