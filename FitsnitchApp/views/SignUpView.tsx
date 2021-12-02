@@ -1,33 +1,53 @@
-import React from 'react';
-import { Button, StyleSheet, Text, View, Image} from 'react-native';
+import React, {useState} from 'react';
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import LoginView from './LoginView';
-import { Screen } from 'react-native-screens';
-import MaterialButtonPrimary from "../components/MaterialButtonPrimary";
-import MaterialUnderlineTextbox from "../components/MaterialUnderlineTextbox";
-import { TextInput } from 'react-native-gesture-handler';
-import { placeholder } from '@babel/types';
-import AppNavigator from '../navigation/appNavigator';
+import {Auth} from '@aws-amplify/auth';
+
 
 const SignUpView : React.FC = () => {
 
   const navigation = useNavigation();
+  const [email, onChangeEmail] = useState('');
+  const [password, onChangePassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+
+  const signUpFunction = async () => {
+        
+    if (email.length > 4 && password.length > 2) {
+      await Auth.signUp(email, password, email)
+        .then((user) => {
+          //Move to confirmation screen, user should get code in email.
+          navigation.navigate('confirmation', {
+            email
+          });
+        })
+        .catch((err) => {
+          console.log(':',err);
+          if (!err.message) {
+            console.log('1 Error when signing up: ', err);
+            Alert.alert('Error when signing up: ', err);
+          } else {
+            if (err.message) {
+              setErrorMessage(err.message);
+            }
+          }
+        });
+    } else {
+      setErrorMessage('Provide a valid email and password');
+      Alert.alert('Error:', errorMessage);
+    }
+  };
+
   return (
-    // <View>
-    //   <Text>
-    //     Hello this is Login Screenss
-    //   </Text>
-    //   <Button title="Login" onPress={() => navigation.navigate('signup')} />
-    // </View>
-    <View style={styles.container}>
-      <View style={styles.materialButtonPrimary}><MaterialButtonPrimary
-        //style={styles.materialButtonPrimary} 
-        //onPress={() => navigation.navigate('signup')}
-        text="Sign Up"
-      ></MaterialButtonPrimary>
+      <View style={styles.container}>
+      
+      <View style={styles.materialButtonPrimary}>
+        <Button title="Sign Up" onPress={signUpFunction}></Button>
       </View>
+      
       <Text style={styles.or2}>--------------- OR ---------------</Text>
-      <Text style={styles.loremIpsum} onPress={() => navigation.navigate('login')}>Already have an account? Log in</Text> 
+      <Text style={styles.loremIpsum} onPress={() => navigation.navigate('login')}>Already have an account? Log In</Text> 
       <View style={styles.image2Row}>
         <Image
           source={require("../assets/images/image_ia6Y..png")}
@@ -53,22 +73,14 @@ const SignUpView : React.FC = () => {
         <Text style={styles.logInWithTwitter}>Sign up with Twitter</Text>
       </View>
       <View style={styles.materialUnderlineTextboxStack}>
-        <MaterialUnderlineTextbox
-          // style={styles.materialUnderlineTextbox}
-          placeholder="Username"
-        ></MaterialUnderlineTextbox>
-        <MaterialUnderlineTextbox
-        // style={styles.materialUnderlineTextbox1}
-        placeholder="Password"
-        secureTextEntry
-      ></MaterialUnderlineTextbox>
+        <TextInput placeholder="Username" onChangeText={onChangeEmail}></TextInput>
+        <TextInput placeholder="Password" secureTextEntry onChangeText={onChangePassword}></TextInput>
       </View>
       <Image
         source={require("../assets/images/image_bnui..png")}
         resizeMode="contain"
         style={styles.image}
       ></Image>
-      
     </View>
   );
 };

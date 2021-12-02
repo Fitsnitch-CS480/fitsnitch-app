@@ -21,4 +21,16 @@ amplify-gradle-config.json
 amplifytools.xcconfig
 .secret-*
 **.sample
+
 #amplify-do-not-edit-end
+FitsnitchApp\android/.project
+FitsnitchApp\android/.settings/
+FitsnitchApp\android/app/
+FitsnitchApp\android\app
+
+FitsnitchApp\android\build/
+FitsnitchApp\android\.idea
+FitsnitchApp\android\.gradle
+FitsnitchApp\android\local.properties
+*.iml
+*.hprof
