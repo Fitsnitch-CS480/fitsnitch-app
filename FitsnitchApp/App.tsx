@@ -9,6 +9,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import PeopleView from './views/PeopleView';
 import SettingsView from './views/SettingsView';
 import MainNavigator from './navigation/mainNavigator';
+import config from './aws-exports';
+import Amplify from '@aws-amplify/core';
+
+Amplify.configure(config);
 
 export default function App(){
   return(
