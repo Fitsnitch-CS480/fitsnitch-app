@@ -23,10 +23,6 @@ amplifytools.xcconfig
 **.sample
 
 #amplify-do-not-edit-end
-FitsnitchApp\android/.project
-FitsnitchApp\android/.settings/
-FitsnitchApp\android/app/
-FitsnitchApp\android\app
 
 FitsnitchApp\android\build/
 FitsnitchApp\android\.idea
