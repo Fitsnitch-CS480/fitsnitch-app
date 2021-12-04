@@ -118,14 +118,6 @@ const Profile: React.FC<Props> = ({
                   </Text>
                 </View>
               </View>
-              {/* <SectionList style={styles.updates}
-          sections={[
-            {data: dummyUser.updates},
-          ]}
-          renderItem={({item}) => <Text style={styles.updates}>{item}</Text>}
-          renderSectionHeader={({section}) => <Text style={styles.updates}>{section.title}</Text>}
-          keyExtractor={(item, index) => index}
-        /> */}
               <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
                 <Text>
                   Update 1
