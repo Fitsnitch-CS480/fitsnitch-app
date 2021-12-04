@@ -1,0 +1,30 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-fitsnitchfrontend-dev-211809-authRole",
+      "UnauthRoleArn": "arn:aws:iam::359778328269:role/amplify-fitsnitchfrontend-dev-211809-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::359778328269:role/amplify-fitsnitchfrontend-dev-211809-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-fitsnitchfrontend-dev-211809-deployment",
+      "UnauthRoleName": "amplify-fitsnitchfrontend-dev-211809-unauthRole",
+      "StackName": "amplify-fitsnitchfrontend-dev-211809",
+      "StackId": "arn:aws:cloudformation:us-west-2:359778328269:stack/amplify-fitsnitchfrontend-dev-211809/5fe25c90-4c14-11ec-9f5a-066832e10a4f",
+      "AmplifyAppId": "d3n75b2qxd35h0"
+    },
+    "categories": {
+      "auth": {
+        "fitsnitchfrontendb5f16d0d": {}
+      },
+      "function": {
+        "dynamoDBFitTrigger33609f5d": {
+          "deploymentBucketName": "amplify-fitsnitchfrontend-dev-211809-deployment",
+          "s3Key": "amplify-builds/dynamoDBFitTrigger33609f5d-2b533230582b65453358-build.zip"
+        },
+        "lambdaApiFunctionFit": {
+          "deploymentBucketName": "amplify-fitsnitchfrontend-dev-211809-deployment",
+          "s3Key": "amplify-builds/lambdaApiFunctionFit-444c41385a6442637878-build.zip"
+        }
+      }
+    }
+  }
+}
