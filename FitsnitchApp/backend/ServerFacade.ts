@@ -33,7 +33,16 @@ import axios from 'axios';
     static async checkLocation(){
       //request user location
       //specify endpoint
-      axios.post("https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev/check-location");
-      return true;
+      const payload = {
+        userId: 'dummy',
+        location: {
+          lat: 40.2508,
+		      long: -111.6613
+        } 
+      }
+      const response = await axios.post("https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev/check-location", payload);
+      return response;
+    }
+    static async reportSnitch(){
     }
 }

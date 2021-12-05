@@ -1,21 +1,20 @@
 import React from 'react';
-import { StyleSheet, View, Button, Text } from 'react-native';
+import { StyleSheet, View, Button, Text, Alert } from 'react-native';
 import ServerFacade from '../backend/ServerFacade';
 import axios from 'axios';
 
 
 function SnitchPopUp(props: any) {
 
-  const sendSnitch = async () =>
-    {
-      //send hard code coordinates to api endpoint
-      if(await ServerFacade.checkLocation()){
-        //send text or notification to trainer/accountability partner
-      }
-      else{
-        //display message saying, user wont be snitch ?
-      }
-    }
+  let doNothing = async () => {
+    props.setTrigger(false);
+    Alert.alert("Great Decision! Remember your goals!");
+  }
+
+  let useCheat = async () => {
+    props.setTrigger(false);
+    Alert.alert("Checking if you have cheats available. Otherwise you will be snitched on!");
+  }
   
   return (props.trigger) ? (
    <View style={styles.container}>
@@ -23,9 +22,9 @@ function SnitchPopUp(props: any) {
      {props.children}
      </View>
      <View style={styles.buttonContainer}>
-        <Button title="I'll Leave"  color='black' onPress={sendSnitch}>Snitch</Button>
+        <Button title="I'll Leave"  color='black' onPress={doNothing}>Snitch</Button>
       <Text></Text>
-        <Button title="Use A Cheat" color='black' onPress={() => props.setTrigger(false)}>Cheat Meal</Button>
+        <Button title="Use A Cheat" color='black' onPress={useCheat}>Cheat Meal</Button>
     </View>
     <Text style={styles.errorText}>Report an error</Text>
    </View>

@@ -14,13 +14,22 @@ const SnitchesView: React.FC<Props> = ({
   const [timedPopUp, setTimedPopUp] = useState(false);
   const timer = new Timer();
 
-  let onTimesUp = () => {
+  let onTimesUp = async () => {
     setButtonPopup(false);
     Alert.alert("You've Been Snitched On!",
-    "Open FitSnitch to request a change or use a cheat meal")
-    ServerFacade.checkLocation().then((Response: any) => {
-      //send message to trainer/accountability partners
-    });
+    "Open FitSnitch to request a change or use a cheat meal");
+    //Send snitch
+    
+  }
+  
+  let checkLocation = async () => {
+    const response = await ServerFacade.checkLocation();
+    console.log(response);
+    Alert.alert("Are you currently at " + response.data.name + "?");
+    if(response.status == 200){
+      setButtonPopup(true);
+      ServerFacade.reportSnitch();
+    }
   }
 
   return (
@@ -34,13 +43,13 @@ const SnitchesView: React.FC<Props> = ({
         </View>
         <View style={styles.container2}>
           <Text style={styles.greeting}>
-          Simulated Snitch on {name||"User"}
-          {() => setButtonPopup(true)}
+          Demo Snitch on {name||"Andre"}
+          {checkLocation}
           </Text>
             <Button
-            title="Snitch"
-            accessibilityLabel="snitch"
-            onPress={() => setButtonPopup(true)} 
+            title="Run Demo"
+            accessibilityLabel="demo"
+            onPress={checkLocation} 
             color="black"
             />
         </View>
