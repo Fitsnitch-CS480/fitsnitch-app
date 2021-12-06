@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Button } from 'react-native';
+import ServerFacade from '../backend/ServerFacade';
 
 class Timer extends React.Component {
   constructor(props) {
@@ -24,6 +25,10 @@ class Timer extends React.Component {
       }
     }
   }
+  // locationName(){
+  //   this.location = this.props.location;
+  //   return this.location;
+  // }
 
   fmtMSS(s) { return(s-(s%=60))/60+(9<s?':':':0')+s}
 
@@ -31,7 +36,7 @@ class Timer extends React.Component {
     let {count} = this.state;
     return(
         <View>
-          <Text style={styles.text1}>Are You Cheating?</Text>
+          <Text style={styles.text1}>Are you at Dominos?</Text>
           <Text></Text>
           <Text style={styles.seconds}>{this.fmtMSS(count)}</Text>
           <Text></Text>

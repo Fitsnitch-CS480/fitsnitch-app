@@ -5,7 +5,9 @@ import axios from 'axios';
  * This class is a Singleton.
  * All methods should be async. We should use REST (fetch data)
  */ 
+
  export default class ServerFacade{
+
     
     //Probably out of first interactions of the app
     async getStatsDashboard(){
@@ -43,6 +45,8 @@ import axios from 'axios';
       const response = await axios.post("https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev/check-location", payload);
       return response;
     }
+
     static async reportSnitch(){
+      const response = await axios.post("https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev/snitch-on-user");
     }
 }

@@ -8,27 +8,28 @@ export type Props = {
   name: string;
 };
 const SnitchesView: React.FC<Props> = ({
-  name,
+  name
 }) => {
   const [buttonPopup, setButtonPopup] = useState(false);
   const [timedPopUp, setTimedPopUp] = useState(false);
   const timer = new Timer();
+  let location: string = ""
 
   let onTimesUp = async () => {
     setButtonPopup(false);
     Alert.alert("You've Been Snitched On!",
     "Open FitSnitch to request a change or use a cheat meal");
     //Send snitch
-    
+    // ServerFacade.reportSnitch();
   }
   
   let checkLocation = async () => {
     const response = await ServerFacade.checkLocation();
     console.log(response);
-    Alert.alert("Are you currently at " + response.data.name + "?");
+    // Alert.alert("Are you currently at " + response.data.name + "?");
     if(response.status == 200){
+      location =response.data.name;
       setButtonPopup(true);
-      ServerFacade.reportSnitch();
     }
   }
 
@@ -43,7 +44,7 @@ const SnitchesView: React.FC<Props> = ({
         </View>
         <View style={styles.container2}>
           <Text style={styles.greeting}>
-          Demo Snitch on {name||"Andre"}
+          Demo Snitch on {name || "Andre"}
           {checkLocation}
           </Text>
             <Button
