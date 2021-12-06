@@ -20,7 +20,7 @@ const SnitchesView: React.FC<Props> = ({
     Alert.alert("You've Been Snitched On!",
     "Open FitSnitch to request a change or use a cheat meal");
     //Send snitch
-    // ServerFacade.reportSnitch();
+    ServerFacade.reportSnitch();
   }
   
   let checkLocation = async () => {
