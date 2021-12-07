@@ -10,7 +10,6 @@ import sound4 from '../assets/chefRushSoundBytes/sound4.m4a';
 import sound5 from '../assets/chefRushSoundBytes/sound5.m4a';
 import sound6 from '../assets/chefRushSoundBytes/sound6.m4a';
 
-// import sound1 from '../assets/sound1.mp3';
 import Sound from 'react-native-sound';
 
 export type Props = {
