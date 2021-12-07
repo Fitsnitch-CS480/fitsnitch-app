@@ -19,7 +19,6 @@
     "@react-navigation/stack": "^6.0.11",
     "amazon-cognito-identity-js": "^5.2.3",
     "axios": "^0.24.0",
-    "howler": "^2.2.3",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-native": "^0.66.3",
@@ -28,9 +27,7 @@
     "react-native-sound": "^0.11.1",
     "react-native-svg": "^12.1.1",
     "react-native-vector-icons": "^9.0.0",
-    "react-sound": "^1.2.0",
-    "svg": "^0.1.0",
-    "use-sound": "^4.0.1"
+    "svg": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
