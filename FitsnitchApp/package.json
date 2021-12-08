@@ -18,11 +18,13 @@
     "@react-navigation/native-stack": "^6.2.5",
     "@react-navigation/stack": "^6.0.11",
     "amazon-cognito-identity-js": "^5.2.3",
+    "axios": "^0.24.0",
     "lodash": "^4.17.21",
     "react": "^17.0.2",
     "react-native": "^0.66.3",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.9.0",
+    "react-native-sound": "^0.11.1",
     "react-native-svg": "^12.1.1",
     "react-native-vector-icons": "^9.0.0",
     "svg": "^0.1.0"
