@@ -1,13 +1,19 @@
 .idea/
 .vscode/
 
+FitsnitchApp\android\build/
+FitsnitchApp\android\.idea
+FitsnitchApp\android\.gradle
+FitsnitchApp\android\local.properties
+*.iml
+*.hprof
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
 amplify/logs
 amplify/mock-data
 amplify/backend/amplify-meta.json
-amplify/backend/awscloudformation
 amplify/backend/.temp
 build/
 dist/
@@ -21,12 +27,4 @@ amplify-gradle-config.json
 amplifytools.xcconfig
 .secret-*
 **.sample
-
 #amplify-do-not-edit-end
-
-FitsnitchApp\android\build/
-FitsnitchApp\android\.idea
-FitsnitchApp\android\.gradle
-FitsnitchApp\android\local.properties
-*.iml
-*.hprof

@@ -12,9 +12,6 @@
       "AmplifyAppId": "d3n75b2qxd35h0"
     },
     "categories": {
-      "auth": {
-        "fitsnitchfrontendb5f16d0d": {}
-      },
       "function": {
         "dynamoDBFitTrigger33609f5d": {
           "deploymentBucketName": "amplify-fitsnitchfrontend-dev-211809-deployment",
@@ -24,6 +21,9 @@
           "deploymentBucketName": "amplify-fitsnitchfrontend-dev-211809-deployment",
           "s3Key": "amplify-builds/lambdaApiFunctionFit-444c41385a6442637878-build.zip"
         }
+      },
+      "auth": {
+        "fitsnitchfrontendb5f16d0d": {}
       }
     }
   }
