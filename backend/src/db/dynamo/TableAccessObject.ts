@@ -41,7 +41,7 @@ export default class TableAccessObject<T> {
      * 
      * @param data The data for the new row
      */
-    async create(data:T): Promise<void> {
+    async createOrUpdate(data:T): Promise<void> {
         let item = {};
         for (let [key, val] of Object.entries(data)) item[key] = val;
 
@@ -73,6 +73,35 @@ export default class TableAccessObject<T> {
         if (!Item) return;
         return unmarshall(Item) as T;
     }
+
+        /**
+     * Quickly queries a specific item by it's primary key.
+     * NOTE: Assumes that there is no sort key!
+     * 
+     * @param keyValue The value of the Primary Key for the desired item
+     * @returns The matching item, or `undefined`
+     */
+         async deleteByKeys(primaryValue:any, sortValue?:any) {
+            let key = {};
+            key[this.primaryKey] = primaryValue;
+            if (sortValue) {
+                if (!this.sortKey) throw new Error ("Sort value provided, but table has no sort key!");
+                else key[this.sortKey] = sortValue;
+            }
+
+            const params = {
+                TableName: this.name,
+                Key: marshall(key)
+            };
+    
+            let res = await dynamoClient.deleteItem(params);
+            // The only useful information I can deduce from the res
+            // object is res.$metadata.httpStatusCode. That may give
+            // some indication of success (I've only seen it be 200),
+            // but the deleteItem method doesn't seem to give any other
+            // indication.
+            // TODO: handle errors appropriately.
+        }
 
     /**
      * Intended to query tables with SortKeys where multiple rows correspond to
@@ -119,7 +148,7 @@ export default class TableAccessObject<T> {
         if (!sortKeyValue1) throw new Error(`No value provided for Sort Key '${this.sortKey}'`)
 
         if (sortOperator === SortOp.BEGINS_WITH) {
-            return `begins_with (${this.sortKey}, :s1)`;
+            return `begins_with (${this.sortKey}, ${S1_TOKEN})`;
         }
         
         if (sortOperator === SortOp.BETWEEN) {
