@@ -74,9 +74,8 @@ export default class TableAccessObject<T> {
         return unmarshall(Item) as T;
     }
 
-        /**
-     * Quickly queries a specific item by it's primary key.
-     * NOTE: Assumes that there is no sort key!
+    /**
+     * Deletes an item by it's keys. If the schema has a sort key, that value is required.
      * 
      * @param keyValue The value of the Primary Key for the desired item
      * @returns The matching item, or `undefined`
