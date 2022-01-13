@@ -1,19 +1,20 @@
 import TrainerClientPair from "../../../../shared/models/TrainerClientPair";
-import TrainersDAO from "../TrainersDAO";
+import TrainersDao from "../TrainersDao";
 import TableAccessObject, { SortOp } from "./TableAccessObject";
 
-export default class DynamoTrainersDao implements TrainersDAO {
+export default class DynamoTrainersDao implements TrainersDao {
     private table = new TableAccessObject<TrainerClientPair>("TrainerClientAssociations","trainerId","clientId");
     private reverseIndex = new TableAccessObject<TrainerClientPair>("clientId-trainerId-index","clientId","trainerId");
 
-    async assignTrainerToClient(trainerId: string, clientId: string) {
+    async assignTrainerToClient(data:TrainerClientPair) {
+        // TODO
         throw new Error("Method not implemented.");
     }
     
-    async isTrainerOfClient(trainerId: string, clientId: string): Promise<boolean> {
-        let pairs = await this.table.query(trainerId, SortOp.EQUALS, clientId);
+    async isTrainerOfClient(pair:TrainerClientPair): Promise<boolean> {
+        let pairs = await this.table.query(pair.trainerId, SortOp.EQUALS, pair.clientId);
         if (pairs.length === 0) return false;
-        else return pairs[0].trainerId === trainerId && pairs[0].clientId === clientId;
+        else return true;
     }
     
     async getClientIdsOfTrainer(trainerId: string): Promise<string[]> {
@@ -22,7 +23,12 @@ export default class DynamoTrainersDao implements TrainersDAO {
     }
     
     async getTrainerIdOfClient(clientId: string): Promise<string> {
+        // TODO
         throw new Error("Method not implemented.");
     }
     
+    async removeTrainerFromClient(data: TrainerClientPair) {
+        // TODO
+        throw new Error("Method not implemented.");
+    }
 }

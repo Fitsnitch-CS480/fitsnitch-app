@@ -22,6 +22,7 @@ const PK_TOKEN = ":PK";
 const S1_TOKEN = ":S1";
 const S2_TOKEN = ":S2";
 
+     
 /**
  * Provides abstracted methods for making typical types of operations
  * on a DynamoDB Table where `T` represents the expected model for all rows
@@ -31,8 +32,22 @@ export default class TableAccessObject<T> {
      * @param name The name of the table EXACTLY as it appears in AWS
      * @param primaryKey The primary key for the table
      * @param sortKey The sort key for the table, if applicable
+     * @param index If the index name is provided, all queries will run against the index!
      */
-    constructor(public name:string, public primaryKey:string, public sortKey?: string) {}
+    constructor(public name:string, public primaryKey:string, public sortKey?: string, public index?:string) {}
+
+    /**
+     * Returns a TableAccessObject configured for an index of this table.
+     * All method queries and operations will be performed on that index.
+     * 
+     * @param indexName Name of the index as shown in AWS
+     * @param indexPrimaryKey The attribute for the Primary Key
+     * @param indexSortKey The attribute for the Sort Key (optional)
+     * @returns
+     */
+    createIndexAccessObject(indexName:string, indexPrimaryKey:string, indexSortKey?:string):TableAccessObject<T> {
+        return new TableAccessObject<T>(this.name,indexPrimaryKey,indexSortKey,indexName);
+    }
 
     /**
      * Creates a new row with the provided data.
@@ -41,12 +56,13 @@ export default class TableAccessObject<T> {
      * 
      * @param data The data for the new row
      */
-    async create(data:T): Promise<void> {
+    async createOrUpdate(data:T): Promise<void> {
         let item = {};
         for (let [key, val] of Object.entries(data)) item[key] = val;
 
         const params = {
             TableName: this.name,
+            IndexName: this.index,
             Item: marshall(item, {removeUndefinedValues:true})
         };
 
@@ -55,17 +71,18 @@ export default class TableAccessObject<T> {
 
     /**
      * Quickly queries a specific item by it's primary key.
-     * NOTE: Assumes that there is no sort key!
+     * NOTE: Assumes that there is no sort key! If you want to query by sort key, use 'query'
      * 
      * @param keyValue The value of the Primary Key for the desired item
      * @returns The matching item, or `undefined`
      */
-    async getByPrimaryKey(keyValue:any): Promise<T|undefined> {
+    async getByPrimaryKey(primaryValue:any): Promise<T|undefined> {
         let key = {};
-        key[this.primaryKey] = keyValue;
+        key[this.primaryKey] = primaryValue;
 
         const params = {
             TableName: this.name,
+            IndexName: this.index,
             Key: marshall(key)
         };
 
@@ -75,11 +92,40 @@ export default class TableAccessObject<T> {
     }
 
     /**
+     * Deletes an item by it's keys. If the schema has a sort key, that value is required.
+     * 
+     * @param keyValue The value of the Primary Key for the desired item
+     * @returns The matching item, or `undefined`
+     */
+         async deleteByKeys(primaryValue:any, sortValue?:any) {
+            let key = {};
+            key[this.primaryKey] = primaryValue;
+            if (sortValue) {
+                if (!this.sortKey) throw new Error ("Sort value provided, but table has no sort key!");
+                else key[this.sortKey] = sortValue;
+            }
+
+            const params = {
+                TableName: this.name,
+                IndexName: this.index,
+                Key: marshall(key)
+            };
+    
+            let res = await dynamoClient.deleteItem(params);
+            // The only useful information I can deduce from the res
+            // object is res.$metadata.httpStatusCode. That may give
+            // some indication of success (I've only seen it be 200),
+            // but the deleteItem method doesn't seem to give any other
+            // indication.
+            // TODO: handle errors appropriately.
+        }
+
+    /**
      * Intended to query tables with SortKeys where multiple rows correspond to
-     * a single PrimaryKey value. Multiple comparisons can be performed on the
+     * a single PrimaryKey value. Various comparisons can be performed on the
      * SortKey values for specificity.
      * 
-     * Example: Querying all snitches for USERID (Primary Key) between dates A and B (Sort Key comparison).
+     * Example: Querying all comments for MemoryId (Primary Key) between dates A and B (Sort Key comparison).
      * 
      * @param primaryKeyValue Value of primary key
      * @param sortOperator If checking sort key, which coparison to use
@@ -98,6 +144,7 @@ export default class TableAccessObject<T> {
         
         const params = {
             TableName: this.name,
+            IndexName: this.index,
             ExpressionAttributeValues: marshall(expressionVals),
             KeyConditionExpression: keyConditions,
         };
@@ -119,7 +166,7 @@ export default class TableAccessObject<T> {
         if (!sortKeyValue1) throw new Error(`No value provided for Sort Key '${this.sortKey}'`)
 
         if (sortOperator === SortOp.BEGINS_WITH) {
-            return `begins_with (${this.sortKey}, :s1)`;
+            return `begins_with (${this.sortKey}, ${S1_TOKEN})`;
         }
         
         if (sortOperator === SortOp.BETWEEN) {
@@ -129,4 +176,7 @@ export default class TableAccessObject<T> {
 
         return `${this.sortKey} ${sortOperator} ${S1_TOKEN}`;
     }
+
+
+    // TODO: create SCAN method
 }
