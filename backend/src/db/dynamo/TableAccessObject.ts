@@ -1,6 +1,13 @@
 import { DynamoDB } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 
+export type TableSchema = {
+    tableName:string,
+    primaryKey:string,
+    sortKey?:string,
+    asIndex?:string
+}
+
 const dynamoClient = new DynamoDB({ 
     region: 'us-west-2' 
 })
@@ -28,25 +35,32 @@ const S2_TOKEN = ":S2";
  * on a DynamoDB Table where `T` represents the expected model for all rows
  */
 export default class TableAccessObject<T> {
+    public name:string;
+    public primaryKey:string;
+    public sortKey?:string;
+    public index?:string
+
     /**
-     * @param name The name of the table EXACTLY as it appears in AWS
-     * @param primaryKey The primary key for the table
-     * @param sortKey The sort key for the table, if applicable
-     * @param index If the index name is provided, all queries will run against the index!
+     * @param schema The schema for the table
      */
-    constructor(public name:string, public primaryKey:string, public sortKey?: string, public index?:string) {}
+    constructor(schema:TableSchema) {    
+        this.name = schema.tableName;
+        this.primaryKey = schema.primaryKey;
+        this.sortKey = schema.sortKey;
+        this.index = schema.asIndex;
+    }
 
     /**
      * Returns a TableAccessObject configured for an index of this table.
      * All method queries and operations will be performed on that index.
      * 
-     * @param indexName Name of the index as shown in AWS
-     * @param indexPrimaryKey The attribute for the Primary Key
-     * @param indexSortKey The attribute for the Sort Key (optional)
+     * @param indexSchema Schema for the index
      * @returns
      */
-    createIndexAccessObject(indexName:string, indexPrimaryKey:string, indexSortKey?:string):TableAccessObject<T> {
-        return new TableAccessObject<T>(this.name,indexPrimaryKey,indexSortKey,indexName);
+    createIndexAccessObject(indexSchema:TableSchema):TableAccessObject<T> {
+        if (indexSchema.tableName !== this.name) throw new Error("Index must be of the same table!");
+        if (!indexSchema.asIndex) throw new Error("Index have an index name defined!");
+        return new TableAccessObject<T>(indexSchema);
     }
 
     /**
