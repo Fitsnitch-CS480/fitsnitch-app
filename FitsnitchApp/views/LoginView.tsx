@@ -1,18 +1,45 @@
-import React, {useContext, useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Platform} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
 import {userContext} from '../navigation/mainNavigator';
+import {check, checkNotifications, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import Popup from '../components/Popup';
+import useLocationTracking from '../hooks/useLocationTracking';
 
-const LoginView : React.FC = () => {
+export default function LoginView() {
 
   const navigation = useNavigation();
   const [email, onChangeEmail] = useState('');
   const [password, onChangePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [notiAuthPopupShow, setNotiAuthPopupShow] = useState(false);
+  //const [rejectNotis, setRejectNotis] = useState(false);
+  const closePopUp = () => {
+    setNotiAuthPopupShow(false);
+  }
+  const handleButton = () => {
+    console.log("Pressed");
+  }
   
   //Get user from Context from mainNavigator
   const {usertest, setUser} = useContext(userContext);
+
+  useEffect(() => {
+    console.log("useEffect....");
+    if (Platform.OS == "ios") {
+      console.log("ios");
+      checkNotifications().then(({status, settings}) => {
+        if (status == RESULTS.BLOCKED) {  //user has rejected notifications
+          console.log("BLOCKED");
+          setNotiAuthPopupShow(true);
+          //setRejectNotis(true);
+        }
+      });
+    }
+    
+  });
 
   const signInFunction = async () => {
 
@@ -49,10 +76,13 @@ const LoginView : React.FC = () => {
 
   return (
     <View style={styles.container}>
-      
       <View style={styles.materialButtonPrimary}>
         <Button title="Log In" onPress={signInFunction}></Button>
       </View>
+
+      <Popup popupShow={notiAuthPopupShow} hidePopup={closePopUp} handleButton={handleButton}>
+        
+      </Popup>
       
       <Text style={styles.or2}>--------------- OR ---------------</Text>
       <Text style={styles.loremIpsum} onPress={() => navigation.navigate('signup')}>Don&#39;t have an account? Sign up</Text> 
@@ -192,5 +222,3 @@ const styles = StyleSheet.create({
     marginLeft: 52
   }
 });
-
-export default LoginView;

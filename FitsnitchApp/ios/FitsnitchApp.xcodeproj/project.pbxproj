@@ -12,12 +12,14 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		44F77B26269AEEBB37AD910E /* Pods_FitsnitchApp_FitsnitchAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87175BE07AA428F97E23DDDA /* Pods_FitsnitchApp_FitsnitchAppTests.framework */; };
+		54F6EB4F87B58E4BB0577536 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0331B76C6D241E82FCEFE31 /* ExpoModulesProvider.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		A210BB17275960A7004D17A5 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A210BB16275960A7004D17A5 /* GameKit.framework */; };
 		A210BB19275960AD004D17A5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A210BB18275960AD004D17A5 /* StoreKit.framework */; };
 		A2F2BC0E2758AFF8003F1E2C /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = A2F2BC0D2758AFF8003F1E2C /* awsconfiguration.json */; };
 		A2F2BC0F2758B0C7003F1E2C /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = A2F2BC0D2758AFF8003F1E2C /* awsconfiguration.json */; };
 		C2702A69B22B3725C754EE0F /* Pods_FitsnitchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DEB1F7940A28C17BFECF754 /* Pods_FitsnitchApp.framework */; };
+		C46C72118E5B86EA3E729CE1 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7C4CE10F8893328842368C /* ExpoModulesProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,7 +53,9 @@
 		A210BB18275960AD004D17A5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		A2D11DB42758740B0087F522 /* AWSPinpoint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AWSPinpoint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2F2BC0D2758AFF8003F1E2C /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
+		C0331B76C6D241E82FCEFE31 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-FitsnitchApp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		D8AB21BB705C42CA527BD107 /* Pods-FitsnitchApp-FitsnitchAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FitsnitchApp-FitsnitchAppTests.debug.xcconfig"; path = "Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		EC7C4CE10F8893328842368C /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -94,6 +98,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0AD4BE0BA054D323FD2B20A1 /* FitsnitchAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				EC7C4CE10F8893328842368C /* ExpoModulesProvider.swift */,
+			);
+			name = FitsnitchAppTests;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* FitsnitchApp */ = {
 			isa = PBXGroup;
 			children = (
@@ -132,6 +144,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		786C0F6C255112407C09923E /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				BE2366EE30DDD2F28180C947 /* FitsnitchApp */,
+				0AD4BE0BA054D323FD2B20A1 /* FitsnitchAppTests */,
+			);
+			name = ExpoModulesProviders;
+			sourceTree = "<group>";
+		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
@@ -149,6 +170,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				28D9B13F485F24A7187D0CD6 /* Pods */,
+				786C0F6C255112407C09923E /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -164,6 +186,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		BE2366EE30DDD2F28180C947 /* FitsnitchApp */ = {
+			isa = PBXGroup;
+			children = (
+				C0331B76C6D241E82FCEFE31 /* ExpoModulesProvider.swift */,
+			);
+			name = FitsnitchApp;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -176,6 +206,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				0BB2A2E9C5D452C2D1752DD9 /* [CP] Embed Pods Frameworks */,
+				2B9FEA7DCD1D6C9643AFF616 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -198,6 +229,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				389A5D63EC15B47AB604BD53 /* [CP] Embed Pods Frameworks */,
+				AFC5F5534C274A49F44E8F5A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -297,6 +329,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		2B9FEA7DCD1D6C9643AFF616 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		3775BF13BB80DE0D27C9514D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -334,6 +383,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AFC5F5534C274A49F44E8F5A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CF4BB32A4320022FD7209668 /* [CP] Check Pods Manifest.lock */ = {
@@ -385,6 +451,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* FitsnitchAppTests.m in Sources */,
+				C46C72118E5B86EA3E729CE1 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,6 +461,7 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				54F6EB4F87B58E4BB0577536 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,6 +553,7 @@
 				DEVELOPMENT_TEAM = RSLA756H6U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = FitsnitchApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -516,6 +585,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RSLA756H6U;
 				INFOPLIST_FILE = FitsnitchApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

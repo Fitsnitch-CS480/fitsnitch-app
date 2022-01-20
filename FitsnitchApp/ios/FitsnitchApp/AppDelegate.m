@@ -27,6 +27,11 @@ static void InitializeFlipper(UIApplication *application) {
   [client start];
 }
 #endif
+@interface AppDelegate () <RCTBridgeDelegate>
+ 
+@property (nonatomic, strong) EXModuleRegistryAdapter *moduleRegistryAdapter;
+ 
+@end
 
 #define SYSTEM_VERSION_LESS_THAN(v) ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 
@@ -71,8 +76,8 @@ static AWSPinpoint* pinpoint = nil;
   //InitializeFlipper(application);
 #endif
 
-  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
-  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
+  RCTBridge *bridge = [self.reactDelegate createBridgeWithDelegate:self launchOptions:launchOptions];
+  RCTRootView *rootView = [self.reactDelegate createRootViewWithBridge:bridge
                                                    moduleName:@"FitsnitchApp"
                                             initialProperties:nil];
   
@@ -138,10 +143,12 @@ static AWSPinpoint* pinpoint = nil;
   }
 
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-  UIViewController *rootViewController = [UIViewController new];
+  UIViewController *rootViewController = [self.reactDelegate createRootViewController];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  [super application:application didFinishLaunchingWithOptions:launchOptions];
   return YES;
 }
 
