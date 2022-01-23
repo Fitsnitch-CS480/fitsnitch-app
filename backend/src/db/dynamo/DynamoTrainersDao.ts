@@ -1,5 +1,5 @@
 import TrainerClientPair from "../../../../shared/models/TrainerClientPair";
-import TrainersDao from "../TrainersDAO";
+import TrainersDao from "../TrainersDao";
 import TableAccessObject, { SortOp } from "./TableAccessObject";
 import DB_TABLES from "./tables";
 
