@@ -3,6 +3,8 @@ import { Button, StyleSheet, Text, View, Image, Alert, TextInput} from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
 import {userContext} from '../navigation/mainNavigator';
+import ServerFacade from '../backend/ServerFacade';
+import User from '../shared/models/User';
 
 const LoginView : React.FC = () => {
 
@@ -20,7 +22,18 @@ const LoginView : React.FC = () => {
     if (email.length > 4 && password.length > 2) {
       await Auth.signIn(email, password)
         //If we get a user back, setUser in mainNavigator.
-        .then((user) => {
+        .then(async (userCognitoData) => {
+          console.log("USER LOGGED IN: ", userCognitoData.attributes);
+
+          // Use the UserID from Cognito to look up the User in our DB
+          let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
+          console.log(user);
+          if (!user) {
+            // If the user doesn't exist this is probably the first time they are logging in, so create them.
+            user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined)
+            await ServerFacade.createUser(user);
+          }
+          // Setting the user will trigger a navigation to the rest of the app
           setUser(user);
         })
         //Handle the multiple errors
