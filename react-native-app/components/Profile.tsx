@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import UserDataService from '../backend/services/UserDataService';
-import User from '../models/User';
+import User from '../shared/models/User';
 
 export type Props = {
   user: User;
@@ -17,7 +17,7 @@ const Profile: React.FC<Props> = ({
 }) => {
 
   const isCurrentUser = ():boolean => {
-    return user.id === dummyCurrentUser.id;
+    return user.userId === dummyCurrentUser.userId;
   }
   const isCurrentUserTrainer = ():boolean => {
     return new UserDataService().isUserTrainerOfUser(dummyCurrentUser,user);

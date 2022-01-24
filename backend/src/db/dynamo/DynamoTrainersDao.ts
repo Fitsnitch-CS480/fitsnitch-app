@@ -1,4 +1,4 @@
-import TrainerClientPair from "../../../../shared/models/TrainerClientPair";
+import TrainerClientPair from "../../../../react-native-app/shared/models/TrainerClientPair";
 import TrainersDao from "../TrainersDao";
 import TableAccessObject, { SortOp } from "./TableAccessObject";
 import DB_TABLES from "./tables";

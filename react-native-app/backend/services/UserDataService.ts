@@ -1,4 +1,4 @@
-import User from "../../models/User";
+import User from "../../shared/models/User";
 
 export default class UserDataService {
     public isUserTrainerOfUser(trainer:User,user:User): boolean {
