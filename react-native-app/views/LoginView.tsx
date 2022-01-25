@@ -14,14 +14,14 @@ const LoginView : React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   
   //Get user from Context from mainNavigator
-  const {usertest, setUser} = useContext(userContext);
+  const {currentUser, setCurrentUser} = useContext(userContext);
 
   const signInFunction = async () => {
 
     //If email and password are good, attempt login. Read errors and respond acordingly.
     if (email.length > 4 && password.length > 2) {
       await Auth.signIn(email, password)
-        //If we get a user back, setUser in mainNavigator.
+        //If we get a user back, setCurrentUser in mainNavigator.
         .then(async (userCognitoData) => {
           console.log("USER LOGGED IN: ", userCognitoData.attributes);
 
@@ -34,7 +34,7 @@ const LoginView : React.FC = () => {
             await ServerFacade.createUser(user);
           }
           // Setting the user will trigger a navigation to the rest of the app
-          setUser(user);
+          setCurrentUser(user);
         })
         //Handle the multiple errors
         .catch((err) => {
