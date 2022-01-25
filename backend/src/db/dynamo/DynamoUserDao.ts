@@ -1,9 +1,11 @@
-import User from "../../../../shared/models/User";
+import User from "../../../../react-native-app/shared/models/User";
 import UserDao from "../UserDao";
 import TableAccessObject from "./TableAccessObject";
+import DB_TABLES from "./tables";
 
 export default class DynamoUserDao implements UserDao {
-    private userTable = new TableAccessObject<User>("Users","userId");
+    private schema = DB_TABLES.USERS;
+    private userTable = new TableAccessObject<User>(this.schema);
     
     async createUser(data: User) {
         await this.userTable.createOrUpdate(data);
@@ -14,7 +16,7 @@ export default class DynamoUserDao implements UserDao {
     }
 
     async updateUser(data: User) {
-        throw new Error("Method not implemented.");
+        await this.userTable.createOrUpdate(data);
     }
 
     async deleteUser(id: string) {

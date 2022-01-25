@@ -1,4 +1,4 @@
-import { LatLongPair, BoundingBox } from "../../../shared/models/CoordinateModels";
+import { LatLongPair, BoundingBox } from "../../../react-native-app/shared/models/CoordinateModels";
 import CoordinateUtils from "./CoordinateUtils";
 
 describe(CoordinateUtils, ()=>{

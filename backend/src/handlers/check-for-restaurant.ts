@@ -1,4 +1,4 @@
-import LocationCheck from "../../../shared/models/LocationCheck";
+import LocationCheck from "../../../react-native-app/shared/models/LocationCheck";
 import { LocationService } from "../services/LocationService";
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import LambaUtils from "../utils/LambdaUtils";

@@ -1,8 +1,8 @@
-import RestaurantData from "../../../../shared/models/RestaurantData";
+import RestaurantData from "../../../../react-native-app/shared/models/RestaurantData";
 import CoordinateUtils from "../../utils/CoordinateUtils";
 import PlacesApiAdapter from "../PlacesApiAdapter";
 import axios, { AxiosResponse } from 'axios';
-import { LatLongPair, BoundingBox } from "../../../../shared/models/CoordinateModels";
+import { LatLongPair, BoundingBox } from "../../../../react-native-app/shared/models/CoordinateModels";
 
 const food_amenities = [
     "fast_food",
