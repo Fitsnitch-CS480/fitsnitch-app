@@ -1,4 +1,6 @@
 import axios from 'axios';
+import RelationshipStatus from '../shared/constants/RelationshipStatus';
+import TrainerClientPair from '../shared/models/TrainerClientPair';
 import User from '../shared/models/User'
 
 /**
@@ -32,12 +34,6 @@ function asRawString(data:string) {
     
   }
 
-  //Probably have Request with name of user we want information on. Would we need different method for getting info on ourselves vs other users for their dashboards? 
-  static async getUserProfile(){
-      //useful code
-      return 'User Profile!';
-  }
-
   static async checkLocation(){
     //request user location
     //specify endpoint
@@ -48,11 +44,48 @@ function asRawString(data:string) {
         long: -111.6613
       } 
     }
-    const response = await axios.post("https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev/check-location", payload);
+    const response = await axios.post(this.apiBaseUrl+"/check-location", payload);
     return response;
   }
 
   static async reportSnitch(){
-    const response = await axios.post("https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev/snitch-on-user");
+    const response = await axios.post(this.apiBaseUrl+"/snitch-on-user");
+  }
+
+
+
+
+  // TRAINER / CLIENT RELATIONSHIPS
+  static async getTrainerStatus(trainer:User,user:User): Promise<RelationshipStatus> {
+    let res = await axios.post(this.apiBaseUrl+"/trainer_get_status", new TrainerClientPair(trainer.userId,user.userId));
+    console.log("TRAINER STATUS RESPONSE",res.data)
+    return res.data;
+  }
+
+
+  static async requestTrainerForClient(trainer:User,client:User) {
+    let res = await axios.post(this.apiBaseUrl+"/trainer_request_create", new TrainerClientPair(trainer.userId,client.userId));
+    console.log("TRAINER REQUEST RESPONSE",res.status)
+  }
+  
+  static async cancelTrainerRequest(trainer:User,client:User) {
+    let res = await axios.post(this.apiBaseUrl+"/trainer_request_cancel", new TrainerClientPair(trainer.userId,client.userId));
+    console.log("TRAINER REQUEST CANCEL RESPONSE",res.status)
+  }
+  
+  static async approveClient(trainer:User,client:User) {
+    let res = await axios.post(this.apiBaseUrl+"/trainer_request_approve", new TrainerClientPair(trainer.userId,client.userId));
+    console.log("TRAINER APPROVE RESPONSE",res.status)
+  }
+
+  static async removeTrainerFromClient(trainer:User,client:User) {
+    let res = await axios.post(this.apiBaseUrl+"/trainer_remove", new TrainerClientPair(trainer.userId,client.userId));
+    console.log("TRAINER REMOVE RESPONSE",res.status)
+  }
+
+  static async getUserTrainer(userId:string): Promise<string> {
+    let res = await axios.post(this.apiBaseUrl+"/trainer_get_for_client", asRawString(userId));
+    console.log("CLIENT'S TRAINER",res.data)
+    return res.data
   }
 }
