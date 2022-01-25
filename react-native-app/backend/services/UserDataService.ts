@@ -1,11 +1,11 @@
 import User from "../../shared/models/User";
 
 export default class UserDataService {
-    public isUserTrainerOfUser(trainer:User,user:User): boolean {
+    public async isUserTrainerOfUser(trainer:User,user:User): Promise<boolean> {
         // TODO: implement with serverfacade
         return false;
     }
-    public isUserPartnerOfUser(partner:User,user:User): boolean {
+    public async isUserPartnerOfUser(partner:User,user:User): Promise<boolean> {
         // TODO: implement with serverfacade
         return false;
     }
