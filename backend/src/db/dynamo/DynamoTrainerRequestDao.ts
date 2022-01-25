@@ -1,6 +1,6 @@
 import TrainerClientPair from "../../../../react-native-app/shared/models/TrainerClientPair";
 import TrainerRequestDao from "../TrainerRequestDao";
-import TableAccessObject from "./TableAccessObject";
+import TableAccessObject, { SortOp } from "./TableAccessObject";
 import DB_TABLES from "./tables";
 
 export default class DynamoTrainerRequestDao implements TrainerRequestDao {
@@ -14,6 +14,11 @@ export default class DynamoTrainerRequestDao implements TrainerRequestDao {
     // fat arrow funtion to preserve this context
     deleteTrainerRequest = async (request: TrainerClientPair) => {
         return await this.table.deleteByKeys(request.trainerId,request.clientId);
+    }
+
+    async existsRequest(data:TrainerClientPair): Promise<boolean> {
+        let matches = await this.table.query(data.trainerId,SortOp.EQUALS,data.clientId);
+        return matches.length == 1;
     }
 
     async getRequestsByTrainer(trainerId: string): Promise<TrainerClientPair[]> {
