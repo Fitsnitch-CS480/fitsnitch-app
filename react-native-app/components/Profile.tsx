@@ -1,30 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
-import UserDataService from '../backend/services/UserDataService';
+import { userContext } from '../navigation/mainNavigator';
 import User from '../shared/models/User';
+import ProfileClientTrainerButton from './ProfileClientTrainerButton';
 
 export type Props = {
-  user: User;
+  profileOwner: User;
 };
-const EMPTY_COLOR = "grey";
-const PROGRESS_COLOR = "green";
-const SIZE = 45;
-
-const dummyCurrentUser = new User("currentUser","Current","User");
 
 const Profile: React.FC<Props> = ({
-  user
+  profileOwner
 }) => {
+  
+  const {currentUser} = useContext(userContext);
+  if (!currentUser) return <></>
 
-  const isCurrentUser = ():boolean => {
-    return user.userId === dummyCurrentUser.userId;
-  }
-  const isCurrentUserTrainer = ():boolean => {
-    return new UserDataService().isUserTrainerOfUser(dummyCurrentUser,user);
-  }
-  const isCurrentUserPartner = ():boolean => {
-    return new UserDataService().isUserPartnerOfUser(dummyCurrentUser,user);
-  }
+  // HACK: these are for development only and should be removed or commented before submitting a PR!!!
+  // let testArthurUser = {email: "", userId: "833b9875-e922-45b4-a2c3-c34efdbc3367", firstname:"Arthur",lastname:"Test"}
+  // let testFitSnitchUser = {email: "fitsnitchdev@gmail.com", userId: "81885d13-1288-4298-ab5d-eaf85d9b2594", firstname:"FitSnitch", lastname:"Test"}
+  // profileOwner = testFitSnitchUser
+
+  const isCurrentUser = profileOwner.userId === currentUser.userId;
+
 
   return (
     <View style={[styles.container]}>
@@ -42,15 +39,21 @@ const Profile: React.FC<Props> = ({
                 borderRadius: 200 / 2,
               }}
             />
-          <Text style={styles.headerText}>{dummyCurrentUser.firstname} {dummyCurrentUser.lastname}</Text>
+          <Text style={styles.headerText}>{profileOwner.firstname || "Test"} {profileOwner.lastname || ""}</Text>
         </View>
 
         <ScrollView style={styles.scrollView}>
           <View style={{}}>
             <View style={[styles.body]}>
-              <Text style={{fontSize: 15, paddingBottom: 5}}>
-                Trainer: Add A Trainer
-              </Text>
+
+              {!isCurrentUser ?              
+              <View>
+                {/* Client/Trainer Relationship */}
+                <ProfileClientTrainerButton profileOwner={profileOwner}></ProfileClientTrainerButton>
+              </View>
+              : <></>}
+              
+
               <Text style={{fontSize: 15, paddingBottom: 5}}>
                 5 Partners: Chef Rush, +4
               </Text>
@@ -168,6 +171,12 @@ const Profile: React.FC<Props> = ({
   );
 };
 
+
+
+const EMPTY_COLOR = "grey";
+const PROGRESS_COLOR = "green";
+const SIZE = 45;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -177,6 +186,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     margin: 16,
   },
+  scrollView: {},
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
