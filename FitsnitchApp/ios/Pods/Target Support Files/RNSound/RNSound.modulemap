@@ -1,0 +1,6 @@
+framework module RNSound {
+  umbrella header "RNSound-umbrella.h"
+
+  export *
+  module * { export * }
+}
