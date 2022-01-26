@@ -2,7 +2,9 @@ import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { userContext } from '../navigation/mainNavigator';
 import User from '../shared/models/User';
+import PeopleView from '../views/PeopleView';
 import ProfileClientTrainerButton from './ProfileClientTrainerButton';
+import ProfileImage from './ProfileImage';
 
 export type Props = {
   profileOwner: User;
@@ -11,7 +13,7 @@ export type Props = {
 const Profile: React.FC<Props> = ({
   profileOwner
 }) => {
-  
+
   const {currentUser} = useContext(userContext);
   if (!currentUser) return <></>
 
@@ -27,7 +29,8 @@ const Profile: React.FC<Props> = ({
     <View style={[styles.container]}>
       <ScrollView style={styles.scrollView}>
         <View style={[styles.header]}>
-          <Image
+          <ProfileImage user={profileOwner} size={75}></ProfileImage>
+          {/* <Image
               source={{
                 uri:
                   'https://raw.githubusercontent.com/AboutReact/sampleresource/master/old_logo.png',
@@ -38,7 +41,7 @@ const Profile: React.FC<Props> = ({
                 height: 75,
                 borderRadius: 200 / 2,
               }}
-            />
+            /> */}
           <Text style={styles.headerText}>{profileOwner.firstname || "Test"} {profileOwner.lastname || ""}</Text>
         </View>
 
