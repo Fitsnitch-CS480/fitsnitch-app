@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { userContext } from '../navigation/mainNavigator';
 import User from '../shared/models/User';
-import PeopleView from '../views/PeopleView';
 import ProfileClientTrainerButton from './ProfileClientTrainerButton';
 import ProfileImage from './ProfileImage';
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
+import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import TrainerClientPair from '../shared/models/TrainerClientPair';
 import User from '../shared/models/User'
 
@@ -23,6 +24,12 @@ function asRawString(data:string) {
     if (!res) return null;
     console.log("GET USER RESPONSE",res.data)
     return res.data as User
+  }
+
+  static async userSearch(request:UserSearchRequest): Promise<UserSearchResponse> {
+    let res = await axios.post(this.apiBaseUrl+"/user_search", request)
+    console.log("USER SEARCH RESPONSE",res.data)
+    return res.data
   }
 
   static async createUser(user: User) {

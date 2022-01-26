@@ -21,7 +21,6 @@ export type Props = {
 const ProfileClientTrainerButton: React.FC<Props> = ({
   profileOwner
 }) => {
-  console.log("refresh")
   const [state, setState] = useState<state>({
     processing:false,
     relationship: null,
