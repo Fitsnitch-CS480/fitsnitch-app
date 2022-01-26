@@ -1,4 +1,4 @@
-import { DynamoDB } from '@aws-sdk/client-dynamodb'
+import { DynamoDB, ScanCommandInput } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 
 export type TableSchema = {
@@ -11,19 +11,6 @@ export type TableSchema = {
 const dynamoClient = new DynamoDB({ 
     region: 'us-west-2' 
 })
-
-/**
- * Valid comparison operators for querying SortKeys
- */
-export enum SortOp {
-    EQUALS = "=",
-    LESS_THAN = "<",
-    LESS_THAN_OR_EQUAL = "<=",
-    MORE_THAN = ">",
-    MORE_THAN_OR_EQUAL = ">=",
-    BETWEEN = "BETWEEN",
-    BEGINS_WITH = "BEGINS_WITH"
-}
 
 const PK_TOKEN = ":PK";
 const S1_TOKEN = ":S1";
@@ -134,6 +121,7 @@ export default class TableAccessObject<T> {
             // TODO: handle errors appropriately.
         }
 
+    // TODO Make query use the same comparison and pagination utilities as Scan
     /**
      * Intended to query tables with SortKeys where multiple rows correspond to
      * a single PrimaryKey value. Various comparisons can be performed on the
@@ -191,6 +179,321 @@ export default class TableAccessObject<T> {
         return `${this.sortKey} ${sortOperator} ${S1_TOKEN}`;
     }
 
+    /**
+     * Reads all items in table, filtering for thosee that match the provided conditions.
+     * 
+     * THIS IS THE MOST EXPENSIVE TYPE OF OPERATION! Use sparingly and wisely.
+     * 
+     * @param condition Defines a filter for the values to be returned. If not provided,
+     * all records will be returned.
+     * @param pagination Defines pagination options. If not provided, all matching items
+     * will be returned until the read limit (1MB)
+     * @returns 
+     */
+    async scan(condition?:Condition, pagination?:PaginationOptions): Promise<PaginatedResponse<T>> {
+        let params:any = this.getBasicParams();
+        if (condition) {
+            let conditionVals = condition.toStringAndVals(new Counter());
+            params.FilterExpression = conditionVals.compString;
+            params.ExpressionAttributeValues = marshall(conditionVals.vals);
+        }
 
-    // TODO: create SCAN method
+        if (pagination) {
+            params.ExclusiveStartKey = pagination.pageBreakKey ? JSON.parse(pagination.pageBreakKey) : undefined;
+            params.PageSize = pagination.pageSize;    
+        }
+
+        let {Items,LastEvaluatedKey} = await dynamoClient.scan(params);
+        if (!Items) Items = [];
+        let records = Items.map(i=>unmarshall(i) as T);
+
+        return {
+            records,
+            pageBreakKey: LastEvaluatedKey? JSON.stringify(LastEvaluatedKey) : undefined,
+            pageSize: pagination?.pageSize
+        }
+
+    }
+
+    private getBasicParams() {
+        return {
+            TableName: this.name,
+            IndexName: this.index,
+        }
+    }
+}
+
+abstract class Condition {
+    abstract toStringAndVals(counter:Counter): {compString:string, vals:{[alias:string]:any}};
+    protected abstract getConditionString(aliases:string[]): string;
+}
+
+abstract class ComparisonCondition extends Condition {
+    protected vals: any[];
+    constructor(protected attributeName:string, protected operator:SortOp, ...vals:any[]) {
+        super();
+        this.vals = vals;
+    }
+
+    protected abstract getConditionString(aliases:string[]): string;
+
+    toStringAndVals(counter:Counter): {compString:string, vals:{[alias:string]:any}} {
+        let compString = "";
+        let vals = {};
+        let aliases:string[] = [];
+        if (this.vals.length === 0) throw new Error(`No values provided for Condition '${this.operator}'`)
+
+        this.vals.forEach(v=>{
+            let alias = this.getValueAlias(counter)
+            aliases.push(alias)
+            vals[alias] = v;
+        })
+        
+        compString = this.getConditionString(aliases)
+
+        return {compString, vals};
+    }
+
+    protected getValueAlias(counter:Counter) {
+        return `:${this.attributeName}_${counter.inc()}`
+    }
+}
+class BinaryOpComparisonCondition extends ComparisonCondition {
+    constructor(attributeName:string, operator:SortOp,val:any) {
+        super(attributeName, operator, val);
+    }
+
+    protected getConditionString(aliases: string[]): string {
+        if (this.vals.length < 1) throw new Error(`Not enough conditions provided for Condition '${this.operator}'`)
+        return `${this.attributeName} ${this.operator} ${aliases[0]}`
+    }
+}
+
+
+abstract class LogicalCondition extends Condition {
+    public conditions: Condition[];
+    constructor(public operator:LogicalOperator, ...conditions:Condition[]) {
+        super()
+        this.conditions = conditions;
+    }
+
+    protected abstract getConditionString(aliases:string[]): string;
+
+    toStringAndVals(counter:Counter): {compString:string, vals:{[alias:string]:any}} {
+        let compString = "";
+        let vals = {}
+
+        if (this.conditions.length === 0) throw new Error(`No conditions provided for Condition '${this.operator}'`)
+
+        let conditionStrings = this.conditions.map(c=>{
+            let cVals = c.toStringAndVals(counter);
+            Object.keys(cVals.vals).forEach(alias=>vals[alias] = cVals.vals[alias]);
+            return cVals.compString;
+        })
+
+        compString = this.getConditionString(conditionStrings)
+
+        return {compString, vals};
+    }
+}
+
+class TwoOpLogicalCondition extends LogicalCondition {
+    constructor(operator:LogicalOperator,condition1:Condition,condition2:Condition) {
+        super(operator, condition1, condition2);
+    }
+
+    protected getConditionString(conditionStrings: string[]): string {
+        if (this.conditions.length < 2) throw new Error(`Not enough conditions provided for Condition '${this.operator}'`)
+        return `(${conditionStrings[0]}) ${this.operator} (${conditionStrings[1]})`    }
+}
+
+export type LogicalChainLink = Condition|LogicalOperator|string;
+
+export class LogicalConditionChain extends Condition {
+    constructor(private chain:LogicalChainLink[]) {
+        super()
+    }
+
+    toStringAndVals(counter: Counter): { compString: string; vals: { [alias: string]: any; }; } {
+        let compString = "";
+        let vals = {}
+
+        this.chain.forEach(c=>{
+            if (c instanceof Condition) {
+                let cVals = c.toStringAndVals(counter);
+                Object.keys(cVals.vals).forEach(alias=>vals[alias] = cVals.vals[alias]);
+                compString += `(${cVals.compString}) `;
+            }
+            else {
+                compString += c+" ";
+            }
+           
+        })
+
+        return {compString, vals};
+    }
+    protected getConditionString(conditionStrings: string[]): string {
+        return "";
+    }
+
+}
+
+
+export const Conditions = {
+    Equals: class EqualsComparison extends BinaryOpComparisonCondition {
+        constructor(attributeName:string, val:any) {
+            super(attributeName, SortOp.EQUALS, val);
+        }
+    },
+
+    NotEquals: class NotEqualsComparison extends BinaryOpComparisonCondition {
+        constructor(attributeName:string, val:any) {
+            super(attributeName, SortOp.NOT_EQUALS, val);
+        }
+    },
+
+    LessThan: class LessThanComparison extends BinaryOpComparisonCondition {
+        constructor(attributeName:string, val:any) {
+            super(attributeName, SortOp.LESS_THAN, val);
+        }
+    },
+
+    LessOrEqual: class LessOrEqualComparison extends BinaryOpComparisonCondition {
+        constructor(attributeName:string, val:any) {
+            super(attributeName, SortOp.LESS_THAN_OR_EQUAL, val);
+        }
+    },
+    MoreThan: class MoreThanComparison extends BinaryOpComparisonCondition {
+        constructor(attributeName:string, val:any) {
+            super(attributeName, SortOp.MORE_THAN, val);
+        }
+    },
+
+    MoreOrEqual: class MoreOrEqualComparison extends BinaryOpComparisonCondition {
+        constructor(attributeName:string, val:any) {
+            super(attributeName, SortOp.MORE_THAN_OR_EQUAL, val);
+        }
+    },
+
+    BeginsWith: class BeginsWithComparison extends ComparisonCondition {
+        constructor(attributeName:string, val:any) {
+            super(attributeName, SortOp.BEGINS_WITH, val);
+        }
+
+        protected getConditionString(aliases: string[]): string {
+            if (this.vals.length < 1) throw new Error(`Not enough values provided for Condition '${this.operator}'`)
+            return `begins_with (${this.attributeName}, ${aliases[0]})`;
+        }
+    },
+
+    Contains: class ContainsComparison extends ComparisonCondition {
+        constructor(attributeName:string, val:any) {
+            super(attributeName, SortOp.CONTAINS, val);
+        }
+
+        protected getConditionString(aliases: string[]): string {
+            if (this.vals.length < 1) throw new Error(`Not enough values provided for Condition '${this.operator}'`)
+            return `contains (${this.attributeName}, ${aliases[0]})`;
+        }
+    },
+
+    Between: class BetweenComparison extends ComparisonCondition {
+        constructor(attributeName:string, val1:any, val2:any) {
+            super(attributeName, SortOp.BETWEEN, val1, val2);
+        }
+
+        protected getConditionString(aliases: string[]): string {
+            if (this.vals.length < 2) throw new Error(`Not enough values provided for Condition '${this.operator}'`)
+            return `${this.attributeName} BETWEEN ${aliases[0]} AND ${aliases[1]}`;
+        }
+    },
+
+    In: class InComparison extends ComparisonCondition {
+        constructor(attributeName:string, ...val:any[]) {
+            super(attributeName, SortOp.IN, val);
+        }
+
+        protected getConditionString(aliases: string[]): string {
+            let list = "";
+            aliases.forEach((a,i)=>{
+                list += a;
+                if (i < aliases.length-1) list += ", ";
+            })
+            return `${this.attributeName} IN (${list})`;
+        }
+    },
+
+    // Logical Conditions
+    And: class AndCondition extends TwoOpLogicalCondition {
+        constructor(condition1:Condition,condition2:Condition) {
+            super(LogicalOperator.AND, condition1, condition2);
+        }
+    },
+
+    Or: class OrCondition extends TwoOpLogicalCondition {
+        constructor(condition1:Condition,condition2:Condition) {
+            super(LogicalOperator.OR, condition1, condition2);
+        }
+    },
+
+    Not: class NotCondition extends LogicalCondition {
+        constructor(condition:Condition) {
+            super(LogicalOperator.NOT, condition);
+        }
+
+        protected getConditionString(conditionStrings: string[]): string {
+            if (this.conditions.length !== 1) throw new Error(`The NOT Condition must have exactly one condition argument`);
+            return `${this.operator} (${conditionStrings[0]})`
+        }
+    }
+
+}
+
+export class Counter {
+    cnt = 0;
+    inc = ()=> ++this.cnt
+}
+
+/**
+ * Valid comparison operators for querying SortKeys
+ */
+ export enum SortOp {
+    EQUALS = "=",
+    NOT_EQUALS = "<>",
+    LESS_THAN = "<",
+    LESS_THAN_OR_EQUAL = "<=",
+    MORE_THAN = ">",
+    MORE_THAN_OR_EQUAL = ">=",
+    IN = "IN",
+    BETWEEN = "BETWEEN",
+    BEGINS_WITH = "begins_with",
+    CONTAINS = "contains"
+}
+
+/**
+ * Valid logical operators for compound comparisons
+ */
+ export enum LogicalOperator {
+    AND = "AND", 
+    OR = "OR", 
+    NOT = "NOT", 
+}
+
+
+export type PaginationOptions = {
+    /**
+     * A JSON string version of the composite key for the
+     * last item on the previous page
+     */
+    pageBreakKey?: string,
+    pageSize?: number
+}
+export type PaginatedResponse<T> = {
+    records: T[],
+    /**
+     * A JSON string version of the composite key for the
+     * last item on this page
+     */
+    pageBreakKey?: string,
+    pageSize?: number
 }

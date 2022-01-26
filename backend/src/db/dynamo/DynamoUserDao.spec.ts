@@ -36,7 +36,7 @@ describe(DynamoUserDao, ()=>{
 
     // describe(dao.createUser, ()=>{
     //     it("should create Test User", async ()=>{
-    //         let user = new User("testUser","Test","User",null);            
+    //         let user = new User("testUser","test@email.com",undefined,"User");            
     //         await dao.createUser(user);
     //         let resUser = await dao.getUser(user.userId);
     //         console.log(resUser);
