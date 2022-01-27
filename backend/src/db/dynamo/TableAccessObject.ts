@@ -1,4 +1,4 @@
-import { DynamoDB, ScanCommandInput } from '@aws-sdk/client-dynamodb'
+import { DynamoDB, ScanCommandInput, ScanCommandOutput, ScanInput } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 
 export type TableSchema = {
@@ -191,7 +191,7 @@ export default class TableAccessObject<T> {
      * @returns 
      */
     async scan(condition?:Condition, pagination?:PaginationOptions): Promise<PaginatedResponse<T>> {
-        let params:any = this.getBasicParams();
+        let params:Partial<ScanCommandInput> = this.getBasicParams();
         if (condition) {
             let conditionVals = condition.toStringAndVals(new Counter());
             params.FilterExpression = conditionVals.compString;
@@ -200,10 +200,10 @@ export default class TableAccessObject<T> {
 
         if (pagination) {
             params.ExclusiveStartKey = pagination.pageBreakKey ? JSON.parse(pagination.pageBreakKey) : undefined;
-            params.PageSize = pagination.pageSize;    
+            params.Limit = pagination.pageSize;
         }
 
-        let {Items,LastEvaluatedKey} = await dynamoClient.scan(params);
+        let {Items,LastEvaluatedKey} = await dynamoClient.scan(params as ScanCommandInput);
         if (!Items) Items = [];
         let records = Items.map(i=>unmarshall(i) as T);
 

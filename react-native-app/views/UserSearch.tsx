@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { Button, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import UserDataService from '../backend/services/UserDataService';
 import ProfileImage from '../components/ProfileImage';
@@ -38,12 +38,15 @@ const UserSearch: React.FC = () => {
 
   async function loadNewResults() {
     console.log("loading new results")
-    if (!state.query) return;
+    if (!state.query) {
+      updateState({results:[]})
+      return;
+    }
     updateState({loading:true})
     let page = await new UserDataService().userSearch(new UserSearchRequest(
       state.query, undefined, PAGE_SIZE))
-    console.log(page)
-    updateState({
+      console.log(page.records.length)
+      updateState({
       loading:false,
       results: page.records,
       lastPageBreakKey: page.pageBreakKey
@@ -57,7 +60,6 @@ const UserSearch: React.FC = () => {
     updateState({loading:true})
     let page = await new UserDataService().userSearch(new UserSearchRequest(
       state.query, state.lastPageBreakKey, PAGE_SIZE))
-    console.log(page)
     updateState({
       loading:false,
       results: state.results.concat(page.records),
@@ -67,20 +69,26 @@ const UserSearch: React.FC = () => {
 
   return (
     <>
-
     <View style={styles.searchBarWrapper}>
       <TextInput placeholder="Type a user's name" style={styles.searchInput}
         onChangeText={(query)=>updateState({query})}></TextInput>
       <TouchableHighlight style={styles.searchIconButton} onPress={loadNewResults} underlayColor="#ccc"><Icon name="search" size={30} /></TouchableHighlight>
     </View>
 
+    <ScrollView>
+      { state.results.map(user =>(
+        <View style={styles.resultRow} key={user.userId} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: user})}}>
+          <ProfileImage user={user} size={30}></ProfileImage>
+          <Text style={{marginLeft:10, fontSize: 15}}>{user.firstname} {user.lastname}</Text>
+        </View>
+      ))}
 
-    {state.results.map(user =>(
-      <View style={styles.resultRow} key={user.userId} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: user})}}>
-        <ProfileImage user={user} size={30}></ProfileImage>
-        <Text style={{marginLeft:10, fontSize: 15}}>{user.firstname} {user.lastname}</Text>
-      </View>
-    ))}
+      { state.lastPageBreakKey && state.results.length > 0 ?
+        <Button title="Load More" onPress={loadMoreResults}></Button>
+      :
+        <></>
+      }
+    </ScrollView>
     </>
   );
 };
@@ -95,7 +103,8 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flexGrow: 1,
-    padding: 10
+    padding: 10,
+    fontSize: 15
   },
   searchIconButton: {
     padding: 10
