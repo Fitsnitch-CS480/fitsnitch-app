@@ -24,7 +24,29 @@ const DB_TABLES = {
         asIndex:"clientId-trainerId-index",
         primaryKey:"clientId",
         sortKey:"trainerId"
-    }
+    },
+    PARTNER: {
+        tableName:"Partner",
+        primaryKey:"partnerId1",
+        sortKey:"partner1Id2"
+    },
+    PARTNER_INDEX: {
+      tableName:"Partner",
+        asIndex:"partnerId2-partnerId1-index",
+        primaryKey:"partnerId2",
+        sortKey:"partnerId1"
+    },
+    PARTNER_REQUESTS: {
+      tableName:"PartnerRequests",
+      primaryKey:"partnerId1",
+      sortKey:"partnerId2"
+  },
+    PARTNER_REQUESTS_BY_USER: {
+      tableName:"PartnerRequests",
+      asIndex:"partnerId2-partnerId1-index",
+      primaryKey:"partnerId2",
+      sortKey:"partnerId1"
+  },
 }
 
 export default DB_TABLES;

@@ -1,4 +1,4 @@
-import PartnerAssociationPair from "../../../shared/models/PartnerAssociationPair";
+import PartnerAssociationPair from "../../../react-native-app/shared/models/PartnerAssociationPair";
 import DaoFactory from "../db/DaoFactory";
 
 export default class PartnerAssociationService {

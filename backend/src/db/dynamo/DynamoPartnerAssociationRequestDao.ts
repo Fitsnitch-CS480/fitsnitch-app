@@ -1,11 +1,11 @@
-import PartnerAssociationPair from "../../../../shared/models/PartnerAssociationPair";
+import PartnerAssociationPair from "../../../../react-native-app/shared/models/PartnerAssociationPair";
 import PartnerAssociationRequestDao from "../PartnerAssociationRequestDao";
 import TableAccessObject from "./TableAccessObject";
 import DB_TABLES from "./tables";
 
 export default class DynamoPartnerAssociationRequestDao implements PartnerAssociationRequestDao {
-    private table = new TableAccessObject<PartnerAssociationPair>(DB_TABLES.TRAINER_REQUESTS);
-    private clientIndex = this.table.createIndexAccessObject(DB_TABLES.TRAINER_REQUESTS_BY_CLIENT);
+    private table = new TableAccessObject<PartnerAssociationPair>(DB_TABLES.PARTNER_REQUESTS);
+    private clientIndex = this.table.createIndexAccessObject(DB_TABLES.PARTNER_REQUESTS_BY_USER);
     
     async createPartnerAssociationRequest(data: PartnerAssociationPair) {
         await this.table.createOrUpdate(data);

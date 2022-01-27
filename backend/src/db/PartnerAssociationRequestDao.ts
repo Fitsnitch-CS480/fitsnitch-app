@@ -1,4 +1,4 @@
-import PartnerAssociationPair from "../../../shared/models/PartnerAssociationPair";
+import PartnerAssociationPair from "../../../react-native-app/shared/models/PartnerAssociationPair";
 
 export default interface PartnerAssociationRequestDao {
     createPartnerAssociationRequest(data:PartnerAssociationPair);

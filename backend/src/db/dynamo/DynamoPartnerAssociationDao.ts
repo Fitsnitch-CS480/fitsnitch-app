@@ -1,4 +1,4 @@
-import PartnerAssociationPair from "../../../../shared/models/PartnerAssociationPair";
+import PartnerAssociationPair from "../../../../react-native-app/shared/models/PartnerAssociationPair";
 import PartnerAssociationDao from "../PartnerAssociationDAO";
 import TableAccessObject, { SortOp } from "./TableAccessObject";
 import DB_TABLES from "./tables";
