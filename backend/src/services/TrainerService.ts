@@ -1,7 +1,19 @@
-import TrainerClientPair from "../../../shared/models/TrainerClientPair";
+import RelationshipStatus from "../../../react-native-app/shared/constants/RelationshipStatus";
+import TrainerClientPair from "../../../react-native-app/shared/models/TrainerClientPair";
 import DaoFactory from "../db/DaoFactory";
 
 export default class TrainerService {
+
+    async getRelationshipStatus(pair: TrainerClientPair): Promise<RelationshipStatus> {
+        let pending = await DaoFactory.getTrainerRequestDao().existsRequest(pair);
+        if (pending) return RelationshipStatus.PENDING;
+        let approved = await DaoFactory.getTrainersDao().isTrainerOfClient(pair);
+        if (approved) return RelationshipStatus.APPROVED;
+
+        return RelationshipStatus.NONEXISTENT;
+    }
+
+
     //
     // REQUESTS
     //

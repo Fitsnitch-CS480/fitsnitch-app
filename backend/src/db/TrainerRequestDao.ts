@@ -1,8 +1,10 @@
-import TrainerClientPair from "../../../shared/models/TrainerClientPair";
+import TrainerClientPair from "../../../react-native-app/shared/models/TrainerClientPair";
 
 export default interface TrainerRequestDao {
     createTrainerRequest(data:TrainerClientPair);
     deleteTrainerRequest(data:TrainerClientPair);
+
+    existsRequest(data:TrainerClientPair): Promise<boolean>;
 
     /**
      * Finds all requests where this userId is the Trainer

@@ -1,5 +1,5 @@
-import { LAT_MIN, LAT_MAX, LONG_MAX } from "../../../shared/constants/CoordinateConstants";
-import { LatLongPair, BoundingBox } from "../../../shared/models/CoordinateModels";
+import { LAT_MIN, LAT_MAX, LONG_MAX } from "../../../react-native-app/shared/constants/CoordinateConstants";
+import { LatLongPair, BoundingBox } from "../../../react-native-app/shared/models/CoordinateModels";
 import { SafeMath } from "./SafeMath";
 
 export default class CoordinateUtils {

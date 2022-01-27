@@ -1,28 +1,14 @@
-import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import React, { useContext } from 'react';
 import Profile from '../components/Profile';
-import User from '../models/User';
-
-const dummyUser = new User("userId","Andre","Miller");
+import { userContext } from '../navigation/mainNavigator';
 
 const UserProfileView: React.FC = () => {
+  const {currentUser} = useContext(userContext);
+  if (!currentUser) return <></>
 
   return (
-    <Profile user={dummyUser} />
+    <Profile profileOwner={currentUser} />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  greeting: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    margin: 16
-  }
-});
 
 export default UserProfileView;

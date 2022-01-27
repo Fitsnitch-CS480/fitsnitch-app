@@ -3,13 +3,15 @@ import LoginNavigator from "./loginNavigator";
 import AppNavigator from "./appNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import Auth from '@aws-amplify/auth';
+import User from "../shared/models/User";
 
 
+export const userContext = createContext<{setCurrentUser:(user:User)=>void,currentUser:User|null}>({currentUser:null,setCurrentUser:()=>{}});
 
 
 const MainNavigator : React.FC = () => {
     
-    const [user, setUser] = useState<any>(null);
+    const [currentUser, setCurrentUser] = useState<any>(null);
 
     
 
@@ -18,12 +20,12 @@ const MainNavigator : React.FC = () => {
           .catch((err) => {
             console.log('ERROR: ', err);
           });
-        setUser(null);
+        setCurrentUser(null);
       }
     
       const signIn = async(_user: any) => {
         //setUser(_user.signInUserSession.accessToken.jwtToken);
-        setUser(_user);
+        setCurrentUser(_user);
         console.log("this went in");
         
       }
@@ -60,14 +62,13 @@ const MainNavigator : React.FC = () => {
 
     //If user is logged in, go to normal app screens. If not, go to the login screens. 
     return(
-        <userContext.Provider value={{user, setUser}}>
+        <userContext.Provider value={{currentUser, setCurrentUser}}>
         <NavigationContainer>
-            {user !== null ? <AppNavigator /> : <LoginNavigator/>}
+            {currentUser !== null ? <AppNavigator /> : <LoginNavigator/>}
         </NavigationContainer>
         </userContext.Provider>
     )
 }
 
 
-export const userContext = createContext(null);
 export default MainNavigator;

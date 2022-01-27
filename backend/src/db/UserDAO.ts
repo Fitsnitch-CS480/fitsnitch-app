@@ -1,4 +1,4 @@
-import User from "../../../shared/models/User";
+import User from "../../../react-native-app/shared/models/User";
 
 export default interface UserDao {
     createUser(data:User);

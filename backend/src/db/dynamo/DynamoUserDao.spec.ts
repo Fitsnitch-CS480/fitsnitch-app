@@ -1,4 +1,4 @@
-import User from "../../../../shared/models/User";
+import User from "../../../../react-native-app/shared/models/User";
 import DynamoUserDao from "./DynamoUserDao";
 
 describe(DynamoUserDao, ()=>{

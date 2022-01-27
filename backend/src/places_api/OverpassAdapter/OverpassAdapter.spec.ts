@@ -1,4 +1,4 @@
-import { LatLongPair } from "../../../../shared/models/CoordinateModels";
+import { LatLongPair } from "../../../../react-native-app/shared/models/CoordinateModels";
 import OverpassAdapter from "./OverpassAdapter"
 
 describe(OverpassAdapter, ()=>{
