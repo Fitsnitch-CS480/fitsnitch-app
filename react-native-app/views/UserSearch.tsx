@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
-import { Button, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { Button, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import UserDataService from '../backend/services/UserDataService';
 import ProfileImage from '../components/ProfileImage';
@@ -37,6 +37,7 @@ const UserSearch: React.FC = () => {
   }
 
   async function loadNewResults() {
+    Keyboard.dismiss();
     console.log("loading new results")
     if (!state.query) {
       updateState({results:[]})
@@ -67,11 +68,19 @@ const UserSearch: React.FC = () => {
     })
   }
 
+  function updateQuery(text:string) {
+    updateState({
+      query:text,
+      results: [],
+      lastPageBreakKey: undefined
+    })
+  }
+
   return (
     <>
     <View style={styles.searchBarWrapper}>
       <TextInput placeholder="Type a user's name" style={styles.searchInput}
-        onChangeText={(query)=>updateState({query})}></TextInput>
+        onChangeText={(text)=>updateQuery(text)}></TextInput>
       <TouchableHighlight style={styles.searchIconButton} onPress={loadNewResults} underlayColor="#ccc"><Icon name="search" size={30} /></TouchableHighlight>
     </View>
 
