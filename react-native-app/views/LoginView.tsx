@@ -17,7 +17,7 @@ const LoginView : React.FC = () => {
   const {currentUser, setCurrentUser} = useContext(userContext);
 
   const signInFunction = async () => {
-
+    
     //If email and password are good, attempt login. Read errors and respond acordingly.
     if (email.length > 4 && password.length > 2) {
       await Auth.signIn(email, password)

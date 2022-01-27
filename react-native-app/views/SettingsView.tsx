@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useContext, useState} from 'react';
+import {userContext} from '../navigation/mainNavigator';
+import {Auth} from '@aws-amplify/auth';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 export type Props = {
@@ -11,11 +13,36 @@ const SettingsView: React.FC<Props> = ({
   baseEnthusiasmLevel = 0
 }) => {
 
+
+  //Get user from Context from mainNavigator
+  const {currentUser, setCurrentUser} = useContext(userContext);
+
+
+  let logout = async () => {
+    await Auth.signOut()
+    .then(async => {
+      setCurrentUser(null);
+    })
+    .catch((err) => {
+      console.log(':',err);
+      if (!err.message) {
+        console.log('1 Error when signing out: ', err);
+      }
+    });
+  }
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.greeting}>
         Settings
       </Text>
+      <Button
+        title="Logout"
+        accessibilityLabel="logout"
+        onPress={logout} 
+        color="black"
+      />
 
     </View>
   );
