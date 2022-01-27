@@ -1,3 +1,4 @@
+import { UserSearchRequest } from "../../../../react-native-app/shared/models/requests/UserSearchRequest";
 import User from "../../../../react-native-app/shared/models/User";
 import DynamoUserDao from "./DynamoUserDao";
 
@@ -25,7 +26,7 @@ describe(DynamoUserDao, ()=>{
         })
     })
 
-    // describe(dao.getUser, ()=>{
+    describe(dao.getUser, ()=>{
     //     it("should get Chef", async ()=>{
     //         let user = await dao.getUser("testUser");
     //         console.log(user);
@@ -43,6 +44,45 @@ describe(DynamoUserDao, ()=>{
     //         expect(resUser).toBeDefined();
     //         expect(resUser).toMatchObject(user);
     //     })
-    // })
+    })
 
+    describe(dao.search, ()=>{
+    //     it("should create many search for test Users", async ()=>{
+    //         for (let i = 1; i <= 30; i++) {
+    //             let user = new User("testUser"+i,i+"test@email.com","Test "+i,"User");            
+    //             await dao.createUser(user);    
+    //         }
+    //         let res = await dao.search(new UserSearchRequest("test",undefined,undefined));
+    //         console.log(res);
+    //         expect(res.records.length).toBeGreaterThanOrEqual(30);
+    //     })
+
+        // it ("should return no more than page size", async ()=>{
+        //     let pageSize = 5;
+        //     let res = await dao.search(new UserSearchRequest("test",undefined,pageSize));
+        //     console.log(res);
+        //     expect(res.records.length).toBeLessThanOrEqual(pageSize)
+        // })
+        
+        // it ("should get multiple pages", async ()=>{
+        //     // assumes num test users is around 30
+        //     let pageSize = 25;
+        //     let res = await dao.search(new UserSearchRequest("test",undefined,pageSize));
+        //     console.log(res);
+        //     expect(res.records.length).toBeLessThanOrEqual(pageSize)
+        //     expect(res.pageBreakKey).toBeDefined();
+
+        //     let previousResults = res.records;
+
+        //     res = await dao.search(new UserSearchRequest("test",res.pageBreakKey,pageSize));
+        //     console.log(res);
+        //     expect(res.records.length).toBeLessThanOrEqual(pageSize)
+        //     expect(res.pageBreakKey).not.toBeDefined();
+
+        //     res.records.forEach(r=>{
+        //         expect(previousResults).not.toContainEqual(r);
+        //     })
+        // })
+
+    })
 })

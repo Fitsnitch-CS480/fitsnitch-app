@@ -22,7 +22,7 @@ export default class DynamoUserDao implements UserDao {
         let queryPieces = request.searchQuery.split(" ");
         let chain = queryPieces.reduce((chain:LogicalChainLink[], currentPiece, i)=>{
             chain.push(new Conditions.Contains("searchStrings",currentPiece.toLowerCase()))
-            if (i < queryPieces.length-1) chain.push(LogicalOperator.OR)
+            if (i < queryPieces.length-1) chain.push(LogicalOperator.AND)
             return chain;
         }, []);
         let pagination: PaginationOptions = {
