@@ -3,9 +3,9 @@ import LambaUtils from "../utils/LambdaUtils";
 import TrainerService from "../services/TrainerService";
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
-    return await LambaUtils.handleEventWithBody<string>(event, async (pair,res)=>{
-        let trainerId:string = await new TrainerService().getTrainerIdOfClient(pair);
-        res.setBodyToData(trainerId);
+    return await LambaUtils.handleEventWithBody<string>(event, async (clientId,res)=>{
+        let trainer = await new TrainerService().getTrainerIdOfClient(clientId);
+        res.setBodyToData(trainer);
         res.setCode(200);
         return res;
     });

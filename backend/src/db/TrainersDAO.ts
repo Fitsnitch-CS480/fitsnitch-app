@@ -1,4 +1,5 @@
 import TrainerClientPair from "../../../react-native-app/shared/models/TrainerClientPair";
+import User from "../../../react-native-app/shared/models/User";
 
 export default interface TrainersDao {
     assignTrainerToClient(data:TrainerClientPair);

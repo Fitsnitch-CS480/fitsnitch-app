@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { userContext } from '../navigation/mainNavigator';
 import User from '../shared/models/User';
-import ProfileClientTrainerButton from './ProfileClientTrainerButton';
+import ClientTrainerRequestButton from './ClientTrainerRequestButton';
 import ProfileImage from './ProfileImage';
 
 export type Props = {
@@ -51,7 +51,7 @@ const Profile: React.FC<Props> = ({
               {!isCurrentUser ?              
               <View>
                 {/* Client/Trainer Relationship */}
-                <ProfileClientTrainerButton profileOwner={profileOwner}></ProfileClientTrainerButton>
+                <ClientTrainerRequestButton profileOwner={profileOwner}></ClientTrainerRequestButton>
               </View>
               : <></>}
               
