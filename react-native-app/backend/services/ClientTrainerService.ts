@@ -7,7 +7,7 @@ export default class ClientTrainerService {
         return await ServerFacade.getTrainerStatus(trainer,user);
     }
     
-    public async getUserTrainer(userId:string): Promise<User|undefined> {
+    public async getUserTrainer(userId:string): Promise<User|null> {
         return await ServerFacade.getUserTrainer(userId);
     }
     

@@ -90,9 +90,9 @@ function asRawString(data:string) {
     console.log("TRAINER REMOVE RESPONSE",res.status)
   }
 
-  static async getUserTrainer(userId:string): Promise<User|undefined> {
+  static async getUserTrainer(userId:string): Promise<User|null> {
     let res = await axios.post(this.apiBaseUrl+"/trainer_get_for_client", asRawString(userId));
     console.log("CLIENT'S TRAINER",res.data)
-    return res.data
+    return res.data ?? null
   }
 }

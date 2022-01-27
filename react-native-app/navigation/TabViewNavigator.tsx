@@ -4,7 +4,7 @@ import { Button, Settings, StyleSheet, Text, View } from 'react-native';
 import SnitchesView from '../views/SnitchesView';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import PeopleView from '../views/PeopleView';
+import PeopleView from '../views/PeopleView/PeopleView';
 import SettingsView from '../views/SettingsView';
 import CurrentUserProfile from "../views/CurrentUserProfile";
 

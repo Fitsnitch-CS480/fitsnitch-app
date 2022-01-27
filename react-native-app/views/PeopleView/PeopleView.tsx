@@ -1,17 +1,22 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import PageSection from '../../components/PageSection';
+import CurrentTrainer from './CurrentTrainer';
 
 export type Props = {
-  name: string;
-  baseEnthusiasmLevel?: number;
 };
 
 const PeopleView: React.FC<Props> = ({
-  name,
-  baseEnthusiasmLevel = 0
 }) => {
   const navigation = useNavigation();
+
+  
+
+  useEffect(()=>{
+    console.log("effected people view!")
+  })
+
 
   return (
     <View style={styles.container}>
@@ -19,6 +24,7 @@ const PeopleView: React.FC<Props> = ({
       <Text style={styles.greeting}>
         People
       </Text>
+        <CurrentTrainer />
     </View>
   );
 };
