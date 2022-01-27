@@ -3,6 +3,7 @@ import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import TrainerClientPair from '../shared/models/TrainerClientPair';
 import User from '../shared/models/User'
 
+
 /**
  * Acts as a Facade to the FitSnitch server. All network requests to the server should go through
  * this class.
