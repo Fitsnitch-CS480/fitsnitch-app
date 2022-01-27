@@ -1,6 +1,6 @@
 export default class PartnerAssociationPair {
   constructor(
-      public partner1Id: string,
-      public partner2Id: string,
+      public partnerId1: string,
+      public partnerId2: string,
   ) {}
 }

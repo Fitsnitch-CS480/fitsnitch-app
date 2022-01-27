@@ -5,7 +5,7 @@ import DB_TABLES from "./tables";
 
 export default class DynamoPartnerAssociationRequestDao implements PartnerAssociationRequestDao {
     private table = new TableAccessObject<PartnerAssociationPair>(DB_TABLES.PARTNER_REQUESTS);
-    private clientIndex = this.table.createIndexAccessObject(DB_TABLES.PARTNER_REQUESTS_BY_USER);
+    private partner1Index = this.table.createIndexAccessObject(DB_TABLES.PARTNER_REQUESTS_BY_USER);
     
     async createPartnerAssociationRequest(data: PartnerAssociationPair) {
         await this.table.createOrUpdate(data);
@@ -13,15 +13,15 @@ export default class DynamoPartnerAssociationRequestDao implements PartnerAssoci
 
     // fat arrow funtion to preserve this context
     deletePartnerAssociationRequest = async (request: PartnerAssociationPair) => {
-        return await this.table.deleteByKeys(request.partner2Id,request.partner1Id);
+        return await this.table.deleteByKeys(request.partnerId2,request.partnerId1);
     }
 
-    async getRequestsByPartner2(trainerId: string): Promise<PartnerAssociationPair[]> {
-        return await this.table.query(trainerId);
+    async getRequestsByPartner2(partnerId2: string): Promise<PartnerAssociationPair[]> {
+        return await this.table.query(partnerId2);
     }
 
-    async getRequestsByPartner1(clientId: string): Promise<PartnerAssociationPair[]> {
-        return await this.clientIndex.query(clientId);
+    async getRequestsByPartner1(partnerId1: string): Promise<PartnerAssociationPair[]> {
+        return await this.partner1Index.query(partnerId1);
     }
 
     // For wiping data
