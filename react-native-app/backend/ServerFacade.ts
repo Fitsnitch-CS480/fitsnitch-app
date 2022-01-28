@@ -22,7 +22,7 @@ async function executeRequest<TResponse>(path:string, payload:any, print:boolean
   if (print) console.log(tag+": Executing Request");
   try {
     let res = await axios.post(apiBaseUrl+path, payload);  
-    if (print) console.log(tag+" Response", res.data)
+    if (print) console.log(tag+" Response\n", JSON.stringify(res.data,null,2))
     return new ExecutionSuccess<TResponse>(res);
   }
   catch (e:any) {
@@ -146,7 +146,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
   }
 
   static async getUserClients(userId:string): Promise<User[]> {
-    let res = await executeRequest<User[]>("/trainer_get_clients", asRawString(userId));
+    let res = await executeRequest<User[]>("/trainer_get_clients", asRawString(userId), true);
     if (res.error || !res.data) {
       // give error feedback in UI
       return []
@@ -156,7 +156,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
 
   
   static async getTrainerRequestsByTrainer(trainerId:string): Promise<User[]> {
-    let res = await executeRequest<User[]>("/trainer_get_requests_for_trainer", asRawString(trainerId), true);
+    let res = await executeRequest<User[]>("/trainer_get_requests_for_trainer", asRawString(trainerId));
     if (res.error || !res.data) {
       // give error feedback in UI
       return []
