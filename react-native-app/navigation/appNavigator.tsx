@@ -1,63 +1,37 @@
 import React from "react";
-import { NavigationContainer } from '@react-navigation/native';
+import { getFocusedRouteNameFromRoute, NavigationContainer } from '@react-navigation/native';
 import { Button, Settings, StyleSheet, Text, View } from 'react-native';
 import SnitchesView from '../views/SnitchesView';
-import UserProfileView from '../views/UserProfileView';
+import OtherUserProfile from '../views/OtherUserProfile';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PeopleView from '../views/PeopleView';
 import SettingsView from '../views/SettingsView';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import TabViewNavigator from "./TabViewNavigator";
+import UserSearch from "../views/UserSearch";
+import Profile from "../components/Profile";
 
-const{Navigator, Screen} = createNativeStackNavigator();
 
 const AppNavigator : React.FC = () => {
 
     const Tab = createBottomTabNavigator();
-
+    const Stack = createNativeStackNavigator();
 
     return (
-    //<Navigator>
-      <Tab.Navigator 
-      initialRouteName="Profile"
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName = "";
-
-            switch (route.name) {
-              case "Snitches":
-                iconName = 'campaign';
-                break;
-                
-              case "Profile":
-                iconName = 'person';
-                break;
-
-              case "People":
-                iconName = 'people';
-                break;
-                
-              case "Settings":
-                iconName = 'settings';
-                break;
-            
-              default:
-                break;
-            }
-
-            return <Icon name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: 'tomato',
-          tabBarInactiveTintColor: 'gray',
-        })}
-      >
-        <Tab.Screen name="Snitches" component={SnitchesView} />
-        <Tab.Screen name="Profile" component={UserProfileView} />
-        <Tab.Screen name="People" component={PeopleView} />
-        <Tab.Screen name="Settings" component={SettingsView} />
-      </Tab.Navigator>
-    //</Navigator>
-
+      <Stack.Navigator initialRouteName="Tabs">
+        <Tab.Screen name="Tabs" component={TabViewNavigator} options={{headerShown: false}}/>
+        <Tab.Screen name="Search" component={UserSearch} />
+        <Tab.Screen name="OtherUserProfile"
+                    component={OtherUserProfile}
+                    options={({ route }) => {
+                      let {profileOwner} = route.params as any;
+                      return {
+                        headerTitle: `${profileOwner?.firstname}'s Profile` || "Profile"
+                      };
+                    }}
+        />
+      </Stack.Navigator>
   );
 }
 

@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
@@ -10,9 +11,11 @@ const PeopleView: React.FC<Props> = ({
   name,
   baseEnthusiasmLevel = 0
 }) => {
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
+      <Button title="Search" onPress={()=>{navigation.navigate("Search")}}></Button>
       <Text style={styles.greeting}>
         People
       </Text>
