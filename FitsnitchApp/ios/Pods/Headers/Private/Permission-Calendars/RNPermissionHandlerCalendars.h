@@ -1,1 +1,0 @@
-../../../../../node_modules/react-native-permissions/ios/Calendars/RNPermissionHandlerCalendars.h

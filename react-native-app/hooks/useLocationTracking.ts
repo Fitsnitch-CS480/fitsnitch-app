@@ -7,16 +7,20 @@ import axios from 'axios';
 const baseUrl = 'https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import ServerFacade from '../backend/ServerFacade';
+import useInterval from './useInterval';
 
 export default function useLocationTracking() {
     var locationBgManager = NativeModules.MyLocationDataManager;
 
     const [currLocation, setLocation] = useState<Location.LocationObject>();
+    const [isMoving, setIsMoving] = useState(false);
     const distCheckThreshold = .0005
 
     useEffect(() => {
       console.log("Component Did Mount...");
-      const interval = setInterval(() => _getLocationAsync(), 5000);
+      //const interval = setInterval(() => _getLocationAsync(), 5000);
+
+      _startBgTracking();
       
       const eventEmitter = new NativeEventEmitter(NativeModules.MyLocationDataManager);
 
@@ -24,15 +28,21 @@ export default function useLocationTracking() {
 
       return () => {
         console.log("Component Will Unmount...");
-        clearInterval(interval);
+        //clearInterval(interval);
         sub.remove();
       }
     }, [])
-
+    
     const onSignificantBackgroundLocationChange = (lastLocation : any) => {
         console.log("CLOSEDAPPLOCATIONRETRIEVAL");
         console.log(lastLocation);
     }
+
+    const _startBgTracking = async () => {
+        const result = await locationBgManager.requestPermissions('');
+  
+        console.log("Request Permissions: " + result);
+      }
 
     const _sendLocalNotification = () => {
         if (Platform.OS == "ios") {
@@ -63,13 +73,31 @@ export default function useLocationTracking() {
             setLocation(locationToMeasure);
         } else { //measure a distance 
             //.001 is like a block
-            if (Math.abs(currLocation["coords"]["latitude"] - locationToMeasure["coords"]["latitude"]) > distCheckThreshold ||
-            Math.abs(currLocation["coords"]["longitude"] - locationToMeasure["coords"]["longitude"]) > distCheckThreshold) {
-                //api call to check location
-                console.log("Significant Change...API CALL")
-                setLocation(locationToMeasure);
+            if (isMoving) {
+                console.log("Is moving");
+                if (Math.abs(currLocation["coords"]["latitude"] - locationToMeasure["coords"]["latitude"]) < .00001 ||
+                Math.abs(currLocation["coords"]["longitude"] - locationToMeasure["coords"]["longitude"]) < .00001) { //stopped moving within a given radius
+                    setIsMoving(false);
+                    console.log("Movement Stopped...API CALL");
+                    ServerFacade.checkLocation(locationToMeasure["coords"]["latitude"], locationToMeasure["coords"]["longitude"]).then((result) => {
+                        console.log("Returned with result: " + result);
+                    }).catch((error) => {
+                        console.log("Returned with error: " + error);
+                    })
+                    setLocation(locationToMeasure);
+                } else { //else is still moving
+                    setLocation(locationToMeasure);
+                }
             } else {
-                console.log("No significant change...no api call");
+                console.log("Not moving...");
+                if (Math.abs(currLocation["coords"]["latitude"] - locationToMeasure["coords"]["latitude"]) > .00001 ||
+                Math.abs(currLocation["coords"]["longitude"] - locationToMeasure["coords"]["longitude"]) > .00001) { //started moving
+                    setIsMoving(true);
+                    console.log("Significant Change, is now moving");
+                    setLocation(locationToMeasure);
+                } else {  //still not moving
+                    setLocation(locationToMeasure);
+                }
             }
         }
     }
@@ -93,7 +121,6 @@ export default function useLocationTracking() {
                 console.log('The permission is limited: some actions are possible');
                 break;
             case RESULTS.GRANTED:
-                console.log('The permission is granted');
                 let location = Location.getCurrentPositionAsync({})
                     .then(function(location) { _measureLatestLocationUpdate(location) })
                     .catch(function(error) { console.log("Error getting location"); console.log(error)});
@@ -109,4 +136,6 @@ export default function useLocationTracking() {
             console.log(error);
         });
     }
+
+    useInterval(_getLocationAsync, 5000);
 }

@@ -5,7 +5,8 @@ import {Auth} from '@aws-amplify/auth';
 import {userContext} from '../navigation/mainNavigator';
 import {check, checkNotifications, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Popup from '../components/Popup';
-import useLocationTracking from '../hooks/useLocationTracking';
+import ServerFacade from '../backend/ServerFacade';
+import User from '../shared/models/User';
 
 export default function LoginView() {
 
@@ -24,7 +25,7 @@ export default function LoginView() {
   }
   
   //Get user from Context from mainNavigator
-  const {usertest, setUser} = useContext(userContext);
+  const {currentUser, setCurrentUser} = useContext(userContext);
 
   useEffect(() => {
     console.log("useEffect....");
@@ -46,9 +47,20 @@ export default function LoginView() {
     //If email and password are good, attempt login. Read errors and respond acordingly.
     if (email.length > 4 && password.length > 2) {
       await Auth.signIn(email, password)
-        //If we get a user back, setUser in mainNavigator.
-        .then((user) => {
-          setUser(user);
+        //If we get a user back, setCurrentUser in mainNavigator.
+        .then(async (userCognitoData) => {
+          console.log("USER LOGGED IN: ", userCognitoData.attributes);
+
+          // Use the UserID from Cognito to look up the User in our DB
+          let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
+          console.log(user);
+          if (!user) {
+            // If the user doesn't exist this is probably the first time they are logging in, so create them.
+            user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined)
+            await ServerFacade.createUser(user);
+          }
+          // Setting the user will trigger a navigation to the rest of the app
+          setCurrentUser(user);
         })
         //Handle the multiple errors
         .catch((err) => {

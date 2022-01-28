@@ -1,1 +1,0 @@
-../../../../../node_modules/react-native-permissions/ios/Siri/RNPermissionHandlerSiri.h

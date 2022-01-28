@@ -1,6 +1,0 @@
-framework module Pods_FitsnitchApp {
-  umbrella header "Pods-FitsnitchApp-umbrella.h"
-
-  export *
-  module * { export * }
-}

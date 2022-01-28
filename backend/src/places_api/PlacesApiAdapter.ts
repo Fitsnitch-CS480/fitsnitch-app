@@ -1,5 +1,5 @@
-import { LatLongPair } from "../../../shared/models/CoordinateModels";
-import RestaurantData from "../../../shared/models/RestaurantData";
+import { LatLongPair } from "../../../react-native-app/shared/models/CoordinateModels";
+import RestaurantData from "../../../react-native-app/shared/models/RestaurantData";
 
 export default interface PlacesApiAdapter {
     /**
