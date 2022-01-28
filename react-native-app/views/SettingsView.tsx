@@ -2,6 +2,7 @@ import React, {useContext, useState} from 'react';
 import {userContext} from '../navigation/mainNavigator';
 import {Auth} from '@aws-amplify/auth';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 export type Props = {
   name: string;
@@ -20,8 +21,14 @@ const SettingsView: React.FC<Props> = ({
 
   let logout = async () => {
     await Auth.signOut()
-    .then(async => {
+    .then(async async => {
       setCurrentUser(null);
+      try {
+        await EncryptedStorage.removeItem("user_auth");
+        
+      } catch (error) {
+        console.log(':',error);
+      }
     })
     .catch((err) => {
       console.log(':',err);
