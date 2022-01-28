@@ -10,4 +10,8 @@ export class UserSearchRequest extends PaginatedRequest {
         }
 }
 
-export type UserSearchResponse = PaginatedResponse<User>;
+export class UserSearchResponse extends PaginatedResponse<User> {
+    constructor(records: User[], pageBreakKey?:string,pageSize?:number) {
+        super(records,pageBreakKey,pageSize)
+    }
+}

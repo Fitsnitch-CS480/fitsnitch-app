@@ -1,8 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import PageSection from '../../components/PageSection';
 import CurrentTrainer from './CurrentTrainer';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import CurrentClients from './CurrentClients';
+import TrainerRequests from './TrainerRequests';
+
 
 export type Props = {
 };
@@ -11,31 +14,31 @@ const PeopleView: React.FC<Props> = ({
 }) => {
   const navigation = useNavigation();
 
-  
-
-  useEffect(()=>{
-    console.log("effected people view!")
-  })
-
-
   return (
-    <View style={styles.container}>
-      <Button title="Search" onPress={()=>{navigation.navigate("Search")}}></Button>
-      <Text style={styles.greeting}>
-        People
-      </Text>
-        <CurrentTrainer />
-    </View>
+    <>
+      <View style={styles.header}>
+        <Text style={styles.title}>People</Text>
+        <View style={styles.searchIconWrapper} onTouchEnd={()=>navigation.navigate("Search")}><Icon name="search" size={30} /></View>
+      </View>
+      
+      <TrainerRequests />
+      <CurrentTrainer />
+      <CurrentClients />
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+  header: {
+    display:'flex',
+    flexDirection:'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
-  greeting: {
+  searchIconWrapper: {
+    padding: 10
+  },
+  title: {
     fontSize: 20,
     fontWeight: 'bold',
     margin: 16
