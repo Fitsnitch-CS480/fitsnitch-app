@@ -32,13 +32,14 @@ export default class TrainerService {
     }
     
     async getRequestsByTrainer(userId:string):Promise<User[]> {
-        let pairs = await DaoFactory.getTrainerRequestDao().getRequestsByClient(userId);
+        let pairs = await DaoFactory.getTrainerRequestDao().getRequestsByTrainer(userId);
         let requesters: User[] = [];
-        await Promise.all(pairs.map(pair=>(async()=>{
+        await Promise.all(pairs.map(async (pair)=>{
             let user = await DaoFactory.getUserDao().getUser(pair.clientId)
             if (user) requesters.push(user)
-        })))
-        return requesters;    }
+        }))
+        return requesters;
+    }
 
     //
     // APPROVED CONNECTIONS
@@ -57,10 +58,10 @@ export default class TrainerService {
     async getClientsOfTrainer(userId:string):Promise<User[]> {
         let ids = await DaoFactory.getTrainersDao().getClientIdsOfTrainer(userId);
         let clients: User[] = [];
-        await Promise.all(ids.map(id=>(async()=>{
+        await Promise.all(ids.map(async id=>{
             let user = await DaoFactory.getUserDao().getUser(id)
             if (user) clients.push(user)
-        })))
+        }))
         return clients;
     }
     
