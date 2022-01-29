@@ -1,6 +1,6 @@
 import PartnerAssociationPair from "../../../../react-native-app/shared/models/PartnerAssociationPair";
 import PartnerAssociationRequestDao from "../PartnerAssociationRequestDao";
-import TableAccessObject from "./TableAccessObject";
+import TableAccessObject, { SortOp } from "./TableAccessObject";
 import DB_TABLES from "./tables";
 
 export default class DynamoPartnerAssociationRequestDao implements PartnerAssociationRequestDao {
@@ -10,6 +10,11 @@ export default class DynamoPartnerAssociationRequestDao implements PartnerAssoci
     async createPartnerAssociationRequest(data: PartnerAssociationPair) {
         await this.table.createOrUpdate(data);
     }
+
+    async existsRequest(data:PartnerAssociationPair): Promise<boolean> {
+      let matches = await this.table.query(data.partnerId2,SortOp.EQUALS,data.partnerId1);
+      return matches.length == 1;
+  }
 
     // fat arrow funtion to preserve this context
     deletePartnerAssociationRequest = async (request: PartnerAssociationPair) => {
