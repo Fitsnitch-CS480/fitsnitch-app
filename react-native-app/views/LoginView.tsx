@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput} from 'react-native';
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
 import {userContext} from '../navigation/mainNavigator';
@@ -16,8 +16,11 @@ const LoginView : React.FC = () => {
   
   //Get user from Context from mainNavigator
   const {currentUser, setCurrentUser} = useContext(userContext);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const signInFunction = async () => {
+    if (loading) return;
+    setLoading(true);
     
     //If email and password are good, attempt login. Read errors and respond acordingly.
     if (email.length > 4 && password.length > 2) {
@@ -42,10 +45,11 @@ const LoginView : React.FC = () => {
               })
             )
           } catch (error) {
-            console.log('Failed persistent login: ', error);
+            console.log('Failed to save login: ', error);
           }
 
           // Setting the user will trigger a navigation to the rest of the app
+          setLoading(false)
           setCurrentUser(user);
         })
         //Handle the multiple errors
@@ -54,7 +58,8 @@ const LoginView : React.FC = () => {
           if (!err.message) {
             console.log('1 Error when signing in: ', err);
             Alert.alert('Error when signing in: ', err);
-          } else {
+          }
+          else {
             if (err.code === 'UserNotConfirmedException') {
               console.log('User not confirmed');
               navigation.navigate('confirmation', {
@@ -62,13 +67,15 @@ const LoginView : React.FC = () => {
               });
             }
             if (err.message) {
-              setErrorMessage(err.message);
+              Alert.alert("Could not log in", err.message);
             }
           }
+          setLoading(false)
         });
-    } else {
-      setErrorMessage('Provide a valid email and password');
-      Alert.alert('Error:', errorMessage);
+    }
+    else {
+      Alert.alert("", 'Provide an email and password');
+      setLoading(false)
     }
   };
 
@@ -76,7 +83,11 @@ const LoginView : React.FC = () => {
     <View style={styles.container}>
       
       <View style={styles.materialButtonPrimary}>
-        <Button title="Log In" onPress={signInFunction}></Button>
+        { loading ? 
+            <ActivityIndicator size={30} />
+          :
+            <Button title="Log In" onPress={()=>loading? null : signInFunction()}></Button>
+        }
       </View>
       
       <Text style={styles.or2}>--------------- OR ---------------</Text>
