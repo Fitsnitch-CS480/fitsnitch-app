@@ -25,10 +25,8 @@ const LoginView : React.FC = () => {
         //If we get a user back, setCurrentUser in mainNavigator.
         .then(async (userCognitoData) => {
           console.log("USER LOGGED IN: ", userCognitoData.attributes);
-          console.log("userCognitoData: ", userCognitoData);
           // Use the UserID from Cognito to look up the User in our DB
           let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
-          console.log("User Variable:", user);
           if (!user) {
             // If the user doesn't exist this is probably the first time they are logging in, so create them.
             user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined)
