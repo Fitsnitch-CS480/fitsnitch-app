@@ -1,5 +1,6 @@
 import RelationshipStatus from "../../../react-native-app/shared/constants/RelationshipStatus";
 import TrainerClientPair from "../../../react-native-app/shared/models/TrainerClientPair";
+import User from "../../../react-native-app/shared/models/User";
 import DaoFactory from "../db/DaoFactory";
 
 export default class TrainerService {
@@ -52,8 +53,9 @@ export default class TrainerService {
         return await DaoFactory.getTrainersDao().getClientIdsOfTrainer(userId);
     }
     
-    async getTrainerIdOfClient(userId:string):Promise<string> {
-        return await DaoFactory.getTrainersDao().getTrainerIdOfClient(userId);
+    async getTrainerIdOfClient(userId:string):Promise<User|undefined> {
+        let id = await DaoFactory.getTrainersDao().getTrainerIdOfClient(userId);
+        return await DaoFactory.getUserDao().getUser(id);
     }
 
 

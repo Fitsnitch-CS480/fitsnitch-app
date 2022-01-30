@@ -1,3 +1,4 @@
+import { UserSearchRequest, UserSearchResponse } from "../../../react-native-app/shared/models/requests/UserSearchRequest";
 import User from "../../../react-native-app/shared/models/User";
 import DaoFactory from "../db/DaoFactory";
 
@@ -8,6 +9,10 @@ export default class UserService {
 
     async updateUser(data: User) {
         await DaoFactory.getUserDao().updateUser(data);
+    }
+
+    async search(request:UserSearchRequest): Promise<UserSearchResponse> {
+        return await DaoFactory.getUserDao().search(request);
     }
 
     async getUser(id: string): Promise<User|undefined> {

@@ -5,6 +5,7 @@ import {Auth} from '@aws-amplify/auth';
 import {userContext} from '../navigation/mainNavigator';
 import ServerFacade from '../backend/ServerFacade';
 import User from '../shared/models/User';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const LoginView : React.FC = () => {
 
@@ -17,22 +18,35 @@ const LoginView : React.FC = () => {
   const {currentUser, setCurrentUser} = useContext(userContext);
 
   const signInFunction = async () => {
-
+    
     //If email and password are good, attempt login. Read errors and respond acordingly.
     if (email.length > 4 && password.length > 2) {
       await Auth.signIn(email, password)
         //If we get a user back, setCurrentUser in mainNavigator.
         .then(async (userCognitoData) => {
           console.log("USER LOGGED IN: ", userCognitoData.attributes);
-
+          console.log("userCognitoData: ", userCognitoData);
           // Use the UserID from Cognito to look up the User in our DB
           let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
-          console.log(user);
+          console.log("User Variable:", user);
           if (!user) {
             // If the user doesn't exist this is probably the first time they are logging in, so create them.
             user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined)
             await ServerFacade.createUser(user);
           }
+
+          try {
+            await EncryptedStorage.setItem(
+              "user_auth", 
+              JSON.stringify({
+              email : email,
+              password : password  
+              })
+            )
+          } catch (error) {
+            console.log('Failed persistent login: ', error);
+          }
+
           // Setting the user will trigger a navigation to the rest of the app
           setCurrentUser(user);
         })

@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, Button } from 'react-native';
 import ClientTrainerService from '../backend/services/ClientTrainerService';
-import UserDataService from '../backend/services/UserDataService';
 import { userContext } from '../navigation/mainNavigator';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import User from '../shared/models/User';
@@ -18,10 +17,9 @@ type state = {
 export type Props = {
   profileOwner: User;
 };
-const ProfileClientTrainerButton: React.FC<Props> = ({
+const ClientTrainerRequestButton: React.FC<Props> = ({
   profileOwner
 }) => {
-  console.log("refresh")
   const [state, setState] = useState<state>({
     processing:false,
     relationship: null,
@@ -50,14 +48,14 @@ const ProfileClientTrainerButton: React.FC<Props> = ({
   async function loadRelationships(currentUser:User,profileOwner:User) {
     let userAsTrainer = await new ClientTrainerService().getTrainerStatus(currentUser,profileOwner);
     let userAsClient = await new ClientTrainerService().getTrainerStatus(profileOwner,currentUser);
-    let currentUserTrainerId = await new ClientTrainerService().getUserTrainer(currentUser.userId);
+    let currentUserTrainer = await new ClientTrainerService().getUserTrainer(currentUser.userId);
     updateState({
-      currentUserTrainerId,
+      currentUserTrainerId: currentUserTrainer?.userId,
       relationship: {
         userAsClient,
         userAsTrainer
       },
-      // any action that sets processing to tru will set relationship to null so that
+      // any action that sets processing to true will set relationship to null so that
       // the data is re-fetched. This will then end the processing state.
       processing: false
     })
@@ -168,4 +166,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default ProfileClientTrainerButton;
+export default ClientTrainerRequestButton;

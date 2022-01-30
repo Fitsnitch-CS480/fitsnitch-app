@@ -1,7 +1,9 @@
 import axios from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
+import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import TrainerClientPair from '../shared/models/TrainerClientPair';
 import User from '../shared/models/User'
+
 
 /**
  * Acts as a Facade to the FitSnitch server. All network requests to the server should go through
@@ -23,6 +25,12 @@ function asRawString(data:string) {
     if (!res) return null;
     console.log("GET USER RESPONSE",res.data)
     return res.data as User
+  }
+
+  static async userSearch(request:UserSearchRequest): Promise<UserSearchResponse> {
+    let res = await axios.post(this.apiBaseUrl+"/user_search", request)
+    console.log("USER SEARCH RESPONSE",res.data)
+    return res.data
   }
 
   static async createUser(user: User) {
@@ -83,7 +91,7 @@ function asRawString(data:string) {
     console.log("TRAINER REMOVE RESPONSE",res.status)
   }
 
-  static async getUserTrainer(userId:string): Promise<string> {
+  static async getUserTrainer(userId:string): Promise<User|undefined> {
     let res = await axios.post(this.apiBaseUrl+"/trainer_get_for_client", asRawString(userId));
     console.log("CLIENT'S TRAINER",res.data)
     return res.data
