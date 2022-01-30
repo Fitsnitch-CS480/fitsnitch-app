@@ -4,6 +4,8 @@ export default interface PartnerAssociationRequestDao {
     createPartnerAssociationRequest(data:PartnerAssociationPair);
     deletePartnerAssociationRequest(data:PartnerAssociationPair);
 
+    existsRequest(data:PartnerAssociationPair): Promise<boolean>;
+
     /**
      * Finds all requests where this userId is the Trainer
      * @param userId 

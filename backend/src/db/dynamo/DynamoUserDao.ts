@@ -1,5 +1,5 @@
 import User from "../../../../react-native-app/shared/models/User";
-import UserDao from "../UserDao";
+import UserDao from "../UserDAO";
 import TableAccessObject from "./TableAccessObject";
 import DB_TABLES from "./tables";
 

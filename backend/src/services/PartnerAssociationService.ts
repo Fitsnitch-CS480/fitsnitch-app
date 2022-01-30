@@ -1,7 +1,17 @@
+import RelationshipStatus from "../../../react-native-app/shared/constants/RelationshipStatus";
 import PartnerAssociationPair from "../../../react-native-app/shared/models/PartnerAssociationPair";
 import DaoFactory from "../db/DaoFactory";
 
 export default class PartnerAssociationService {
+
+  async getRelationshipStatus(pair: PartnerAssociationPair): Promise<RelationshipStatus> {
+    let pending = await DaoFactory.getPartnerAssociationRequestDao().existsRequest(pair);
+    if (pending) return RelationshipStatus.PENDING;
+    let approved = await DaoFactory.getPartnerAssociationDao().isPartner2OfPartner1(pair);
+    if (approved) return RelationshipStatus.APPROVED;
+
+    return RelationshipStatus.NONEXISTENT;
+}
     //
     // REQUESTS
     //
@@ -32,7 +42,7 @@ export default class PartnerAssociationService {
         await DaoFactory.getPartnerAssociationRequestDao().deletePartnerAssociationRequest(request);
     }
     
-    async removePartnerAssociationFromClient(data: PartnerAssociationPair) {
+    async removePartnerAssociationFromUser(data: PartnerAssociationPair) {
         await DaoFactory.getPartnerAssociationDao().removePartner2FromPartner1(data);
     }
     
