@@ -30,17 +30,23 @@ describe(DynamoTrainerRequestDao, ()=>{
     })
 
 
-    // describe("getRequestsByTrainer", ()=>{
-    //     it("should create and get by trainer", async ()=>{
-    //         await dao.createTrainerRequest(new TrainerClientPair(user1Id,user2Id));
-    //         await dao.createTrainerRequest(new TrainerClientPair(user1Id,user3Id));
-    //         let resTrainerRequests = await dao.getRequestsByTrainer(user1Id);
+    describe("getRequestsByTrainer", ()=>{
+        // it("should create and get by trainer", async ()=>{
+        //     await dao.createTrainerRequest(new TrainerClientPair(user1Id,user2Id));
+        //     await dao.createTrainerRequest(new TrainerClientPair(user1Id,user3Id));
+        //     let resTrainerRequests = await dao.getRequestsByTrainer(user1Id);
 
-    //         expect(resTrainerRequests).toContainEqual(new TrainerClientPair(user1Id,user2Id))
-    //         expect(resTrainerRequests).toContainEqual(new TrainerClientPair(user1Id,user3Id))
-    //         console.log(resTrainerRequests);
-    //     })
-    // })
+        //     expect(resTrainerRequests).toContainEqual(new TrainerClientPair(user1Id,user2Id))
+        //     expect(resTrainerRequests).toContainEqual(new TrainerClientPair(user1Id,user3Id))
+        //     console.log(resTrainerRequests);
+        // })
+
+        // it("should get live data", async ()=>{
+        //     let resTrainerRequests = await dao.getRequestsByTrainer("81885d13-1288-4298-ab5d-eaf85d9b2594");
+        //     expect(resTrainerRequests.length).toBeGreaterThan(0)
+        //     console.log(resTrainerRequests);
+        // })
+    })
 
     
 

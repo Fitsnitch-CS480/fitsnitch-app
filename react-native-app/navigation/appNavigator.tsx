@@ -5,7 +5,7 @@ import SnitchesView from '../views/SnitchesView';
 import OtherUserProfile from '../views/OtherUserProfile';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import PeopleView from '../views/PeopleView';
+import PeopleView from '../views/PeopleView/PeopleView';
 import SettingsView from '../views/SettingsView';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import TabViewNavigator from "./TabViewNavigator";
