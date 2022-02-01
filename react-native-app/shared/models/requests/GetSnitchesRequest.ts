@@ -14,7 +14,7 @@ export type GetSnitchesRequestProps = {
      */
     endDate?:string
 }
-export class GetSnitchesRequest {
+export class UserSnitchesRequest {
     userIds:string[]
     pageBreakKey?:string
     maxPageSize?:number
@@ -36,7 +36,7 @@ export class GetSnitchesRequest {
     }
 }
 
-export class GetSnitchesResponse extends PaginatedResponse<SnitchEvent> {
+export class UserSnitchesResponse extends PaginatedResponse<SnitchEvent> {
     constructor(records: SnitchEvent[], pageBreakKey?:string, pageSize?:number) {
         super(records,pageBreakKey,pageSize)
     }

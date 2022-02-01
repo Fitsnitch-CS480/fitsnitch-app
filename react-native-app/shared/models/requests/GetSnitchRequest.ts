@@ -1,7 +1,7 @@
 /**
  * Defines the two properies necessary to retrieve a single SnitchEvent
  */
-export class GetSnitchesRequest {
+export class GetSnitchRequest {
     constructor(
         /**
          * ID of the User
