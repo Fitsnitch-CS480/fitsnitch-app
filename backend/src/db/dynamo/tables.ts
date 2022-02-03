@@ -24,6 +24,11 @@ const DB_TABLES = {
         asIndex:"clientId-trainerId-index",
         primaryKey:"clientId",
         sortKey:"trainerId"
+    },
+    SNITCHES: {
+        tableName:"Snitches",
+        primaryKey:"userId",
+        sortKey:"created"
     }
 }
 
