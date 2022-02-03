@@ -12,7 +12,7 @@ export default class SnitchEvent {
          * 
          * ISO Format for sorting in database YYYY-MM-DDThh:mm:ss.msZ
          */
-        public datetime: string, 
+        public created: string, 
         /**
          * THe exact location that triggered the snitch alert
          */

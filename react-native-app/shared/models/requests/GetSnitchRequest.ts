@@ -10,6 +10,6 @@ export class GetSnitchRequest {
         /**
          * Datetie of the snitch, used as a unique identifier
          */
-        public datetime:string) {
+        public created:string) {
     }
 }
