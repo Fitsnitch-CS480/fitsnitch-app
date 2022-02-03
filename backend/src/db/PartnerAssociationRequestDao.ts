@@ -1,22 +1,23 @@
-import PartnerAssociationPair from "../../../react-native-app/shared/models/PartnerAssociationPair";
+import PartnerRequest from "../../../react-native-app/shared/models/PartnerRequest";
+
 
 export default interface PartnerAssociationRequestDao {
-    createPartnerAssociationRequest(data:PartnerAssociationPair);
-    deletePartnerAssociationRequest(data:PartnerAssociationPair);
+    createPartnerAssociationRequest(data:PartnerRequest);
+    deletePartnerAssociationRequest(data:PartnerRequest);
 
-    existsRequest(data:PartnerAssociationPair): Promise<boolean>;
+    existsRequest(data:PartnerRequest): Promise<boolean>;
 
     /**
      * Finds all requests where this userId is the Trainer
      * @param userId 
      */
-    getRequestsByPartner2(userId:string): Promise<PartnerAssociationPair[]>;
+    getRequestsByRequestee(userId:string): Promise<PartnerRequest[]>;
 
     /**
      * Finds all requests where this userId is the Client
      * @param userId 
      */
-    getRequestsByPartner1(userId:string): Promise<PartnerAssociationPair[]>;
+    getRequestsByRequester(userId:string): Promise<PartnerRequest[]>;
 
     /**
      * Used when wiping a user's data. Removes any request with userId

@@ -4,8 +4,8 @@ import TableAccessObject, { SortOp } from "./TableAccessObject";
 import DB_TABLES from "./tables";
 
 export default class DynamoPartnerAssociationDao implements PartnerAssociationDao {
-    private table = new TableAccessObject<PartnerAssociationPair>(DB_TABLES.TRAINERS);
-    private partner1Index = this.table.createIndexAccessObject(DB_TABLES.TRAINERS_INDEX_BY_CLIENTS);
+    private table = new TableAccessObject<PartnerAssociationPair>(DB_TABLES.PARTNER);
+    private partner1Index = this.table.createIndexAccessObject(DB_TABLES.PARTNER_INDEX);
 
     async assignPartner2ToPartner1(data:PartnerAssociationPair) {
         // Make sure client does not already have a trainer

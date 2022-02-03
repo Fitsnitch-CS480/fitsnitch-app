@@ -2,6 +2,7 @@ import axios from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import TrainerClientPair from '../shared/models/TrainerClientPair';
+import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
 import User from '../shared/models/User'
 
 
@@ -94,6 +95,40 @@ function asRawString(data:string) {
   static async getUserTrainer(userId:string): Promise<User|undefined> {
     let res = await axios.post(this.apiBaseUrl+"/trainer_get_for_client", asRawString(userId));
     console.log("CLIENT'S TRAINER",res.data)
+    return res.data
+  }
+
+  // PARTNER / USER RELATIONSHIPS
+  static async getPartnerStatus(partner:User,user:User): Promise<RelationshipStatus> {
+    let res = await axios.post(this.apiBaseUrl+"/partner_get_status", new PartnerAssociationPair(partner.userId,user.userId));
+    console.log("PARTNER STATUS RESPONSE",res.data)
+    return res.data;
+  }
+
+
+  static async requestPartnerForUser(partner:User,user:User) {
+    let res = await axios.post(this.apiBaseUrl+"/partner_request_create", new PartnerAssociationPair(partner.userId,user.userId));
+    console.log("PARTNER REQUEST RESPONSE",res.status)
+  }
+  
+  static async cancelPartnerRequest(partner:User,user:User) {
+    let res = await axios.post(this.apiBaseUrl+"/partner_request_cancel", new PartnerAssociationPair(partner.userId,user.userId));
+    console.log("PARTNER REQUEST CANCEL RESPONSE",res.status)
+  }
+  
+  static async approveUser(partner:User,user:User) {
+    let res = await axios.post(this.apiBaseUrl+"/partner_request_approve", new PartnerAssociationPair(partner.userId,user.userId));
+    console.log("PARTNER APPROVE RESPONSE",res.status)
+  }
+
+  static async removePartnerFromUser(partner:User,user:User) {
+    let res = await axios.post(this.apiBaseUrl+"/partner_remove", new PartnerAssociationPair(partner.userId,user.userId));
+    console.log("PARTNER REMOVE RESPONSE",res.status)
+  }
+
+  static async getUserPartner(userId:string): Promise<User|undefined> {
+    let res = await axios.post(this.apiBaseUrl+"/partner_get_for_client", asRawString(userId));
+    console.log("USERS'S PARTNER",res.data)
     return res.data
   }
 }

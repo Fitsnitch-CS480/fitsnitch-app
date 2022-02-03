@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { userContext } from '../navigation/mainNavigator';
 import User from '../shared/models/User';
 import ClientTrainerRequestButton from './ClientTrainerRequestButton';
+import PartnerAssociationRequestButton from './PartnerAssociationRequestButton';
 import ProfileImage from './ProfileImage';
 
 export type Props = {
@@ -52,6 +53,8 @@ const Profile: React.FC<Props> = ({
               <View>
                 {/* Client/Trainer Relationship */}
                 <ClientTrainerRequestButton profileOwner={profileOwner}></ClientTrainerRequestButton>
+                {/* User/Partner Relationship */}
+                <PartnerAssociationRequestButton profileOwner={profileOwner}></PartnerAssociationRequestButton>
               </View>
               : <></>}
               

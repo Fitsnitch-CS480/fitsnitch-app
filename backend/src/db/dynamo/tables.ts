@@ -38,14 +38,14 @@ const DB_TABLES = {
     },
     PARTNER_REQUESTS: {
       tableName:"PartnerRequests",
-      primaryKey:"partnerId1",
-      sortKey:"partnerId2"
+      primaryKey:"requester",
+      sortKey:"requestee"
   },
-    PARTNER_REQUESTS_BY_USER: {
+    PARTNER_REQUESTS_BY_REQUESTEE: {
       tableName:"PartnerRequests",
-      asIndex:"partnerId2-partnerId1-index",
-      primaryKey:"partnerId2",
-      sortKey:"partnerId1"
+      asIndex:"requestee-requester-index",
+      primaryKey:"requestee",
+      sortKey:"requester"
   },
 }
 
