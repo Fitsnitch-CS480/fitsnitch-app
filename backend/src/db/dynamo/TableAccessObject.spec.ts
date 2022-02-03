@@ -17,8 +17,8 @@ describe("Comparisons", ()=>{
         describe(c.condition, ()=>{
             it ("should construct string and aliases",()=>{
                 let condition = new c.condition(c.attr,c.val)
-                let cVals = condition.toStringAndVals(new Counter());
-                console.log(cVals.compString,"\n",cVals.vals)
+                let cVals = condition.buildExpression(new Counter());
+                console.log(cVals.expression,"\n",cVals.vals)
             })
         })
     })
@@ -27,8 +27,8 @@ describe("Comparisons", ()=>{
     describe(Conditions.Between, ()=>{
         it ("should construct string and aliases",()=>{
             let condition = new Conditions.Between("price",5,25)
-            let cVals = condition.toStringAndVals(new Counter());
-            console.log(cVals.compString,"\n",cVals.vals)
+            let cVals = condition.buildExpression(new Counter());
+            console.log(cVals.expression,"\n",cVals.vals)
         })
     })
 
@@ -46,8 +46,8 @@ describe("Logical Conditions", ()=>{
         describe(c.condition, ()=>{
             it ("should construct string and aliases",()=>{
                 let condition = new c.condition(c.cond1,c.cond2)
-                let cVals = condition.toStringAndVals(new Counter());
-                console.log(cVals.compString,"\n",cVals.vals)
+                let cVals = condition.buildExpression(new Counter());
+                console.log(cVals.expression,"\n",cVals.vals)
             })
         })
     })
@@ -62,8 +62,8 @@ describe(LogicalConditionChain, ()=>{
             new Conditions.Equals("attr","Look")
         ];
         let condition = new LogicalConditionChain(chain);
-        let cVals = condition.toStringAndVals(new Counter());
-        console.log(cVals.compString,"\n",cVals.vals)
+        let cVals = condition.buildExpression(new Counter());
+        console.log(cVals.expression,"\n",cVals.vals)
     })
 
     
@@ -75,7 +75,7 @@ describe(LogicalConditionChain, ()=>{
             new Conditions.Contains("lastname","Evan")
         ];
         let condition = new LogicalConditionChain(chain);
-        let cVals = condition.toStringAndVals(new Counter());
-        console.log(cVals.compString,"\n",cVals.vals)
+        let cVals = condition.buildExpression(new Counter());
+        console.log(cVals.expression,"\n",cVals.vals)
     })
 })
