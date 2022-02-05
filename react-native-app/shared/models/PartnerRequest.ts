@@ -1,6 +1,6 @@
 export default class PartnerRequest {
   constructor(
-      public requesterId: string,
-      public requesteeId: string,
+      public requester: string,
+      public requestee: string,
   ) {}
 }

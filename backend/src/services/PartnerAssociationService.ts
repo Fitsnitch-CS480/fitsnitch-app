@@ -8,16 +8,16 @@ export default class PartnerAssociationService {
 
   async getRelationshipStatus(pair: PartnerAssociationPair): Promise<PartnerStatusResponse> {
     let partnerRequest = new PartnerRequest(pair.partnerId1, pair.partnerId2);
-    let pending = await DaoFactory.getPartnerAssociationRequestDao().existsRequest(partnerRequest);
+    let pending = await DaoFactory.getPartnerAssociationRequestDao().partnershipRequestExists(partnerRequest);
 
     if (pending) return new PartnerStatusResponse(RelationshipStatus.PENDING, partnerRequest);
 
     partnerRequest = new PartnerRequest(pair.partnerId2, pair.partnerId1);
-    pending = await DaoFactory.getPartnerAssociationRequestDao().existsRequest(partnerRequest);
+    pending = await DaoFactory.getPartnerAssociationRequestDao().partnershipRequestExists(partnerRequest);
 
     if (pending) return new PartnerStatusResponse(RelationshipStatus.PENDING, partnerRequest);
     
-    let approved = await DaoFactory.getPartnerAssociationDao().isPartner2OfPartner1(pair);
+    let approved = await DaoFactory.getPartnerAssociationDao().partnershipExists(pair);
     if (approved) return new PartnerStatusResponse(RelationshipStatus.APPROVED, undefined);;
 
     return new PartnerStatusResponse(RelationshipStatus.NONEXISTENT, undefined);
@@ -25,7 +25,7 @@ export default class PartnerAssociationService {
     //
     // REQUESTS
     //
-
+np
     async requestPartnerAssociation(data: PartnerRequest) {
         await DaoFactory.getPartnerAssociationRequestDao().createPartnerAssociationRequest(data);
     }
@@ -48,22 +48,16 @@ export default class PartnerAssociationService {
 
     async approvePartnerAssociationRequest(request: PartnerRequest) {
         // wait for successsful creation before removing request to catch errors
-        let partner = new PartnerAssociationPair(request.requesteeId, request.requesterId);
-        await DaoFactory.getPartnerAssociationDao().assignPartner2ToPartner1(partner);
+        let partner = new PartnerAssociationPair(request.requestee, request.requester);
+        await DaoFactory.getPartnerAssociationDao().assignPartnership(partner);
         await DaoFactory.getPartnerAssociationRequestDao().deletePartnerAssociationRequest(request);
     }
     
     async removePartnerAssociationFromUser(data: PartnerAssociationPair) {
-        await DaoFactory.getPartnerAssociationDao().removePartner2FromPartner1(data);
+        await DaoFactory.getPartnerAssociationDao().removePartnership(data);
     }
     
-    async getPartner1IdsOfPartner2(userId:string):Promise<string[]> {
-        return await DaoFactory.getPartnerAssociationDao().getpartner1IdsOfPartner2(userId);
+    async getPartnerIdsOfUser(userId:string):Promise<string[]> {
+        return await DaoFactory.getPartnerAssociationDao().getPartnerIdsOfUser(userId);
     }
-    
-    async getPartner2IdOfPartner1(userId:string):Promise<string> {
-        return await DaoFactory.getPartnerAssociationDao().getPartner2IdOfPartner1(userId);
-    }
-
-
 }

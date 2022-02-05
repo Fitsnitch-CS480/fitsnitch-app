@@ -4,7 +4,7 @@ import PartnerAssociationService from "../services/PartnerAssociationService";
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
     return await LambaUtils.handleEventWithBody<string>(event, async (pair,res)=>{
-        let partnerId2:string = await new PartnerAssociationService().getPartner2IdOfPartner1(pair);
+        let partnerId2:string[] = await new PartnerAssociationService().getPartnerIdsOfUser(pair);
         res.setBodyToData(partnerId2);
         res.setCode(200);
         return res;

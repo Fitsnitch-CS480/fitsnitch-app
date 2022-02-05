@@ -1,7 +1,7 @@
 import { UserSearchRequest, UserSearchResponse } from "../../../../react-native-app/shared/models/requests/UserSearchRequest";
 import User from "../../../../react-native-app/shared/models/User";
 
-import UserDao from "../UserDao";
+import UserDao from "../UserDAO";
 import TableAccessObject, { Conditions, LogicalChainLink, LogicalConditionChain, LogicalOperator, PaginationOptions } from "./TableAccessObject";
 
 import DB_TABLES from "./tables";

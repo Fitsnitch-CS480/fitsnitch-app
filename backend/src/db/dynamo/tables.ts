@@ -26,12 +26,12 @@ const DB_TABLES = {
         sortKey:"trainerId"
     },
     PARTNER: {
-        tableName:"Partner",
+        tableName:"Partners",
         primaryKey:"partnerId1",
-        sortKey:"partner1Id2"
+        sortKey:"partnerId2"
     },
     PARTNER_INDEX: {
-      tableName:"Partner",
+      tableName:"Partners",
         asIndex:"partnerId2-partnerId1-index",
         primaryKey:"partnerId2",
         sortKey:"partnerId1"

@@ -150,7 +150,7 @@ export default class TableAccessObject<T> {
             ExpressionAttributeValues: marshall(expressionVals),
             KeyConditionExpression: keyConditions,
         };
-
+        
         let {Items} = await dynamoClient.query(params);
         if (!Items) return [];
         return Items.map(i=>unmarshall(i)) as T[];

@@ -30,60 +30,54 @@ describe(DynamoPartnerAssociationDao, ()=>{
     })
 
 
-    describe("getClientIdsOfTrainer", ()=>{
-        it("should create and get by trainer", async ()=>{
-            await dao.assignPartner2ToPartner1(new PartnerAssociationPair (user1Id,user2Id));
-            await dao.assignPartner2ToPartner1(new PartnerAssociationPair(user1Id,user3Id));
-            let resPartner = await dao.getpartner1IdsOfPartner2(user1Id);
+    // describe("getuserIdsOfPartner", ()=>{
+    //     it("should create and get by partner2", async ()=>{
+    //         await dao.assignPartnership(new PartnerAssociationPair (user1Id,user2Id));
+    //         await dao.assignPartnership(new PartnerAssociationPair(user1Id,user3Id));
+    //         let resPartner = await dao.getPartnerIdsOfUser(user1Id);
 
-            expect(resPartner).toContainEqual(user2Id)
-            expect(resPartner).toContainEqual(user3Id)
-            console.log(resPartner);
-        })
-    })
-
-    
-
-    // describe("getRequestsByClient", ()=>{
-    //     it("should create and get by client", async ()=>{
-    //         await dao.createTrainer(new PartnerAssociationPair(user2Id,user1Id));
-    //         await dao.createTrainer(new PartnerAssociationPair(user3Id,user1Id));
-    //         let resTrainers = await dao.getRequestsByClient(user1Id);
-
-    //         expect(resTrainers).toContainEqual(new PartnerAssociationPair(user2Id,user1Id))
-    //         expect(resTrainers).toContainEqual(new PartnerAssociationPair(user3Id,user1Id))
-    //         console.log(resTrainers);
+    //         expect(resPartner).toContainEqual(user2Id)
+    //         expect(resPartner).toContainEqual(user3Id)
+    //         console.log(resPartner);
     //     })
     // })
 
-    // describe(dao.deleteTrainer, ()=>{
-    //     it("should delete Test PartnerAssociationPair", async ()=>{
+
+    // describe(dao.removePartnership, ()=>{
+    //     it("should remove Test PartnerAssociationPair", async ()=>{
     //         let request = new PartnerAssociationPair(user1Id,user4Id);
-    //         await dao.createTrainer(request);
-    //         let resTrainers = await dao.getRequestsByTrainer(user1Id);
-    //         expect(resTrainers).toContainEqual(request)
-    //         await dao.deleteTrainer(request);
-    //         resTrainers = await dao.getRequestsByTrainer(user1Id);
-    //         expect(resTrainers).not.toContainEqual(request)
+           
+    //         await dao.assignPartnership(new PartnerAssociationPair (user1Id,user4Id));
+    //         let resPartner = await dao.getPartnerIdsOfUser(user1Id);
+
+    //         expect(resPartner).toContainEqual(user4Id)
+
+
+    //         await dao.removePartnership(request);
+    //         let resPartnerFound = await dao.getPartnerIdsOfUser(user1Id);
+    //         let resPartnerFound1 = await dao.getPartnerIdsOfUser(user4Id);
+
+    //         expect(resPartnerFound).not.toContainEqual(user4Id)
+
+    //         expect(resPartnerFound1).not.toContainEqual(user1Id)
     //     })
     // })
 
-    // describe(dao.deleteAllUserRequests, ()=>{
-    //     it("should delete all requests with user", async ()=>{
-    //         let req1 = new PartnerAssociationPair(user1Id,user4Id);
-    //         await dao.createTrainer(req1);
-    //         let resTrainers = await dao.getRequestsByTrainer(user1Id);
-    //         expect(resTrainers).toContainEqual(req1);
-    //         let req2 = new PartnerAssociationPair(user4Id,user1Id);
-    //         await dao.createTrainer(req2);
-    //         resTrainers = await dao.getRequestsByClient(user1Id);
-    //         expect(resTrainers).toContainEqual(req2)
-    //         await dao.deleteAllUserRequests(user1Id);
-    //         resTrainers = await dao.getRequestsByTrainer(user1Id);
-    //         expect(resTrainers).toHaveLength(0);
-    //         resTrainers = await dao.getRequestsByClient(user1Id);
-    //         expect(resTrainers).toHaveLength(0);
-    //     })
-    // })
+  //   describe(dao.partnershipExists, ()=>{
+  //     it("Assures whether partnerships exists or not", async ()=>{
+         
+  //         await dao.assignPartnership(new PartnerAssociationPair (user1Id,user2Id));
+  //         await dao.assignPartnership(new PartnerAssociationPair(user1Id,user4Id));
 
+  //         const part1 = await dao.partnershipExists(new PartnerAssociationPair (user1Id,user4Id));
+  //         const part2 = await dao.partnershipExists(new PartnerAssociationPair (user1Id,user2Id));
+  //         const part3 = await dao.partnershipExists(new PartnerAssociationPair (user3Id,user2Id));
+  //         const part4 = await dao.partnershipExists(new PartnerAssociationPair (user4Id,user3Id));
+
+  //         expect(part1).toEqual(true)
+  //         expect(part2).toEqual(true)
+  //         expect(part3).toEqual(false)
+  //         expect(part4).toEqual(false)
+  //     })
+  // })
 })

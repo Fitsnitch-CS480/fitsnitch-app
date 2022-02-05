@@ -5,28 +5,28 @@ import DB_TABLES from "./tables";
 
 export default class DynamoPartnerAssociationRequestDao implements PartnerAssociationRequestDao {
     private table = new TableAccessObject<PartnerRequest>(DB_TABLES.PARTNER_REQUESTS);
-    private partner1Index = this.table.createIndexAccessObject(DB_TABLES.PARTNER_REQUESTS);
+    private partner1Index = this.table.createIndexAccessObject(DB_TABLES.PARTNER_REQUESTS_BY_REQUESTEE);
     
     async createPartnerAssociationRequest(data: PartnerRequest) {
         await this.table.createOrUpdate(data);
     }
 
-    async existsRequest(data:PartnerRequest): Promise<boolean> {
-      let matches = await this.table.query(data.requesteeId,SortOp.EQUALS,data.requesterId);
+    async partnershipRequestExists(data:PartnerRequest): Promise<boolean> {
+      let matches = await this.table.query(data.requestee,SortOp.EQUALS,data.requester);
       return matches.length == 1;
   }
 
     // fat arrow funtion to preserve this context
     deletePartnerAssociationRequest = async (request: PartnerRequest) => {
-        return await this.table.deleteByKeys(request.requesteeId,request.requesterId);
+        return await this.table.deleteByKeys(request.requester,request.requestee);
     }
 
-    async getRequestsByRequestee(requesteeId: string): Promise<PartnerRequest[]> {
-        return await this.table.query(requesteeId);
+    async getRequestsByRequester(requester: string): Promise<PartnerRequest[]> {
+      return await this.table.query(requester);
     }
 
-    async getRequestsByRequester(requesterId: string): Promise<PartnerRequest[]> {
-        return await this.partner1Index.query(requesterId);
+    async getRequestsByRequestee(requestee: string): Promise<PartnerRequest[]> {
+        return await this.partner1Index.query(requestee);
     }
 
     // For wiping data

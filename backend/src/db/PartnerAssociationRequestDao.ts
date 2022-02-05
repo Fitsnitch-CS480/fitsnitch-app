@@ -5,19 +5,19 @@ export default interface PartnerAssociationRequestDao {
     createPartnerAssociationRequest(data:PartnerRequest);
     deletePartnerAssociationRequest(data:PartnerRequest);
 
-    existsRequest(data:PartnerRequest): Promise<boolean>;
+    partnershipRequestExists(data:PartnerRequest): Promise<boolean>;
 
     /**
-     * Finds all requests where this userId is the Trainer
+     * Finds all requests where this userId is the Requestee
      * @param userId 
      */
-    getRequestsByRequestee(userId:string): Promise<PartnerRequest[]>;
+    getRequestsByRequestee(reuesteeId:string): Promise<PartnerRequest[]>;
 
     /**
-     * Finds all requests where this userId is the Client
+     * Finds all requests where this userId is the Requester
      * @param userId 
      */
-    getRequestsByRequester(userId:string): Promise<PartnerRequest[]>;
+    getRequestsByRequester(reuesterId:string): Promise<PartnerRequest[]>;
 
     /**
      * Used when wiping a user's data. Removes any request with userId

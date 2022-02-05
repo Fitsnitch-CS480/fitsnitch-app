@@ -1,3 +1,4 @@
+import { PartnerStatusResponse } from './../../../react-native-app/shared/models/requests/PartnerStatusResponse';
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import LambaUtils from "../utils/LambdaUtils";
 import PartnerAssociationPair from "../../../react-native-app/shared/models/PartnerAssociationPair";
@@ -6,7 +7,7 @@ import RelationshipStatus from "../../../react-native-app/shared/constants/Relat
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
     return await LambaUtils.handleEventWithBody<PartnerAssociationPair>(event, async (pair,res)=>{
-        let status:RelationshipStatus = await new PartnerAssociationService().getRelationshipStatus(pair);
+        let status:PartnerStatusResponse = await new PartnerAssociationService().getRelationshipStatus(pair);
         res.setBodyToData(status);
         res.setCode(200);
         return res;
