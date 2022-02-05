@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import UserDataService from '../backend/services/UserDataService';
 import ProfileImage from '../components/ProfileImage';
 import { userContext } from '../navigation/mainNavigator';
-import { UserSearchRequest } from '../shared/models/requests/UserSearchRequest';
+import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import User from '../shared/models/User';
 
 type state = {
@@ -44,10 +44,9 @@ const UserSearch: React.FC = () => {
       return;
     }
     updateState({loading:true})
-    let page = await new UserDataService().userSearch(new UserSearchRequest(
-      state.query, undefined, PAGE_SIZE))
-      console.log(page.records.length)
-      updateState({
+    let page = await loadUntilResultsOrEnd(state.query, state.lastPageBreakKey)
+    console.log(page.records.length)
+    updateState({
       loading:false,
       results: page.records,
       lastPageBreakKey: page.pageBreakKey
@@ -59,13 +58,29 @@ const UserSearch: React.FC = () => {
     if (!state.query) return;
     console.log("loading next page")
     updateState({loading:true})
-    let page = await new UserDataService().userSearch(new UserSearchRequest(
-      state.query, state.lastPageBreakKey, PAGE_SIZE))
+    let page = await loadUntilResultsOrEnd(state.query, state.lastPageBreakKey)
     updateState({
       loading:false,
       results: state.results.concat(page.records),
       lastPageBreakKey: page.pageBreakKey
     })
+  }
+
+  /**
+   * Sometimes a page returns 0 results but hasn't looked at all records yet.
+   * This should probably be solved on the backend, but for now this method
+   * will keep requesting until it has no more pages or finds some results.
+   */
+  async function loadUntilResultsOrEnd(query:string, lastPageBreakKey:any): Promise<UserSearchResponse> {
+    let page = await new UserDataService().userSearch(new UserSearchRequest(
+      query, lastPageBreakKey, PAGE_SIZE))
+
+    while (page.pageBreakKey && page.records.length === 0) {
+      page = await new UserDataService().userSearch(new UserSearchRequest(
+      query, page.pageBreakKey, PAGE_SIZE))
+    }
+
+    return page;
   }
 
   function updateQuery(text:string) {

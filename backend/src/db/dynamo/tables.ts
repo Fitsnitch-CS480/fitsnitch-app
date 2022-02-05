@@ -47,6 +47,11 @@ const DB_TABLES = {
       primaryKey:"requestee",
       sortKey:"requester"
   },
+    SNITCHES: {
+        tableName:"Snitches",
+        primaryKey:"userId",
+        sortKey:"created"
+    }
 }
 
 export default DB_TABLES;

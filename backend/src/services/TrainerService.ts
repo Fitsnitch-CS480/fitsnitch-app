@@ -31,8 +31,14 @@ export default class TrainerService {
         return await DaoFactory.getTrainerRequestDao().getRequestsByClient(userId);
     }
     
-    async getRequestsByTrainer(userId:string):Promise<TrainerClientPair[]> {
-        return await DaoFactory.getTrainerRequestDao().getRequestsByTrainer(userId);
+    async getRequestsByTrainer(userId:string):Promise<User[]> {
+        let pairs = await DaoFactory.getTrainerRequestDao().getRequestsByTrainer(userId);
+        let requesters: User[] = [];
+        await Promise.all(pairs.map(async (pair)=>{
+            let user = await DaoFactory.getUserDao().getUser(pair.clientId)
+            if (user) requesters.push(user)
+        }))
+        return requesters;
     }
 
     //
@@ -49,11 +55,17 @@ export default class TrainerService {
         await DaoFactory.getTrainersDao().removeTrainerFromClient(data);
     }
     
-    async getClientIdsOfTrainer(userId:string):Promise<string[]> {
-        return await DaoFactory.getTrainersDao().getClientIdsOfTrainer(userId);
+    async getClientsOfTrainer(userId:string):Promise<User[]> {
+        let ids = await DaoFactory.getTrainersDao().getClientIdsOfTrainer(userId);
+        let clients: User[] = [];
+        await Promise.all(ids.map(async id=>{
+            let user = await DaoFactory.getUserDao().getUser(id)
+            if (user) clients.push(user)
+        }))
+        return clients;
     }
     
-    async getTrainerIdOfClient(userId:string):Promise<User|undefined> {
+    async getTrainerOfClient(userId:string):Promise<User|undefined> {
         let id = await DaoFactory.getTrainersDao().getTrainerIdOfClient(userId);
         return await DaoFactory.getUserDao().getUser(id);
     }

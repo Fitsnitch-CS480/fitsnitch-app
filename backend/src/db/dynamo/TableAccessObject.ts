@@ -1,4 +1,4 @@
-import { DynamoDB, ScanCommandInput, ScanCommandOutput, ScanInput } from '@aws-sdk/client-dynamodb'
+import { DynamoDB, QueryCommandInput, ScanCommandInput } from '@aws-sdk/client-dynamodb'
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb'
 
 export type TableSchema = {
@@ -135,7 +135,7 @@ export default class TableAccessObject<T> {
      * @param sortKeyValue2 If checking sort key, second operand for BETWEEN operator.
      * @returns An array with all matching rows.
      */
-    async query(primaryKeyValue:any, sortOperator?:SortOp, sortKeyValue1?:any, sortKeyValue2?:any): Promise<T[]> {
+     async query(primaryKeyValue:any, sortOperator?:SortOp, sortKeyValue1?:any, sortKeyValue2?:any): Promise<T[]> {
         let sortCondition = this.getSortCondition(sortOperator,sortKeyValue1,sortKeyValue2);
         let keyConditions = `${this.primaryKey} = ${PK_TOKEN} ${sortCondition ? (' and '+sortCondition) : ""}`;
 
@@ -179,22 +179,90 @@ export default class TableAccessObject<T> {
         return `${this.sortKey} ${sortOperator} ${S1_TOKEN}`;
     }
 
+
+    
+    /**
+     * A new version of the query method which allows more flexibility with coparisons and
+     * handles pagination.
+     * 
+     * Intended to query tables with SortKeys where multiple rows correspond to
+     * a single PrimaryKey value. Various comparisons can be performed on the
+     * SortKey values for specificity.
+     * 
+     * Example: Querying all Snitches for UserId (Primary Key) between dates A and B (Sort Key comparison).
+     * 
+     * @param primaryKeyValue 
+     * @param sortKeyCondition 
+     * @param pagination 
+     * @param filter 
+     * @returns 
+     */
+     async pageQuery(primaryKeyValue:any, sortKeyCondition?:Condition, pagination?:PaginationOptions, filter?:Condition, extraParams?:{[key:string]:any}): Promise<PaginatedResponse<T>> {
+        // Reusing the same counter ensures we don't repeat any aliases
+        let counter = new Counter();
+        let primaryKeyExpression = new Conditions.Equals(this.primaryKey,primaryKeyValue).buildExpression(counter);
+        let sortKeyExpression = sortKeyCondition?.buildExpression(counter);
+        let filterExpression = filter?.buildExpression(counter);
+
+        let params:Partial<QueryCommandInput> = this.getBasicParams(extraParams);
+
+        params.KeyConditionExpression = primaryKeyExpression.expression;
+
+        if (sortKeyCondition) {
+            params.KeyConditionExpression += " AND " + sortKeyExpression?.expression
+        }
+
+        if (filter) {
+            params.FilterExpression = filterExpression?.expression
+        }
+
+        let allExpressionVals = {
+            ...primaryKeyExpression.vals,
+            ...sortKeyExpression?.vals,
+            ...filterExpression?.vals
+        };
+
+        params.ExpressionAttributeValues = marshall(allExpressionVals);
+
+        if (pagination) {
+            params.ExclusiveStartKey = pagination.pageBreakKey ? JSON.parse(pagination.pageBreakKey) : undefined;
+            params.Limit = pagination.pageSize;
+        }
+
+        let {Items,LastEvaluatedKey} = await dynamoClient.query(params as QueryCommandInput);
+        if (!Items) Items = [];
+        let records = Items.map(i=>unmarshall(i) as T);
+
+        return {
+            records,
+            pageBreakKey: LastEvaluatedKey? JSON.stringify(LastEvaluatedKey) : undefined,
+            pageSize: pagination?.pageSize
+        }
+    }
+
+
+
+
+
+
+
+
     /**
      * Reads all items in table, filtering for thosee that match the provided conditions.
      * 
      * THIS IS THE MOST EXPENSIVE TYPE OF OPERATION! Use sparingly and wisely.
      * 
-     * @param condition Defines a filter for the values to be returned. If not provided,
+     * @param filter Defines a filter for the values to be returned. If not provided,
      * all records will be returned.
      * @param pagination Defines pagination options. If not provided, all matching items
      * will be returned until the read limit (1MB)
      * @returns 
      */
-    async scan(condition?:Condition, pagination?:PaginationOptions): Promise<PaginatedResponse<T>> {
-        let params:Partial<ScanCommandInput> = this.getBasicParams();
-        if (condition) {
-            let conditionVals = condition.toStringAndVals(new Counter());
-            params.FilterExpression = conditionVals.compString;
+    async scan(filter?:Condition, pagination?:PaginationOptions, extraParams?:{[key:string]:any}): Promise<PaginatedResponse<T>> {
+        let params:Partial<ScanCommandInput> = this.getBasicParams(extraParams);
+        if (filter) {
+            let conditionVals = filter.buildExpression(new Counter());
+            params.FilterExpression = conditionVals.expression;
             params.ExpressionAttributeValues = marshall(conditionVals.vals);
         }
 
@@ -215,16 +283,17 @@ export default class TableAccessObject<T> {
 
     }
 
-    private getBasicParams() {
+    private getBasicParams(extraParams?:any) {
         return {
             TableName: this.name,
             IndexName: this.index,
+            ...extraParams
         }
     }
 }
 
 abstract class Condition {
-    abstract toStringAndVals(counter:Counter): {compString:string, vals:{[alias:string]:any}};
+    abstract buildExpression(counter:Counter): {expression:string, vals:{[alias:string]:any}};
     protected abstract getConditionString(aliases:string[]): string;
 }
 
@@ -237,8 +306,8 @@ abstract class ComparisonCondition extends Condition {
 
     protected abstract getConditionString(aliases:string[]): string;
 
-    toStringAndVals(counter:Counter): {compString:string, vals:{[alias:string]:any}} {
-        let compString = "";
+    buildExpression(counter:Counter): {expression:string, vals:{[alias:string]:any}} {
+        let expression = "";
         let vals = {};
         let aliases:string[] = [];
         if (this.vals.length === 0) throw new Error(`No values provided for Condition '${this.operator}'`)
@@ -249,9 +318,9 @@ abstract class ComparisonCondition extends Condition {
             vals[alias] = v;
         })
         
-        compString = this.getConditionString(aliases)
+        expression = this.getConditionString(aliases)
 
-        return {compString, vals};
+        return {expression, vals};
     }
 
     protected getValueAlias(counter:Counter) {
@@ -279,21 +348,21 @@ abstract class LogicalCondition extends Condition {
 
     protected abstract getConditionString(aliases:string[]): string;
 
-    toStringAndVals(counter:Counter): {compString:string, vals:{[alias:string]:any}} {
-        let compString = "";
+    buildExpression(counter:Counter): {expression:string, vals:{[alias:string]:any}} {
+        let expression = "";
         let vals = {}
 
         if (this.conditions.length === 0) throw new Error(`No conditions provided for Condition '${this.operator}'`)
 
         let conditionStrings = this.conditions.map(c=>{
-            let cVals = c.toStringAndVals(counter);
+            let cVals = c.buildExpression(counter);
             Object.keys(cVals.vals).forEach(alias=>vals[alias] = cVals.vals[alias]);
-            return cVals.compString;
+            return cVals.expression;
         })
 
-        compString = this.getConditionString(conditionStrings)
+        expression = this.getConditionString(conditionStrings)
 
-        return {compString, vals};
+        return {expression, vals};
     }
 }
 
@@ -314,23 +383,23 @@ export class LogicalConditionChain extends Condition {
         super()
     }
 
-    toStringAndVals(counter: Counter): { compString: string; vals: { [alias: string]: any; }; } {
-        let compString = "";
+    buildExpression(counter: Counter): { expression: string; vals: { [alias: string]: any; }; } {
+        let expression = "";
         let vals = {}
 
         this.chain.forEach(c=>{
             if (c instanceof Condition) {
-                let cVals = c.toStringAndVals(counter);
+                let cVals = c.buildExpression(counter);
                 Object.keys(cVals.vals).forEach(alias=>vals[alias] = cVals.vals[alias]);
-                compString += `(${cVals.compString}) `;
+                expression += `(${cVals.expression}) `;
             }
             else {
-                compString += c+" ";
+                expression += c+" ";
             }
            
         })
 
-        return {compString, vals};
+        return {expression, vals};
     }
     protected getConditionString(conditionStrings: string[]): string {
         return "";
@@ -450,7 +519,7 @@ export const Conditions = {
 }
 
 export class Counter {
-    cnt = 0;
+    constructor(public cnt = 0){};
     inc = ()=> ++this.cnt
 }
 

@@ -15,6 +15,7 @@ export default class DynamoUserDao implements UserDao {
     }
 
     async getUser(id: string): Promise<User|undefined> {
+        if (!id) return undefined;
         let user = await this.userTable.getByPrimaryKey(id);
         // Convert UserTableData to Users
         return user ? tableDataToUser(user) : undefined;
