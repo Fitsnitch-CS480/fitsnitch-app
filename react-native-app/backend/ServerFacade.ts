@@ -1,3 +1,4 @@
+import { PartnerStatusResponse } from './../shared/models/requests/PartnerStatusResponse';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
@@ -166,36 +167,42 @@ class ExecutionError<T> extends ExecutionResult<T> {
   }
 
   // PARTNER / USER RELATIONSHIPS
-  static async getPartnerStatus(partner:User,user:User): Promise<RelationshipStatus> {
-    let res = await axios.post(this.apiBaseUrl+"/partner_get_status", new PartnerAssociationPair(partner.userId,user.userId));
-    console.log("PARTNER STATUS RESPONSE",res.data)
-    return res.data;
+  static async getPartnerStatus(partner:User,user:User): Promise<PartnerStatusResponse> {
+    let res = await executeRequest<PartnerStatusResponse>("/partner-get-status", new PartnerAssociationPair(user.userId,partner.userId));
+    console.log("PARTNER STATUS RESPONSE", res.data)
+    if(res.data){
+      return res.data;
+    }
+    return new PartnerStatusResponse(RelationshipStatus.NONEXISTENT)
   }
 
 
   static async requestPartnerForUser(partner:User,user:User) {
-    let res = await axios.post(this.apiBaseUrl+"/partner_request_create", new PartnerAssociationPair(partner.userId,user.userId));
+    let res = await executeRequest("/partner-request-create", new PartnerAssociationPair(partner.userId,user.userId), true);
     console.log("PARTNER REQUEST RESPONSE",res.status)
   }
   
   static async cancelPartnerRequest(partner:User,user:User) {
-    let res = await axios.post(this.apiBaseUrl+"/partner_request_cancel", new PartnerAssociationPair(partner.userId,user.userId));
+    let res = await executeRequest("/partner-request-cancel", new PartnerAssociationPair(partner.userId,user.userId), true);
     console.log("PARTNER REQUEST CANCEL RESPONSE",res.status)
   }
   
   static async approveUser(partner:User,user:User) {
-    let res = await axios.post(this.apiBaseUrl+"/partner_request_approve", new PartnerAssociationPair(partner.userId,user.userId));
+    let res = await executeRequest("/partner-request-approve", new PartnerAssociationPair(partner.userId,user.userId), true);
     console.log("PARTNER APPROVE RESPONSE",res.status)
   }
 
   static async removePartnerFromUser(partner:User,user:User) {
-    let res = await axios.post(this.apiBaseUrl+"/partner_remove", new PartnerAssociationPair(partner.userId,user.userId));
+    let res = await executeRequest("/partner-remove", new PartnerAssociationPair(partner.userId,user.userId), true);
     console.log("PARTNER REMOVE RESPONSE",res.status)
   }
 
   static async getUserPartner(userId:string): Promise<User|undefined> {
-    let res = await axios.post(this.apiBaseUrl+"/partner_get_for_client", asRawString(userId));
+    let res = await executeRequest<User>("/partner-get-for-client", asRawString(userId), true);
     console.log("USERS'S PARTNER",res.data)
-    return res.data
+    if(res.data){
+      return res.data;
+    }
+    return undefined
   }
 }

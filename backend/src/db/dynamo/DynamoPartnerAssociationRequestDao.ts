@@ -12,7 +12,7 @@ export default class DynamoPartnerAssociationRequestDao implements PartnerAssoci
     }
 
     async partnershipRequestExists(data:PartnerRequest): Promise<boolean> {
-      let matches = await this.table.query(data.requestee,SortOp.EQUALS,data.requester);
+      let matches = await this.partner1Index.query(data.requestee,SortOp.EQUALS,data.requester);
       return matches.length == 1;
   }
 

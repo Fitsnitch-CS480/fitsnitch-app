@@ -51,13 +51,16 @@ const Profile: React.FC<Props> = ({
 
               {!isCurrentUser ?              
               <View>
-                {/* Client/Trainer Relationship */}
-                <ClientTrainerRequestButton profileOwner={profileOwner}></ClientTrainerRequestButton>
-                {/* User/Partner Relationship */}
-                <PartnerAssociationRequestButton profileOwner={profileOwner}></PartnerAssociationRequestButton>
+                <View style={{paddingBottom: 5}}>
+                  {/* Client/Trainer Relationship */}
+                  <ClientTrainerRequestButton profileOwner={profileOwner}></ClientTrainerRequestButton>
+                </View>
+                <View style={{paddingTop : 5}}>
+                  {/* Client/Trainer Relationship */}
+                  <PartnerAssociationRequestButton profileOwner={profileOwner}></PartnerAssociationRequestButton>
+                </View>
               </View>
               : <></>}
-              
 
               <Text style={{fontSize: 15, paddingBottom: 5}}>
                 5 Partners: Chef Rush, +4
@@ -68,7 +71,7 @@ const Profile: React.FC<Props> = ({
                       Goals
                   </Text>
                 </View>
-                <View style={{}}>
+                <View>
                   <Text>
                     Edit
                   </Text>

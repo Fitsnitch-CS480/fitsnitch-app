@@ -30,17 +30,17 @@ describe(DynamoPartnerAssociationRequestDao, ()=>{
     })
 
 
-    //   describe("getRequestsByRequester", ()=>{
-    //       it("should create and get by requester", async ()=>{
-    //           await dao.createPartnerAssociationRequest(new PartnerRequest(user1Id,user2Id));
-    //           await dao.createPartnerAssociationRequest(new PartnerRequest(user1Id,user3Id));
-    //           let resRequesterRequests = await dao.getRequestsByRequester(user1Id);
+      describe("getRequestsByRequester", ()=>{
+          it("should create and get by requester", async ()=>{
+              await dao.createPartnerAssociationRequest(new PartnerRequest(user1Id,user2Id));
+              await dao.createPartnerAssociationRequest(new PartnerRequest(user1Id,user3Id));
+              let resRequesterRequests = await dao.getRequestsByRequester(user1Id);
   
-    //           expect(resRequesterRequests).toContainEqual(new PartnerRequest(user1Id,user2Id))
-    //           expect(resRequesterRequests).toContainEqual(new PartnerRequest(user1Id,user3Id))
-    //           console.log(resRequesterRequests);
-    //       })
-    //   })
+              expect(resRequesterRequests).toContainEqual(new PartnerRequest(user1Id,user2Id))
+              expect(resRequesterRequests).toContainEqual(new PartnerRequest(user1Id,user3Id))
+              console.log(resRequesterRequests);
+          })
+      })
 
     //   describe("getRequestsByRequestee", ()=>{
     //     it("should create and get by requestee", async ()=>{
@@ -86,6 +86,15 @@ describe(DynamoPartnerAssociationRequestDao, ()=>{
 
     //         resPartnerRequests = await dao.getRequestsByRequester(user1Id);
     //         expect(resPartnerRequests).toHaveLength(0);
+    //     })
+    // })
+
+    //    describe(dao.partnershipRequestExists, ()=>{
+    //     it("should return true for existing partnership request", async ()=>{
+    //         let request = new PartnerRequest(user1Id,user4Id);
+    //         await dao.createPartnerAssociationRequest(request);
+    //         let resRequestExists = await dao.partnershipRequestExists(new PartnerRequest(user1Id,user4Id));
+    //         expect(resRequestExists).toEqual(true)
     //     })
     // })
 })

@@ -1,9 +1,9 @@
-import RelationshipStatus from "../../shared/constants/RelationshipStatus";
+import { PartnerStatusResponse } from './../../shared/models/requests/PartnerStatusResponse';
 import User from "../../shared/models/User";
 import ServerFacade from "../ServerFacade";
 
 export default class PartnerAssociationService {
-    public async getPartnerStatus(partner:User,user:User): Promise<RelationshipStatus> {
+    public async getPartnerStatus(partner:User,user:User): Promise<PartnerStatusResponse> {
         return await ServerFacade.getPartnerStatus(partner,user);
     }
     
@@ -12,7 +12,7 @@ export default class PartnerAssociationService {
     }
     
     public async requestPartnerForUser(partner:User,user:User) {
-        await ServerFacade.requestTrainerForClient(partner,user);
+        await ServerFacade.requestPartnerForUser(partner,user);
     }
 
     public async cancelPartnerRequest(partner:User,user:User) {
