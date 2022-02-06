@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import { Button, StyleSheet, Text, View, Image, Alert, TextInput} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
+import User from '../shared/models/User';
+import ServerFacade from '../backend/ServerFacade';
 
 
 const SignUpView : React.FC = () => {
@@ -9,14 +11,34 @@ const SignUpView : React.FC = () => {
   const navigation = useNavigation();
   const [email, onChangeEmail] = useState('');
   const [password, onChangePassword] = useState('');
+  const [phoneNumber, onChangePhoneNumber] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
+  
 
   const signUpFunction = async () => {
         
     if (email.length > 4 && password.length > 2) {
-      await Auth.signUp(email, password, email)
-        .then((user) => {
+      if (!phoneNumber.includes("+1"))
+      {
+        onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
+        console.log('Phone number is: ', phoneNumber);
+      }
+      await Auth.signUp({
+        username : email,
+        password : password,
+        attributes: {
+          email : email,
+          phone_number : phoneNumber,
+        }
+      })
+        .then(async (cognitoSignUp) => {
+          console.log('Return from signUp information: ', cognitoSignUp);
+          
+          // Create User in DynamoDB too
+          let user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),undefined,undefined,undefined, phoneNumber)
+          await ServerFacade.createUser(user);
+          
           //Move to confirmation screen, user should get code in email.
           navigation.navigate('confirmation', {
             email
@@ -75,6 +97,7 @@ const SignUpView : React.FC = () => {
       <View style={styles.materialUnderlineTextboxStack}>
         <TextInput placeholder="Username" onChangeText={onChangeEmail}></TextInput>
         <TextInput placeholder="Password" secureTextEntry onChangeText={onChangePassword}></TextInput>
+        <TextInput placeholder="Phone Number" keyboardType='numeric' onChangeText={onChangePhoneNumber}></TextInput>
       </View>
       <Image
         source={require("../assets/images/image_bnui..png")}
