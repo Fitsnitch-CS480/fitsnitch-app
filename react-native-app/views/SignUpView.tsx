@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput} from 'react-native';
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput, KeyboardAvoidingView} from 'react-native';
+// import KeyboardAvoidingView from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
 import User from '../shared/models/User';
@@ -64,8 +65,13 @@ const SignUpView : React.FC = () => {
   };
 
   return (
+      
       <View style={styles.container}>
       
+      <KeyboardAvoidingView>
+
+      
+
       <View style={styles.image}>
         <Image
         source={require("../assets/images/image_bnui..png")}
@@ -121,7 +127,7 @@ const SignUpView : React.FC = () => {
       
       <Text style={styles.defaultText} onPress={() => navigation.navigate('login')}>Already have an account? Log In</Text> 
       
-      
+      </KeyboardAvoidingView>
     </View>
   );
 };
