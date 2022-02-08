@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { userContext } from '../navigation/mainNavigator';
 import User from '../shared/models/User';
 import ClientTrainerRequestButton from './ClientTrainerRequestButton';
+import PartnerAssociationRequestButton from './PartnerAssociationRequestButton';
 import ProfileImage from './ProfileImage';
 
 export type Props = {
@@ -50,11 +51,16 @@ const Profile: React.FC<Props> = ({
 
               {!isCurrentUser ?              
               <View>
-                {/* Client/Trainer Relationship */}
-                <ClientTrainerRequestButton profileOwner={profileOwner}></ClientTrainerRequestButton>
+                <View style={{paddingBottom: 5}}>
+                  {/* Client/Trainer Relationship */}
+                  <ClientTrainerRequestButton profileOwner={profileOwner}></ClientTrainerRequestButton>
+                </View>
+                <View style={{paddingTop : 5}}>
+                  {/* Client/Trainer Relationship */}
+                  <PartnerAssociationRequestButton profileOwner={profileOwner}></PartnerAssociationRequestButton>
+                </View>
               </View>
               : <></>}
-              
 
               <Text style={{fontSize: 15, paddingBottom: 5}}>
                 5 Partners: Chef Rush, +4
@@ -65,7 +71,7 @@ const Profile: React.FC<Props> = ({
                       Goals
                   </Text>
                 </View>
-                <View style={{}}>
+                <View>
                   <Text>
                     Edit
                   </Text>
