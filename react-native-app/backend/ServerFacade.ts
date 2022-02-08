@@ -5,6 +5,7 @@ import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests
 import TrainerClientPair from '../shared/models/TrainerClientPair';
 import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
 import User from '../shared/models/User'
+import PartnerRequest from '../shared/models/PartnerRequest';
 
 
 /**
@@ -178,17 +179,17 @@ class ExecutionError<T> extends ExecutionResult<T> {
 
 
   static async requestPartnerForUser(partner:User,user:User) {
-    let res = await executeRequest("/partner-request-create", new PartnerAssociationPair(partner.userId,user.userId), true);
+    let res = await executeRequest("/partner-request-create", new PartnerRequest(partner.userId,user.userId), true);
     console.log("PARTNER REQUEST RESPONSE",res.status)
   }
   
   static async cancelPartnerRequest(partner:User,user:User) {
-    let res = await executeRequest("/partner-request-cancel", new PartnerAssociationPair(partner.userId,user.userId), true);
+    let res = await executeRequest("/partner-request-cancel", new PartnerRequest(partner.userId,user.userId), true);
     console.log("PARTNER REQUEST CANCEL RESPONSE",res.status)
   }
   
   static async approveUser(partner:User,user:User) {
-    let res = await executeRequest("/partner-request-approve", new PartnerAssociationPair(partner.userId,user.userId), true);
+    let res = await executeRequest("/partner-request-approve", new PartnerRequest(partner.userId,user.userId), true);
     console.log("PARTNER APPROVE RESPONSE",res.status)
   }
 
@@ -197,12 +198,12 @@ class ExecutionError<T> extends ExecutionResult<T> {
     console.log("PARTNER REMOVE RESPONSE",res.status)
   }
 
-  static async getUserPartner(userId:string): Promise<User|undefined> {
-    let res = await executeRequest<User>("/partner-get-for-client", asRawString(userId), true);
+  static async getUserPartner(userId:string): Promise<User[]> {
+    let res = await executeRequest<User[]>("/partner-get-for-client", asRawString(userId), true);
     console.log("USERS'S PARTNER",res.data)
     if(res.data){
       return res.data;
     }
-    return undefined
+    return []
   }
 }

@@ -9,8 +9,6 @@ import User from '../shared/models/User';
 type state = {
   processing: boolean,
   relationship?: PartnerStatusResponse
-  requestee?: User
-  requester?: User
 }
 
 export type Props = {
@@ -22,8 +20,6 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
   const [state, setState] = useState<state>({
     processing:false,
     relationship: undefined,
-    requestee: undefined,
-    requester: undefined
   });
 
   let flexibleState: state = {...state};
@@ -56,29 +52,29 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
     })
   }
 
-  async function requestPartner(user:User,profileUser:User) {
-    updateState({processing:true, requester: user, requestee: profileUser})
+  async function requestPartner(requester:User,requestee:User) {
+    updateState({processing:true})
     console.log("hit before")
-    await new PartnerAssociationService().requestPartnerForUser(user,profileUser)
+    await new PartnerAssociationService().requestPartnerForUser(requester,requestee)
     console.log("hit after")
     updateState({relationship:undefined})
   }
 
-  async function cancelRequest(user:User,profileUser:User) {
-    updateState({processing:true, requester: undefined, requestee: undefined})
-    await new PartnerAssociationService().cancelPartnerRequest(user,profileUser)
+  async function cancelRequest(requester:User,requestee:User) {
+    updateState({processing:true})
+    await new PartnerAssociationService().cancelPartnerRequest(requester,requestee)
     updateState({relationship:undefined})
   }
   
-  async function approveUser(user:User,profileUser:User) {
-    updateState({processing:true, requester: undefined, requestee: undefined})
-    await new PartnerAssociationService().approveUser(user,profileUser)
+  async function approveUser(requester:User,requestee:User) {
+    updateState({processing:true})
+    await new PartnerAssociationService().approveUser(requester,requestee)
     updateState({relationship:undefined})
   }
 
-  async function endRelationship(user:User,profileUser:User) {
-    updateState({processing:true, requester: undefined, requestee: undefined})
-    await new PartnerAssociationService().removePartnerFromUser(user,profileUser)
+  async function endRelationship(requester:User,requestee:User) {
+    updateState({processing:true})
+    await new PartnerAssociationService().removePartnerFromUser(requester,requestee)
     updateState({relationship:undefined})
   }
 
@@ -94,20 +90,26 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
       <></>
     }
 
-    {state.relationship.status == RelationshipStatus.PENDING && currentUser == state.requestee?
+    {state.relationship.status == RelationshipStatus.PENDING && currentUser.userId == state.relationship.request?.requester?
       <View>
         <Text>You've requested {profileOwner.firstname} to be your partner</Text>
-        <Button title="Cancel Request" onPress={()=>cancelRequest(profileOwner,currentUser)}></Button>
+        <Button title="Cancel Request" onPress={()=>cancelRequest(currentUser,profileOwner)}></Button>
       </View>
     :
       <></>
     }
 
-{state.relationship.status == RelationshipStatus.PENDING && currentUser == state.requestee?
+{state.relationship.status == RelationshipStatus.PENDING && currentUser.userId == state.relationship.request?.requestee?
       <View>
         <Text>{profileOwner.firstname} wants you to be their partner!</Text>
-        <Button title="Cancel Request" onPress={()=>cancelRequest(profileOwner,currentUser)}></Button>
-        <Button title="Approve Request" onPress={()=>approveUser(profileOwner,currentUser)}></Button>
+        <View style={[styles.buttonContainer, styles.buttonContainerSideBySide]}>
+          <View style={styles.mainButton}>
+            <Button title={"Approve"} onPress={()=>approveUser(profileOwner,currentUser)}></Button>
+          </View>
+          <View style={styles.secondButton}>
+            <Button title={"Deny"} color="red" onPress={()=>cancelRequest(profileOwner,currentUser)}></Button>
+          </View>
+        </View>
       </View>
     :
       <></>
@@ -115,7 +117,7 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
 
     {state.relationship.status == RelationshipStatus.NONEXISTENT?
       <View>
-        <Button title={"Partner up with "+ profileOwner.firstname} onPress={()=>requestPartner(profileOwner, currentUser)}></Button>
+        <Button title={"Partner up with "+ profileOwner.firstname} onPress={()=>requestPartner(currentUser, profileOwner)}></Button>
       </View>
     :
       <></>
@@ -131,13 +133,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   buttonContainer: {
-    marginBottom: 5
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   mainButton: {
-    flexGrow: 2
+    flexGrow: 2,
+    width: '50%'
   },
   secondButton: {
     flexGrow: 1,
+    width: '50%'
   }
 })
 
