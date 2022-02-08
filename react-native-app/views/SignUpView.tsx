@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, KeyboardAvoidingView} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard} from 'react-native';
 // import KeyboardAvoidingView from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
@@ -16,12 +16,28 @@ const SignUpView : React.FC = () => {
   const [firstName, onChangeFirstName] = useState('');
   const [lastName, onChangeLastName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
+  const [hideView, setHideView] = useState(true);
   
+
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setHideView(false)
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setHideView(true)
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   const signUpFunction = async () => {
         
     if (email.length > 4 && password.length > 2) {
+      //may need to take this out of the signUpFunction since it's not doing the change immediatly as the Auth.signUp gets called
       if (!phoneNumber.includes("+1"))
       {
         onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
@@ -66,9 +82,11 @@ const SignUpView : React.FC = () => {
 
   return (
       
+
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
       
-      <KeyboardAvoidingView>
+      
 
       
 
@@ -80,11 +98,13 @@ const SignUpView : React.FC = () => {
         ></Image>
       </View>
       
+
+      {/* onFocus={() => setHideView(false)} onBlur={() => setHideView(true)} LEAVE THIS AS A COMMENT IN CASE I NEED TO GET BACK TO THIS SOLUTION */}
       <View style={styles.materialUnderlineTextboxStack}>
-        <TextInput placeholder="Username" onChangeText={onChangeEmail}></TextInput>
+        <TextInput placeholder="Username" onChangeText={onChangeEmail} ></TextInput>
         <TextInput placeholder="Password" secureTextEntry onChangeText={onChangePassword}></TextInput>
-        <TextInput placeholder="Phone Number" keyboardType='numeric' onChangeText={onChangePhoneNumber}></TextInput>
-        <TextInput placeholder="First Name" onChangeText={onChangeFirstName}></TextInput>
+        <TextInput placeholder="Phone Number"  keyboardType='numeric' onChangeText={onChangePhoneNumber}></TextInput>
+        <TextInput placeholder="First Name"  onChangeText={onChangeFirstName}></TextInput>
         <TextInput placeholder="Last Name" onChangeText={onChangeLastName}></TextInput>
       </View>
 
@@ -92,9 +112,9 @@ const SignUpView : React.FC = () => {
         <Button title="Sign Up" onPress={signUpFunction}></Button>
       </View>
       
-      <Text style={styles.defaultText}>--------------- OR ---------------</Text>
+      {hideView && <Text style={styles.defaultText}>--------------- OR ---------------</Text>}
 
-      <View style={styles.signUpRows}>
+      {hideView && <View style={styles.signUpRows}>
         <Image
           source={require("../assets/images/image_ia6Y..png")}
           resizeMode="contain"
@@ -103,9 +123,9 @@ const SignUpView : React.FC = () => {
         <Text style={styles.signUpOAuthText}>Sign up with Google</Text>
         {/* <Text style={styles.logInWithGoogle}>Sign up with Google</Text> */}
         
-      </View>
+      </View>}
 
-      <View style={styles.signUpRows}>
+      {hideView && <View style={styles.signUpRows}>
         <Image
           source={require("../assets/images/image_S68k..png")}
           resizeMode="contain"
@@ -113,9 +133,9 @@ const SignUpView : React.FC = () => {
         ></Image>
         {/* <Text style={styles.logInWithFacebook}>Sign up with Facebook</Text> */}
         <Text style={styles.signUpOAuthText}>Sign up with Facebook</Text>
-      </View>
+      </View>}
 
-      <View style={styles.signUpRows}>
+      {hideView && <View style={styles.signUpRows}>
         <Image
           source={require("../assets/images/image_nFko..png")}
           resizeMode="contain"
@@ -123,12 +143,13 @@ const SignUpView : React.FC = () => {
         ></Image>
         <Text style={styles.signUpOAuthText}>Sign up with Twitter</Text>
         {/* <Text style={styles.logInWithTwitter}>Sign up with Twitter</Text> */}
-      </View>
+      </View>}
       
-      <Text style={styles.defaultText} onPress={() => navigation.navigate('login')}>Already have an account? Log In</Text> 
+      {hideView && <Text style={styles.defaultText} onPress={() => navigation.navigate('login')}>Already have an account? Log In</Text>} 
       
-      </KeyboardAvoidingView>
+      
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
