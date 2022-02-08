@@ -11,6 +11,7 @@ import sound5 from '../assets/chefRushSoundBytes/sound5.m4a';
 import sound6 from '../assets/chefRushSoundBytes/sound6.m4a';
 
 import Sound from 'react-native-sound';
+import SocialShareBtn from '../components/SocialShareBtn';
 
 export type Props = {
   name: string;
@@ -146,6 +147,7 @@ const SnitchesView: React.FC<Props> = ({
             color="black"
             />
         </View>
+        <SocialShareBtn></SocialShareBtn>
       </View>
     </View>
     
