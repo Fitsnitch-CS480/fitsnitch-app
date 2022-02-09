@@ -5,7 +5,7 @@ import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
 interface Props{
   title: string,
   footer?: ReactNode,
-  children: ReactNode
+  children?: ReactNode
 }
 
 const PageSection: React.FC<Props> = ({title,footer,children}) => {
