@@ -79,31 +79,31 @@ describe(DynamoSnitchDao, ()=>{
 
     
 
-    describe("CRUD", ()=>{
-        it("perform all crud actions", async ()=>{
-            // CREATE and READ
+    // describe("CRUD", ()=>{
+    //     it("perform all crud actions", async ()=>{
+    //         // CREATE and READ
 
-            let snitch = generateFakeSnitch(user1Id, created1)
-            await dao.createSnitch(snitch);
-            let resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created));
+    //         let snitch = generateFakeSnitch(user1Id, created1)
+    //         await dao.createSnitch(snitch);
+    //         let resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created));
 
-            expect(resSnitch).toMatchObject(snitch)
-            console.log(resSnitch);
+    //         expect(resSnitch).toMatchObject(snitch)
+    //         console.log(resSnitch);
 
-            // UPDATE
-            snitch.restaurantData.name = "Domino's"
-            await dao.updateSnitch(snitch);
+    //         // UPDATE
+    //         snitch.restaurantData.name = "Domino's"
+    //         await dao.updateSnitch(snitch);
 
-            resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created));
-            expect(resSnitch).toMatchObject(snitch)
-            console.log(resSnitch);
+    //         resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created));
+    //         expect(resSnitch).toMatchObject(snitch)
+    //         console.log(resSnitch);
 
-            // DELETE
-            await dao.deleteSnitch(snitch);
-            resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created));
-            expect(resSnitch).toBeNull();
-            console.log(resSnitch);
-        })
-    })
+    //         // DELETE
+    //         await dao.deleteSnitch(snitch);
+    //         resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created));
+    //         expect(resSnitch).toBeNull();
+    //         console.log(resSnitch);
+    //     })
+    // })
 
 })
