@@ -70,7 +70,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
 
  export default class ServerFacade {
 
-  static async getUserById(userId: string): Promise<User|null> {
+  static async getUserById(userId: string): Promise<User|undefined> {
     let res = await executeRequest<User|null>("/user_get", asRawString(userId))
     return res.data as User
   }

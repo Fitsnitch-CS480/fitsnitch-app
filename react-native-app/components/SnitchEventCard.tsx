@@ -7,6 +7,7 @@ import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
 import moment from 'moment';
+import SnitchService from '../backend/services/SnitchService';
 
 export type Props = {
   snitch: SnitchEvent;
@@ -16,7 +17,7 @@ export type Props = {
 const SnitchEventCard: React.FC<Props> = ({
   snitch, user
 }) => {
-  const [snitchOwner, setSnitchOwner] = useState<User|null>(null)
+  const [snitchOwner, setSnitchOwner] = useState<User|undefined>(undefined)
   const [error, setError] = useState<string>("")
 
   useEffect(()=>{
@@ -29,6 +30,11 @@ const SnitchEventCard: React.FC<Props> = ({
     if (!user) {
       setError("Could not load Snitch")
     }
+  }
+
+  
+  function shareSnitch(snitch:SnitchEvent) {
+    new SnitchService().shareSnitch(snitch,snitchOwner)
   }
 
   const {currentUser} = useContext(userContext);
@@ -47,7 +53,7 @@ const SnitchEventCard: React.FC<Props> = ({
   return (
     <View style={styles.container}>
       <ProfileImage user={snitchOwner} size={40}></ProfileImage>
-      <View style={{marginLeft:10, width:'100%'}}>
+      <View style={{marginLeft:10, flexGrow:1}}>
         <Text style={{fontSize: 20}}>{snitchOwner.firstname} {snitchOwner.lastname}</Text>
         <View style={styles.details}>
           <View style={styles.detailRow}>
@@ -58,6 +64,9 @@ const SnitchEventCard: React.FC<Props> = ({
           <View style={styles.detailRowIcon}><Icon name="event" color="#888" size={18}></Icon></View>
             <Text>{getRelativeTime(snitch.created)}</Text>
           </View>
+    
+          <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
+
         </View>
       </View>
     </View>
@@ -72,22 +81,19 @@ function getRelativeTime(time:any) {
 }
 
 
-const EMPTY_COLOR = "grey";
-const PROGRESS_COLOR = "green";
-const SIZE = 45;
-
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'flex-start',
     paddingVertical: 10,
-    width: '100%'
+    width: '100%',
   },
   details: {
     display: 'flex',
     flexDirection: 'row',
-    marginTop: 10
+    marginTop: 10,
+    width: '100%',
   },
   detailRow : {
     flexGrow: 1,
@@ -98,7 +104,9 @@ const styles = StyleSheet.create({
   },
   detailRowIcon: {
     marginRight: 5
-  }
+  },
+  shareButton: {
+  },
 });
 
 export default SnitchEventCard;

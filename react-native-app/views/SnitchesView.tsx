@@ -53,6 +53,7 @@ const SnitchesView: React.FC = () => {
     return response;
   }
 
+
   let streak = (() => {
     if (!lastSnitch) return null;
     return {
@@ -83,10 +84,9 @@ const SnitchesView: React.FC = () => {
           loadNextPage={loadNextPage}
           itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
           renderItem={(snitch=>(
-            <>
-            <SnitchEventCard snitch={snitch} user={userDict.get(snitch.userId)}></SnitchEventCard>
-            <SocialShareBtn></SocialShareBtn>
-            </>
+            <View style={styles.snitchContainer}>
+              <SnitchEventCard snitch={snitch} user={userDict.get(snitch.userId)}></SnitchEventCard>
+            </View>
           ))}
         />
         
@@ -135,14 +135,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   snitchContainer: {
-    width: '100%',
-    paddingVertical: 10,
   },
-  divider: {
-    width: '100%',
-    borderBottomColor: '#ddd',
-    borderBottomWidth: 1
-  }
 });
 
 export default SnitchesView;
