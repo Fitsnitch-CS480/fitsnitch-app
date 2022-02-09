@@ -24,7 +24,6 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
   ,[])
   
   async function loadMoreResults() {
-    console.log("loading next page")
     setLoading(true);
     let page = await loadUntilResultsOrEnd(lastPage)
     if (lastPage) {
@@ -44,11 +43,9 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
    */
   async function loadUntilResultsOrEnd(lastPage?:TResponse): Promise<TResponse> {
     let page = lastPage;
-    console.log("loading more. Last:",lastPage)
     do {
       page = await loadNextPage(lastPage);
     } while (page && page.pageBreakKey && page.records.length === 0);
-    console.log("GOT PAGE!", page)
     return page;
   }
 
