@@ -12,6 +12,8 @@ target 'FitsnitchApp' do
     :hermes_enabled => false
   )
 
+  pod 'RNShare', :path => '../node_modules/react-native-share'
+
   target 'FitsnitchAppTests' do
     inherit! :complete
     # Pods for testing

@@ -1,9 +1,12 @@
+import { PartnerStatusResponse } from './../shared/models/requests/PartnerStatusResponse';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import { UserSnitchesRequest, UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import TrainerClientPair from '../shared/models/TrainerClientPair';
+import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
 import User from '../shared/models/User'
+import PartnerRequest from '../shared/models/PartnerRequest';
 
 
 /**
@@ -179,4 +182,36 @@ class ExecutionError<T> extends ExecutionResult<T> {
     }
     return res.data
   }
+
+  // PARTNER / USER RELATIONSHIPS
+  static async getPartnerStatus(partner:User,user:User): Promise<PartnerStatusResponse> {
+    let res = await executeRequest<PartnerStatusResponse>("/partner-get-status", new PartnerAssociationPair(user.userId,partner.userId));
+    console.log("PARTNER STATUS RESPONSE", res.data)
+    if(res.data){
+      return res.data;
+    }
+    return new PartnerStatusResponse(RelationshipStatus.NONEXISTENT)
+  }
+
+
+  static async requestPartnerForUser(partner:User,user:User) {
+    let res = await executeRequest("/partner-request-create", new PartnerRequest(partner.userId,user.userId), true);
+    console.log("PARTNER REQUEST RESPONSE",res.status)
+  }
+  
+  static async cancelPartnerRequest(partner:User,user:User) {
+    let res = await executeRequest("/partner-request-cancel", new PartnerRequest(partner.userId,user.userId), true);
+    console.log("PARTNER REQUEST CANCEL RESPONSE",res.status)
+  }
+  
+  static async approveUser(partner:User,user:User) {
+    let res = await executeRequest("/partner-request-approve", new PartnerRequest(partner.userId,user.userId), true);
+    console.log("PARTNER APPROVE RESPONSE",res.status)
+  }
+
+  static async removePartnerFromUser(partner:User,user:User) {
+    let res = await executeRequest("/partner-remove", new PartnerAssociationPair(partner.userId,user.userId), true);
+    console.log("PARTNER REMOVE RESPONSE",res.status)
+  }
+
 }

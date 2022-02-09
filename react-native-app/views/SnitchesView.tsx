@@ -10,6 +10,7 @@ import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import PaginatedList from '../components/PaginatedList';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
+import SocialShareBtn from '../components/SocialShareBtn';
 
 const PAGE_SIZE = 10
 
@@ -82,7 +83,10 @@ const SnitchesView: React.FC = () => {
           loadNextPage={loadNextPage}
           itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
           renderItem={(snitch=>(
+            <>
             <SnitchEventCard snitch={snitch} user={userDict.get(snitch.userId)}></SnitchEventCard>
+            <SocialShareBtn></SocialShareBtn>
+            </>
           ))}
         />
         
