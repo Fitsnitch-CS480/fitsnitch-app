@@ -61,7 +61,7 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
       ))}
 
       { loading ?
-        <View ><ActivityIndicator size={20} /></View>
+        <View style={styles.loadingWrapper}><ActivityIndicator size={30} /></View>
       :
         lastPage?.pageBreakKey && results.length > 0 ?
           <Button title="Load More" onPress={loadMoreResults}></Button>
@@ -81,6 +81,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd'
+  },
+  loadingWrapper: {
+    padding: 20
   }
 })
 export default PaginatedList;
