@@ -72,10 +72,6 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
 const styles = StyleSheet.create({
   resultRow: {
     backgroundColor: "white",
-    padding: 10,
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd'
   },
