@@ -186,7 +186,6 @@ class ExecutionError<T> extends ExecutionResult<T> {
   // PARTNER / USER RELATIONSHIPS
   static async getPartnerStatus(partner:User,user:User): Promise<PartnerStatusResponse> {
     let res = await executeRequest<PartnerStatusResponse>("/partner-get-status", new PartnerAssociationPair(user.userId,partner.userId));
-    console.log("PARTNER STATUS RESPONSE", res.data)
     if(res.data){
       return res.data;
     }
@@ -194,24 +193,29 @@ class ExecutionError<T> extends ExecutionResult<T> {
   }
 
 
+  static async getUserPartners(userId:string): Promise<User[]> {
+    let res = await executeRequest<User[]>("/partner_get_for_user", asRawString(userId), true);
+    if (res.error || !res.data) {
+      // give error feedback in UI
+      return []
+    }
+    return res.data
+  }
+  
   static async requestPartnerForUser(partner:User,user:User) {
-    let res = await executeRequest("/partner-request-create", new PartnerRequest(partner.userId,user.userId), true);
-    console.log("PARTNER REQUEST RESPONSE",res.status)
+    let res = await executeRequest("/partner-request-create", new PartnerRequest(partner.userId,user.userId));
   }
   
   static async cancelPartnerRequest(partner:User,user:User) {
-    let res = await executeRequest("/partner-request-cancel", new PartnerRequest(partner.userId,user.userId), true);
-    console.log("PARTNER REQUEST CANCEL RESPONSE",res.status)
+    let res = await executeRequest("/partner-request-cancel", new PartnerRequest(partner.userId,user.userId));
   }
   
   static async approveUser(partner:User,user:User) {
-    let res = await executeRequest("/partner-request-approve", new PartnerRequest(partner.userId,user.userId), true);
-    console.log("PARTNER APPROVE RESPONSE",res.status)
+    let res = await executeRequest("/partner-request-approve", new PartnerRequest(partner.userId,user.userId));
   }
 
   static async removePartnerFromUser(partner:User,user:User) {
-    let res = await executeRequest("/partner-remove", new PartnerAssociationPair(partner.userId,user.userId), true);
-    console.log("PARTNER REMOVE RESPONSE",res.status)
+    let res = await executeRequest("/partner-remove", new PartnerAssociationPair(partner.userId,user.userId));
   }
 
 }

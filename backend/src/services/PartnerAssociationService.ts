@@ -3,6 +3,7 @@ import RelationshipStatus from "../../../react-native-app/shared/constants/Relat
 import PartnerAssociationPair from "../../../react-native-app/shared/models/PartnerAssociationPair";
 import PartnerRequest from "../../../react-native-app/shared/models/PartnerRequest";
 import DaoFactory from "../db/DaoFactory";
+import User from '../../../react-native-app/shared/models/User';
 
 export default class PartnerAssociationService {
 
@@ -58,7 +59,13 @@ np
         await DaoFactory.getPartnerAssociationDao().removePartnership(data);
     }
     
-    async getPartnerIdsOfUser(userId:string):Promise<string[]> {
-        return await DaoFactory.getPartnerAssociationDao().getPartnerIdsOfUser(userId);
+    async getPartnersOfUser(userId:string):Promise<User[]> {
+        let ids = await DaoFactory.getPartnerAssociationDao().getPartnerIdsOfUser(userId);
+        let partners: User[] = [];
+        await Promise.all(ids.map(async id=>{
+            let user = await DaoFactory.getUserDao().getUser(id)
+            if (user) partners.push(user)
+        }))
+        return partners;
     }
 }
