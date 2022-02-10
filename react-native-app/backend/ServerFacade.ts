@@ -205,17 +205,26 @@ class ExecutionError<T> extends ExecutionResult<T> {
   static async requestPartnerForUser(partner:User,user:User) {
     let res = await executeRequest("/partner-request-create", new PartnerRequest(partner.userId,user.userId));
   }
+
+  static async getPartnerRequesters(userId:string): Promise<User[]> {
+    let res = await executeRequest<User[]>("/partner_get_requesters", asRawString(userId), true);
+    if (res.error || !res.data) {
+      // give error feedback in UI
+      return []
+    }
+    return res.data
+}
   
-  static async cancelPartnerRequest(partner:User,user:User) {
-    let res = await executeRequest("/partner-request-cancel", new PartnerRequest(partner.userId,user.userId));
+  static async cancelPartnerRequest(requester:User,requestee:User) {
+    let res = await executeRequest("/partner-request-cancel", new PartnerRequest(requester.userId,requestee.userId));
   }
   
-  static async approveUser(partner:User,user:User) {
-    let res = await executeRequest("/partner-request-approve", new PartnerRequest(partner.userId,user.userId));
+  static async approvePartnerRequest(requester:User,requestee:User) {
+    let res = await executeRequest("/partner-request-approve", new PartnerRequest(requester.userId,requestee.userId));
   }
 
-  static async removePartnerFromUser(partner:User,user:User) {
-    let res = await executeRequest("/partner-remove", new PartnerAssociationPair(partner.userId,user.userId));
+  static async removePartnerFromUser(id1:User,id2:User) {
+    let res = await executeRequest("/partner-remove", new PartnerAssociationPair(id1.userId,id2.userId));
   }
 
 }

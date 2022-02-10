@@ -18,6 +18,16 @@ export default class UserService {
     async getUser(id: string): Promise<User|undefined> {
         return await DaoFactory.getUserDao().getUser(id);
     }
+    
+    async getExistingUsers(ids: string[]): Promise<User[]> {
+        let dao = DaoFactory.getUserDao();        
+        let users: User[] = [];
+        await Promise.all(ids.map(async id=>{
+            let user = await dao.getUser(id)
+            if (user) users.push(user)
+        }))
+        return users;
+    }
 
     /**
      * Handles removing all user data upon account deletion

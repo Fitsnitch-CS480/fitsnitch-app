@@ -4,29 +4,32 @@ import PartnerAssociationPair from "../../../react-native-app/shared/models/Part
 import PartnerRequest from "../../../react-native-app/shared/models/PartnerRequest";
 import DaoFactory from "../db/DaoFactory";
 import User from '../../../react-native-app/shared/models/User';
+import UserService from './UserService';
 
 export default class PartnerAssociationService {
 
-  async getRelationshipStatus(pair: PartnerAssociationPair): Promise<PartnerStatusResponse> {
-    let partnerRequest = new PartnerRequest(pair.partnerId1, pair.partnerId2);
-    let pending = await DaoFactory.getPartnerAssociationRequestDao().partnershipRequestExists(partnerRequest);
+    async getRelationshipStatus(pair: PartnerAssociationPair): Promise<PartnerStatusResponse> {
+        let partnerRequest = new PartnerRequest(pair.partnerId1, pair.partnerId2);
+        let pending = await DaoFactory.getPartnerAssociationRequestDao().partnershipRequestExists(partnerRequest);
 
-    if (pending) return new PartnerStatusResponse(RelationshipStatus.PENDING, partnerRequest);
+        if (pending) return new PartnerStatusResponse(RelationshipStatus.PENDING, partnerRequest);
 
-    partnerRequest = new PartnerRequest(pair.partnerId2, pair.partnerId1);
-    pending = await DaoFactory.getPartnerAssociationRequestDao().partnershipRequestExists(partnerRequest);
+        partnerRequest = new PartnerRequest(pair.partnerId2, pair.partnerId1);
+        pending = await DaoFactory.getPartnerAssociationRequestDao().partnershipRequestExists(partnerRequest);
 
-    if (pending) return new PartnerStatusResponse(RelationshipStatus.PENDING, partnerRequest);
-    
-    let approved = await DaoFactory.getPartnerAssociationDao().partnershipExists(pair);
-    if (approved) return new PartnerStatusResponse(RelationshipStatus.APPROVED, undefined);;
+        if (pending) return new PartnerStatusResponse(RelationshipStatus.PENDING, partnerRequest);
+        
+        let approved = await DaoFactory.getPartnerAssociationDao().partnershipExists(pair);
+        if (approved) return new PartnerStatusResponse(RelationshipStatus.APPROVED, undefined);;
 
-    return new PartnerStatusResponse(RelationshipStatus.NONEXISTENT, undefined);
-}
+        return new PartnerStatusResponse(RelationshipStatus.NONEXISTENT, undefined);
+    }
+
+
     //
     // REQUESTS
     //
-np
+
     async requestPartnerAssociation(data: PartnerRequest) {
       // console.log("this is data for request partner: ", data)
         await DaoFactory.getPartnerAssociationRequestDao().createPartnerAssociationRequest(data);
@@ -36,12 +39,14 @@ np
         await DaoFactory.getPartnerAssociationRequestDao().deletePartnerAssociationRequest(data);
     }
     
-    async getRequestsByRequester(userId:string):Promise<PartnerRequest[]> {
-        return await DaoFactory.getPartnerAssociationRequestDao().getRequestsByRequester(userId);
+    async getRequesteesByRequester(userId:string):Promise<User[]> {
+        let requests = await DaoFactory.getPartnerAssociationRequestDao().getRequestsByRequestee(userId);
+        return new UserService().getExistingUsers(requests.map(r=>r.requestee));
     }
     
-    async getRequestsByRequestee(userId:string):Promise<PartnerRequest[]> {
-        return await DaoFactory.getPartnerAssociationRequestDao().getRequestsByRequestee(userId);
+    async getRequestersByRequestee(userId:string):Promise<User[]> {
+        let requests = await DaoFactory.getPartnerAssociationRequestDao().getRequestsByRequestee(userId);
+        return new UserService().getExistingUsers(requests.map(r=>r.requester));
     }
 
     //
@@ -61,11 +66,7 @@ np
     
     async getPartnersOfUser(userId:string):Promise<User[]> {
         let ids = await DaoFactory.getPartnerAssociationDao().getPartnerIdsOfUser(userId);
-        let partners: User[] = [];
-        await Promise.all(ids.map(async id=>{
-            let user = await DaoFactory.getUserDao().getUser(id)
-            if (user) partners.push(user)
-        }))
-        return partners;
+        return new UserService().getExistingUsers(ids);
     }
+
 }
