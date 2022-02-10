@@ -26,7 +26,7 @@ const LoginView : React.FC = () => {
     if (email.length > 4 && password.length > 2) {
       await Auth.signIn(email, password)
         //If we get a user back, setCurrentUser in mainNavigator.
-        .then(async (userCognitoData) => {
+        .then(async (userCognitoData:any) => {
           console.log("USER LOGGED IN: ", userCognitoData.attributes);
           // Use the UserID from Cognito to look up the User in our DB
           let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
@@ -53,22 +53,16 @@ const LoginView : React.FC = () => {
           setCurrentUser(user);
         })
         //Handle the multiple errors
-        .catch((err) => {
-          console.log(':',err);
-          if (!err.message) {
-            console.log('1 Error when signing in: ', err);
-            Alert.alert('Error when signing in: ', err);
+        .catch((err:any) => {
+          if (err.code === 'UserNotConfirmedException') {
+            console.log('User not confirmed');
+            navigation.navigate('confirmation', {
+              email,
+            });
           }
           else {
-            if (err.code === 'UserNotConfirmedException') {
-              console.log('User not confirmed');
-              navigation.navigate('confirmation', {
-                email,
-              });
-            }
-            if (err.message) {
-              Alert.alert("Could not log in", err.message);
-            }
+            console.log('Could not log in',err);
+            Alert.alert("Could not log in", err.message);
           }
           setLoading(false)
         });
