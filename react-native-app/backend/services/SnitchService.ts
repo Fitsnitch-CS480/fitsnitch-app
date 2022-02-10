@@ -10,10 +10,11 @@ import { notifyMessage } from "../../utils/UiUtils";
 
 export default class SnitchService {
     public async getFeedUsers(userId:string): Promise<User[]> {
-        let feedUsers: User[] = [];
-        feedUsers.push(... await ServerFacade.getUserClients(userId))
-        // TODO get Partners
-        return feedUsers;
+        let user = await ServerFacade.getUserById(userId)
+        if (!user) throw new Error("Could not get user: "+userId)
+        let clients = await ServerFacade.getUserClients(userId)
+        let partners = await ServerFacade.getUserPartners(userId)
+        return Array.from(new Set([user, ...clients, ...partners]));
     }
 
     public async getUserSnitchFeedPage(feedIds:string[],lastPage?:UserSnitchesResponse): Promise<UserSnitchesResponse> {
