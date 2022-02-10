@@ -7,10 +7,6 @@ export default class PartnerAssociationService {
         return await ServerFacade.getPartnerStatus(partner,user);
     }
     
-    public async getUserPartner(userId:string): Promise<User|undefined> {
-        return await ServerFacade.getUserPartner(userId);
-    }
-    
     public async requestPartnerForUser(partner:User,user:User) {
         await ServerFacade.requestPartnerForUser(partner,user);
     }

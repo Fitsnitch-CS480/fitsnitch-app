@@ -20,7 +20,6 @@ const TrainerRequests: React.FC = () => {
   
   useEffect(()=>{
     new ClientTrainerService().getTrainerRequestsByTrainer(currentUser.userId).then((requests)=>{
-      console.log({requests})
       setRequests(requests)
     });  
   }, [])

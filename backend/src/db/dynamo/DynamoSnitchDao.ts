@@ -105,7 +105,8 @@ export default class DynamoSnitchDao implements SnitchDao {
     }
 
     async getUserSnitches(userId: string, pagination: PaginationOptions): Promise<UserSnitchesResponse> {
-        let page = await this.table.pageQuery(userId,undefined,pagination);
+        let page = await this.table.pageQuery(userId,undefined,pagination,undefined,{ScanIndexForward: false});
+        console.log("one user",page)
         return new UserSnitchesResponse(page.records, page.pageBreakKey, page.pageSize)
     }
 

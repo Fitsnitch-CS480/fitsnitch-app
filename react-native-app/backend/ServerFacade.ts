@@ -2,6 +2,7 @@ import { PartnerStatusResponse } from './../shared/models/requests/PartnerStatus
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
+import { UserSnitchesRequest, UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import TrainerClientPair from '../shared/models/TrainerClientPair';
 import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
 import User from '../shared/models/User'
@@ -22,7 +23,7 @@ function asRawString(data:string) {
 
 async function executeRequest<TResponse>(path:string, payload:any, print:boolean = false): Promise<ExecutionResult<TResponse>> {
   let tag = path+" "+Date.now();
-  if (print) console.log(tag+": Executing Request");
+  if (print) console.log(tag+": Executing Request\n", JSON.stringify(payload,null,2));
   try {
     let res = await axios.post(apiBaseUrl+path, payload);  
     if (print) console.log(tag+" Response\n", JSON.stringify(res.data,null,2))
@@ -31,8 +32,8 @@ async function executeRequest<TResponse>(path:string, payload:any, print:boolean
   catch (e:any) {
     console.log("HTTP ERROR --------------")
     console.log("Request:", tag)
-    console.log("Payload:", payload);
-    console.log("Error:",e)
+    console.log("Payload:\n",  JSON.stringify(payload,null,2));
+    console.log("Error:", e)
     console.log("-------------------------")
     return new ExecutionError<TResponse>(e);
   }
@@ -69,7 +70,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
 
  export default class ServerFacade {
 
-  static async getUserById(userId: string): Promise<User|null> {
+  static async getUserById(userId: string): Promise<User|undefined> {
     let res = await executeRequest<User|null>("/user_get", asRawString(userId))
     return res.data as User
   }
@@ -149,7 +150,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
   }
 
   static async getUserClients(userId:string): Promise<User[]> {
-    let res = await executeRequest<User[]>("/trainer_get_clients", asRawString(userId), true);
+    let res = await executeRequest<User[]>("/trainer_get_clients", asRawString(userId));
     if (res.error || !res.data) {
       // give error feedback in UI
       return []
@@ -163,6 +164,21 @@ class ExecutionError<T> extends ExecutionResult<T> {
     if (res.error || !res.data) {
       // give error feedback in UI
       return []
+    }
+    return res.data
+  }
+
+
+  // SNITCHES
+  static async getUserSnitchFeedPage(pageRequest: UserSnitchesRequest): Promise<UserSnitchesResponse> {
+    let res = await executeRequest<UserSnitchesResponse>("/snitch-get-for-users", pageRequest);
+    if (res.error || !res.data) {
+      // give error feedback in UI
+      return {
+        records:[],
+        pageBreakKey: pageRequest.pageBreakKey,
+        pageSize: pageRequest.pageSize
+      }
     }
     return res.data
   }
@@ -198,12 +214,4 @@ class ExecutionError<T> extends ExecutionResult<T> {
     console.log("PARTNER REMOVE RESPONSE",res.status)
   }
 
-  static async getUserPartner(userId:string): Promise<User[]> {
-    let res = await executeRequest<User[]>("/partner-get-for-client", asRawString(userId), true);
-    console.log("USERS'S PARTNER",res.data)
-    if(res.data){
-      return res.data;
-    }
-    return []
-  }
 }

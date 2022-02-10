@@ -20,6 +20,7 @@
     "amazon-cognito-identity-js": "^5.2.3",
     "axios": "^0.24.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "react": "^17.0.2",
     "react-native": "^0.66.3",
     "react-native-encrypted-storage": "^4.0.2",

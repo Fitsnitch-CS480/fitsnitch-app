@@ -1,174 +1,141 @@
-import React, { useState } from 'react';
-import { Button, StyleSheet, Text, View, Alert } from 'react-native';
-import Timer from '../models/Timer';
-import SnitchPopUp from'../components/SnitchPopUp';
-import ServerFacade from '../backend/ServerFacade';
-import sound1 from '../assets/chefRushSoundBytes/sound1.m4a';
-import sound2 from '../assets/chefRushSoundBytes/sound2.m4a';
-import sound3 from '../assets/chefRushSoundBytes/sound3.m4a';
-import sound4 from '../assets/chefRushSoundBytes/sound4.m4a';
-import sound5 from '../assets/chefRushSoundBytes/sound5.m4a';
-import sound6 from '../assets/chefRushSoundBytes/sound6.m4a';
-
-import Sound from 'react-native-sound';
+import React, { useContext, useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import SnitchService from '../backend/services/SnitchService';
+import PageSection from '../components/PageSection';
+import SnitchEventCard from '../components/SnitchEventCard';
+import { userContext } from '../navigation/mainNavigator';
+import moment from 'moment';
+import SnitchEvent from '../shared/models/SnitchEvent';
+import User from '../shared/models/User';
+import PaginatedList from '../components/PaginatedList';
+import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import SocialShareBtn from '../components/SocialShareBtn';
 
-export type Props = {
-  name: string;
-};
-const SnitchesView: React.FC<Props> = ({
-  name
-}) => {
-  const [buttonPopup, setButtonPopup] = useState(false);
-  const [timedPopUp, setTimedPopUp] = useState(false);
-  const timer = new Timer();
-  // Sound.setCatergory('Playback');
+const PAGE_SIZE = 10
 
-  const voice1 = new Sound(sound1, Sound.MAIN_BUNDLE, (error) =>{
-    if(error) {
-      console.log("failed to load sound", error);
-      return;
-    }
-    console.log("duration in seconds: " + sound1.getDuration()+ "\n");
-  });
-  const voice2 = new Sound(sound2, Sound.MAIN_BUNDLE, (error) =>{
-    if(error) {
-      console.log("failed to load sound", error);
-      return;
-    }
-    console.log("duration in seconds: " + sound1.getDuration()+ "\n");
-  });
-  const voice3 = new Sound(sound3, Sound.MAIN_BUNDLE, (error) =>{
-    if(error) {
-      console.log("failed to load sound", error);
-      return;
-    }
-    console.log("duration in seconds: " + sound1.getDuration()+ "\n");
-  });
-  const voice4 = new Sound(sound4, Sound.MAIN_BUNDLE, (error) =>{
-    if(error) {
-      console.log("failed to load sound", error);
-      return;
-    }
-    console.log("duration in seconds: " + sound1.getDuration()+ "\n");
-  });
-  const voice5 = new Sound(sound5, Sound.MAIN_BUNDLE, (error) =>{
-    if(error) {
-      console.log("failed to load sound", error);
-      return;
-    }
-    console.log("duration in seconds: " + sound1.getDuration()+ "\n");
-  });
-  const voice6 = new Sound(sound6, Sound.MAIN_BUNDLE, (error) =>{
-    if(error) {
-      console.log("failed to load sound", error);
-      return;
-    }
-    console.log("duration in seconds: " + sound1.getDuration()+ "\n");
-  });
-  voice1.setVolume(1);
-  voice2.setVolume(1);
-  voice3.setVolume(1);
-  voice4.setVolume(1);
-  voice5.setVolume(1);
-  voice6.setVolume(1);
+const SnitchesView: React.FC = () => {
+  const [lastSnitch, setLastSnitch] = useState<SnitchEvent|undefined>(undefined);
+  const [userDict, setUserDict] = useState<Map<string,User>>(new Map());
+  const [feedIds, setFeedIds] = useState<string[]|null>(null);
 
+  const {currentUser} = useContext(userContext);
 
-  let onTimesUp = async () => {
-    setButtonPopup(false);
-    Alert.alert("You've Been Snitched On!",
-    "Open FitSnitch to request a change or use a cheat meal");
-    //Send snitch
-    ServerFacade.reportSnitch();
+  useEffect(()=>{
+    getFeedUsers();
+  }, [])
+
+  if (!feedIds) return null;
+
+  async function getFeedUsers() {
+    if (!currentUser) throw new Error("There is no logged in user!")
+    let users = await new SnitchService().getFeedUsers(currentUser.userId)
+    let ids:string[] = [];
+    let map = new Map<string, User>();
+    users.forEach(u=>{
+      ids.push(u.userId)
+      map.set(u.userId,u)
+    })
+    setFeedIds(ids)
+    setUserDict(map)
   }
-  
-  let checkLocation = async () => {
-    const response = await ServerFacade.checkLocation();
-    console.log(response);
-    if(response.status == 200){
-      voice1.play(success => {
-        if(success){
-          voice2.play(success => {
-            if(success){
-              voice3.play(success => {
-                if(success){
-                  voice4.play(success => {
-                    if(success){
-                      voice5.play(success => {
-                        if(success){
-                          voice6.play();
-                        }
-                        else{
-                          console.log("failed to play 6");
-                        }
-                      });
-                    }
-                    else{
-                      console.log("failed to play 5");
-                    }
-                  });
-                }
-                else{
-                  console.log("failed to play 4");
-                }
-              });
-            }
-            else{
-              console.log("failed to play 2");
-            }
-          });
-        }
-        else{
-          console.log("failed to play 1");
-        }
-      }
-      );
-      setButtonPopup(true);
+
+  async function loadNextPage(prevPage?: UserSnitchesResponse) {
+    if (!feedIds) throw new Error("There are no users for the feed!")
+    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:PAGE_SIZE}
+    let response = await new SnitchService().getUserSnitchFeedPage(feedIds,page)
+    response.records.sort((a,b)=>a.created<b.created?1:-1)
+    if (!prevPage) {
+      // The process of loading the feed also gets all feed user data, so let's save that
+      // rather than askig for it again later
+      setLastSnitch(response.records[0])
     }
+    return response;
   }
+
+
+  let streak = (() => {
+    if (!lastSnitch) return null;
+    return {
+      qty: moment().diff(moment(lastSnitch.created), 'd'),
+      unit: 'day'
+    }
+  })();
 
   return (
+  <ScrollView style={{height: '100%'}}>
     <View style={styles.container}>
-      <View>
-        <View>
-          <SnitchPopUp trigger={buttonPopup} setTrigger={setButtonPopup}>
-            <Timer onTimesUp={onTimesUp} duration={30}/>
-          </SnitchPopUp>
-        </View>
-        <View style={styles.container2}>
-          <Text style={styles.greeting}>
-          Demo Snitch on {name || "Andre"}
-          {checkLocation}
-          </Text>
-            <Button
-            title="Run Demo"
-            accessibilityLabel="demo"
-            onPress={checkLocation} 
-            color="black"
-            />
-        </View>
-        <SocialShareBtn></SocialShareBtn>
-      </View>
+      { streak ? 
+        <PageSection title='Snitch-Free Streak'>
+          <View style={styles.streakWrapper}>
+            <View style={[styles.streakChild, styles.streakFire]}><Icon name="whatshot" color="red" size={55} /></View>
+            <Text style={[styles.streakChild, styles.streakQty]}>
+              <Text>{streak.qty}</Text>
+              <Text style={styles.streakUnit}>&nbsp;{streak.unit}{streak.qty === 1 ? '' : 's'}</Text>
+            </Text>
+          </View>
+        </PageSection>      
+      :
+        null
+      }
+
+      <PageSection title="Recent Snitches">
+        <PaginatedList
+          loadNextPage={loadNextPage}
+          itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
+          renderItem={(snitch=>(
+            <View style={styles.snitchContainer}>
+              <SnitchEventCard snitch={snitch} user={userDict.get(snitch.userId)}></SnitchEventCard>
+            </View>
+          ))}
+        />
+        
+        {/* { snitches.map((s,i) => (
+          <>
+          <View style={styles.snitchContainer} key={s.created+s.userId}>
+            <SnitchEventCard snitch={s} user={knownUsers.get(s.userId)}></SnitchEventCard>
+          </View>
+          <View style={styles.divider} />
+          </>
+        ))} */}
+
+      </PageSection>
     </View>
-    
+  </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  streakWrapper: {
+    position: "relative",
+    height: 80,
+  },
+  streakChild: {
+    position: "absolute",
+  },
+  streakFire: {
+    left: 0,
+    bottom: 0
+  },
+  streakQty: {
+    left: 60,
+    fontSize: 100,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    bottom: -20,
+  },
+  streakUnit: {
+    fontSize: 30,
+    marginLeft: 5
+  },
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-around',
     backgroundColor: 'white',
+    width: '100%',
   },
-  greeting: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    margin: 16
+  snitchContainer: {
   },
-  container2: {
-    marginTop: 100
-  }
 });
 
 export default SnitchesView;
