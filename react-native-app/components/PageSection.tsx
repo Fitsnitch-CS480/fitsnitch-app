@@ -4,16 +4,20 @@ import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
 
 interface Props{
   title: string,
+  headerRight?: ReactNode,
   footer?: ReactNode,
   children?: ReactNode
 }
 
-const PageSection: React.FC<Props> = ({title,footer,children}) => {
+const PageSection: React.FC<Props> = ({title,headerRight,footer,children}) => {
   return (
     <View
       style={styles.sectionWrapper}
     >
-      <View style={styles.section}><Text style={styles.headerText}>{title}</Text></View>
+      <View style={[styles.headerWrapper, styles.section]}>
+        <Text style={styles.headerText}>{title}</Text>
+        {headerRight}
+      </View>
       <View style={[styles.bodyWrapper, styles.section]}>
         {children}
       </View>
@@ -37,6 +41,12 @@ const styles = StyleSheet.create({
   },
   section: {
     paddingBottom: spacing
+  },
+  headerWrapper: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   headerText: {
     fontSize: 20,
