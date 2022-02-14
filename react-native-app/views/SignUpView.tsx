@@ -37,25 +37,28 @@ const SignUpView : React.FC = () => {
   const signUpFunction = async () => {
         
     if (email.length > 4 && password.length > 2) {
+      let newphoneNumber = ""
       //may need to take this out of the signUpFunction since it's not doing the change immediatly as the Auth.signUp gets called
       if (!phoneNumber.includes("+1"))
       {
-        onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
-        console.log('Phone number is: ', phoneNumber);
+        //onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
+        newphoneNumber = "+1".concat(phoneNumber)
+        console.log('Phone number is: ', newphoneNumber);
       }
+      
       await Auth.signUp({
         username : email,
         password : password,
         attributes: {
           email : email,
-          phone_number : phoneNumber,
+          phone_number : newphoneNumber,
         }
       })
         .then(async (cognitoSignUp) => {
           console.log('Return from signUp information: ', cognitoSignUp);
           
           // Create User in DynamoDB too
-          let user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, phoneNumber)
+          let user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber)
           await ServerFacade.createUser(user);
           
           //Move to confirmation screen, user should get code in email.
@@ -157,29 +160,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    // justifyContent: 'center',
     alignItems: 'center'
   },
   materialButtonPrimary: {
-    // height: 36,
     width: 289,
     paddingTop: 10,
-    // marginTop: 388,
-    // marginLeft: 52
     flex: 1
   },
   defaultText: {
     fontFamily: "roboto-regular",
     color: "#121212",
     textAlign: 'center',
-    // marginTop: 43,
-    // marginLeft: 126
     flex: 1
   },
   signUpOAuthText: {
     fontFamily: "roboto-regular",
     color: "#121212",
-    // marginTop: 43,
     marginLeft: 6,
     flex: 1
   },
@@ -188,19 +184,10 @@ const styles = StyleSheet.create({
     width: 33
   },
   signUpRows: {
-    // height: 33,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     width: 180
-    // alignItems: 'center',
-    
-    
-    // paddingLeft: 91,
-    
-    // marginTop: -170,
-    // marginLeft: 91,
-    // marginRight: 130
   },
   facebookIcon: {
     height: 30,
@@ -212,18 +199,12 @@ const styles = StyleSheet.create({
   },
   materialUnderlineTextboxStack: {
     width: 289,
-    // height: 43,
     flex: 5
-    // marginTop: -359,
-    // marginLeft: 52
   },
   image: {
     height: 200,
     width: 200,
     flex: 5,
-    // paddingTop: 50
-    // marginTop: -243,
-    // marginLeft: 79
   }
 });
 
