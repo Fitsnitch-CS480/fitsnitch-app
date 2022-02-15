@@ -161,10 +161,12 @@ const Profile: React.FC<Props> = ({
 
 
               <View style={styles.updateHeader}>
+              {currentUser  === profileOwner?
                 <View style={{flex: 1}}>
                   <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
                       Snitches
                   </Text>
+                  
                   <PaginatedList
                       loadNextPage={loadNextPage}
                       itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
@@ -174,7 +176,9 @@ const Profile: React.FC<Props> = ({
                       </View>
                     ))}
                   />
+                      
                 </View>
+                : <></>}
                 <View style={{}}>
                   <Text>
                     Edit
