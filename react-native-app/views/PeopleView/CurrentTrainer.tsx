@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
 import ClientTrainerService from '../../backend/services/ClientTrainerService';
 import PageSection from '../../components/PageSection';
 import ProfileImage from '../../components/ProfileImage';
@@ -25,11 +25,12 @@ const CurrentTrainer: React.FC = () => {
   }, [])
 
 
+  
   if (loading) {
     return (
-      <PageSection title={TITLE}>
-        <Text>Loading...</Text>
-      </PageSection>
+    <PageSection title={TITLE}>
+      <ActivityIndicator size={30} />
+    </PageSection>
     )
   }
 
