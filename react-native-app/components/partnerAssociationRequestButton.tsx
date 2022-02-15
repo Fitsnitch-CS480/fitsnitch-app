@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 import PartnerAssociationService from '../backend/services/PartnerAssociationService';
 import { userContext } from '../navigation/mainNavigator';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
-import { PartnerStatusResponse } from '../shared/models/requests/PartnerStatusResponse';
+import PartnerStatusResponse from '../shared/models/requests/PartnerStatusResponse';
 import User from '../shared/models/User';
 
 type state = {
