@@ -44,7 +44,6 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
   async function loadRelationships(currentUser:User,profileOwner:User) {
     console.log("hit loadrelationship");
     let partnership = await new PartnerAssociationService().getPartnerStatus(currentUser,profileOwner);
-    console.log("partnership: ", partnership);
 
     updateState({
       relationship: partnership,
@@ -84,7 +83,7 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
     {state.relationship.status == RelationshipStatus.APPROVED?
       <View>
         <Text>{profileOwner.firstname} is your partner</Text>
-        <Button title="Stop being partners with" onPress={()=>endRelationship(profileOwner,currentUser)}></Button>
+        <Button title="End Partnership" onPress={()=>endRelationship(profileOwner,currentUser)}></Button>
       </View>
     :
       <></>

@@ -1,7 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import ClientTrainerService from '../backend/services/ClientTrainerService';
+import PartnerAssociationService from '../backend/services/PartnerAssociationService';
 import SnitchService from '../backend/services/SnitchService';
 import { userContext } from '../navigation/mainNavigator';
+import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
@@ -11,21 +14,27 @@ import PartnerAssociationRequestButton from './PartnerAssociationRequestButton';
 import ProfileImage from './ProfileImage';
 import SnitchEventCard from './SnitchEventCard';
 
+
 const PAGE_SIZE = 10
+
+type state = {
+  partnerRelationship?: RelationshipStatus,
+  trainerRelationship?: RelationshipStatus,
+}
 
 export type Props = {
   profileOwner: User;
-  feedIds: string[];
 };
 
 const Profile: React.FC<Props> = ({
   profileOwner,
-  feedIds
 }) => {
 
-  const [lastSnitch, setLastSnitch] = useState<SnitchEvent|undefined>(undefined);
-  const [userDict, setUserDict] = useState<Map<string,User>>(new Map());
-  // const [feedIds, setFeedIds] = useState<string[]|null>(null);
+  const [state, setState] = useState<state>({
+    trainerRelationship: undefined,
+    partnerRelationship: undefined,
+  });
+
   const {currentUser} = useContext(userContext);
   if (!currentUser) return <></>
 
@@ -36,34 +45,30 @@ const Profile: React.FC<Props> = ({
 
   const isCurrentUser = profileOwner.userId === currentUser.userId;
 
-  useEffect(()=>{
-    getFeedUsers();
-  }, [])
 
-  async function getFeedUsers() {
-    if (!currentUser) throw new Error("There is no logged in user!")
-    let users = [currentUser]; 
-    let ids:string[] = [];
-    let map = new Map<string, User>();
-    users.forEach(u=>{
-      ids.push(u.userId)
-      map.set(u.userId,u)
+  if (!state.trainerRelationship ) {
+    loadRelationships(currentUser, profileOwner);
+    // if (!state.processing) return <></>
+    // else return <Button title="Processing..."></Button>
+  }
+
+  async function loadRelationships(currentUser:User,profileOwner:User) {
+    let userAsTrainer = await new ClientTrainerService().getTrainerStatus(currentUser,profileOwner);
+    let partnership = await new PartnerAssociationService().getPartnerStatus(currentUser,profileOwner);
+    
+    setState({
+      trainerRelationship: userAsTrainer,
+      partnerRelationship: partnership.status
     })
-    // setFeedIds(ids);
-    setUserDict(map)
+
   }
   
   async function loadNextPage(prevPage?: UserSnitchesResponse) {
 
-    if (!feedIds) throw new Error("There are no users for the feed!")
     let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:20}
-    let response = await new SnitchService().getUserSnitchFeedPage(feedIds,page)
+    let response = await new SnitchService().getUserSnitchFeedPage([profileOwner.userId],page)
     response.records.sort((a,b)=>a.created<b.created?1:-1)
-    if (!prevPage) {
-      // The process of loading the feed also gets all feed user data, so let's save that
-      // rather than askig for it again later
-      setLastSnitch(response.records[0])
-    }
+
     return response;
   }
 
@@ -159,33 +164,32 @@ const Profile: React.FC<Props> = ({
               <Text style={{fontSize: 15, padding: 20}}>No Cheats to report</Text>
               </View>
 
-
+            {currentUser === profileOwner || state.trainerRelationship === RelationshipStatus.APPROVED || state.partnerRelationship === RelationshipStatus.APPROVED
+            ?
               <View style={styles.updateHeader}>
-              {currentUser  === profileOwner?
+
                 <View style={{flex: 1}}>
+
                   <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
                       Snitches
                   </Text>
-                  
                   <PaginatedList
                       loadNextPage={loadNextPage}
                       itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
                       renderItem={(snitch=>(
                       <View>
-                        <SnitchEventCard snitch={snitch} user={userDict.get(snitch.userId)}></SnitchEventCard>
+                        <SnitchEventCard snitch={snitch} user={profileOwner}></SnitchEventCard>
                       </View>
                     ))}
                   />
-                      
                 </View>
-                : <></>}
                 <View style={{}}>
                   <Text>
                     Edit
                   </Text>
                 </View>
               </View>
-        
+            :<></>}
 
             </View>
           </View>
@@ -284,3 +288,4 @@ const styles = StyleSheet.create({
 });
 
 export default Profile;
+
