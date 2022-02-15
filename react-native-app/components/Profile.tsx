@@ -1,19 +1,31 @@
-import React, { useContext } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import SnitchService from '../backend/services/SnitchService';
 import { userContext } from '../navigation/mainNavigator';
+import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
+import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import ClientTrainerRequestButton from './ClientTrainerRequestButton';
+import PaginatedList from './PaginatedList';
 import PartnerAssociationRequestButton from './PartnerAssociationRequestButton';
 import ProfileImage from './ProfileImage';
+import SnitchEventCard from './SnitchEventCard';
+
+const PAGE_SIZE = 10
 
 export type Props = {
   profileOwner: User;
+  feedIds: string[];
 };
 
 const Profile: React.FC<Props> = ({
-  profileOwner
+  profileOwner,
+  feedIds
 }) => {
 
+  const [lastSnitch, setLastSnitch] = useState<SnitchEvent|undefined>(undefined);
+  const [userDict, setUserDict] = useState<Map<string,User>>(new Map());
+  // const [feedIds, setFeedIds] = useState<string[]|null>(null);
   const {currentUser} = useContext(userContext);
   if (!currentUser) return <></>
 
@@ -23,6 +35,37 @@ const Profile: React.FC<Props> = ({
   // profileOwner = testFitSnitchUser
 
   const isCurrentUser = profileOwner.userId === currentUser.userId;
+
+  useEffect(()=>{
+    getFeedUsers();
+  }, [])
+
+  async function getFeedUsers() {
+    if (!currentUser) throw new Error("There is no logged in user!")
+    let users = [currentUser]; 
+    let ids:string[] = [];
+    let map = new Map<string, User>();
+    users.forEach(u=>{
+      ids.push(u.userId)
+      map.set(u.userId,u)
+    })
+    // setFeedIds(ids);
+    setUserDict(map)
+  }
+  
+  async function loadNextPage(prevPage?: UserSnitchesResponse) {
+
+    if (!feedIds) throw new Error("There are no users for the feed!")
+    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:20}
+    let response = await new SnitchService().getUserSnitchFeedPage(feedIds,page)
+    response.records.sort((a,b)=>a.created<b.created?1:-1)
+    if (!prevPage) {
+      // The process of loading the feed also gets all feed user data, so let's save that
+      // rather than askig for it again later
+      setLastSnitch(response.records[0])
+    }
+    return response;
+  }
 
 
   return (
@@ -120,8 +163,17 @@ const Profile: React.FC<Props> = ({
               <View style={styles.updateHeader}>
                 <View style={{flex: 1}}>
                   <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
-                      Updates
+                      Snitches
                   </Text>
+                  <PaginatedList
+                      loadNextPage={loadNextPage}
+                      itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
+                      renderItem={(snitch=>(
+                      <View>
+                        <SnitchEventCard snitch={snitch} user={userDict.get(snitch.userId)}></SnitchEventCard>
+                      </View>
+                    ))}
+                  />
                 </View>
                 <View style={{}}>
                   <Text>
@@ -129,48 +181,8 @@ const Profile: React.FC<Props> = ({
                   </Text>
                 </View>
               </View>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 1
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 2
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 3
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 4
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 5
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 6
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 7
-                </Text>
-              </View>
-              <Text></Text>
+        
+
             </View>
           </View>
         </ScrollView>
@@ -262,6 +274,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     fontSize: 15, 
     padding: 20
+  },
+  snitchContainer: {
   },
 });
 
