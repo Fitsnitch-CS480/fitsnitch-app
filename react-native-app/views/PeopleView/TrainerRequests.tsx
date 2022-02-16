@@ -8,10 +8,11 @@ import { userContext } from '../../navigation/mainNavigator';
 import User from '../../shared/models/User';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { notifyMessage } from '../../utils/UiUtils';
+import Badge from '../../components/Badge';
 
 const TITLE = "Trainer Requests"
 
-const TrainerRequests: React.FC = () => {
+const TrainerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) => {
   const navigation = useNavigation();
   const {currentUser, setCurrentUser} = useContext(userContext)
   if (!currentUser) return null;
@@ -34,6 +35,7 @@ const TrainerRequests: React.FC = () => {
     requests = requests.filter(r=>r!==client);
     setRequests(requests)
     notifyMessage("Approved Trainer Request!")
+    if (onChange) onChange();
   }
 
   async function deleteRequest(client:User) {
@@ -42,10 +44,11 @@ const TrainerRequests: React.FC = () => {
     requests = requests.filter(r=>r!==client);
     setRequests(requests)
     notifyMessage("Deleted Trainer Request")
+    if (onChange) onChange();
   }
 
   return (
-    <PageSection title={TITLE}>
+    <PageSection title={TITLE} headerRight={<Badge qty={requests.length} size={25} />}>
       { requests.map((client,i)=>(
         <View key={client.userId}>
         <View style={styles.resultRow}>

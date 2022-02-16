@@ -61,13 +61,13 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
 
   async function cancelRequest(requester:User,requestee:User) {
     updateState({processing:true})
-    await new PartnerAssociationService().cancelPartnerRequest(requester,requestee)
+    await new PartnerAssociationService().deleteRequest(requester,requestee)
     updateState({relationship:undefined})
   }
   
   async function approveUser(requester:User,requestee:User) {
     updateState({processing:true})
-    await new PartnerAssociationService().approveUser(requester,requestee)
+    await new PartnerAssociationService().approveRequest(requester,requestee)
     updateState({relationship:undefined})
   }
 

@@ -15,12 +15,16 @@ export default class PartnerAssociationService {
         await ServerFacade.requestPartnerForUser(partner,user);
     }
 
-    public async cancelPartnerRequest(partner:User,user:User) {
+    public async getPartnerRequesters(userId:string): Promise<User[]> {
+        return await ServerFacade.getPartnerRequesters(userId);
+    }
+
+    public async deleteRequest(partner:User,user:User) {
         await ServerFacade.cancelPartnerRequest(partner,user);
     }
 
-    public async approveUser(partner:User,user:User) {
-        await ServerFacade.approveUser(partner,user);
+    public async approveRequest(requester:User,requestee:User) {
+        await ServerFacade.approvePartnerRequest(requester,requestee);
     }
     
     public async removePartnerFromUser(partner:User,user:User) {

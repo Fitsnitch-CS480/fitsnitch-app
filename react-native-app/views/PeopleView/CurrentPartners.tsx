@@ -1,46 +1,45 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import ClientTrainerService from '../../backend/services/ClientTrainerService';
+import PartnerAssociationService from '../../backend/services/PartnerAssociationService';
 import PageSection from '../../components/PageSection';
 import ProfileImage from '../../components/ProfileImage';
 import { userContext } from '../../navigation/mainNavigator';
 import User from '../../shared/models/User';
 
-const TITLE = "Your Clients"
+const TITLE = "Your Partners"
 
-const CurrentClients: React.FC = () => {
+const CurrentPartners: React.FC = () => {
   const navigation = useNavigation();
-  const {currentUser, setCurrentUser} = useContext(userContext)
+  const {currentUser} = useContext(userContext)
   if (!currentUser) return null;
 
-  let [clients, setClients] = useState<User[]|null>(null)
+  let [partners, setPartners] = useState<User[]>([])
   
   useEffect(()=>{
-    new ClientTrainerService().getUserClients(currentUser.userId).then((clients)=>{
-      setClients(clients)
+    new PartnerAssociationService().getUserPartners(currentUser.userId).then((partners)=>{
+      setPartners(partners)
     });  
   }, [])
 
 
-  if (!clients) {
+  if (!partners) {
     return (
-    <PageSection title={TITLE}>
-      <ActivityIndicator size={30} />
-    </PageSection>
+      <PageSection title={TITLE}>
+        <ActivityIndicator size={30} />
+      </PageSection>
     )
   }
 
   return (
     <PageSection title={TITLE}>
-      { clients.map((client,i)=>(
+      { partners.map((client,i)=>(
         <View key={client.userId}>
           <View style={styles.resultRow} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: client})}}>
             <ProfileImage user={client} size={30}></ProfileImage>
             <Text style={{marginLeft:10, fontSize: 15}}>{client.firstname} {client.lastname}</Text>  
           </View>
-          { (i < clients.length - 1) ? <View style={styles.divider} /> : null}
+          { (i < partners.length - 1) ? <View style={styles.divider} /> : null}
         </View>
       ))}
     </PageSection>
@@ -65,4 +64,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CurrentClients;
+export default CurrentPartners;
