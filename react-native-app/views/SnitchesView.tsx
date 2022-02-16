@@ -11,7 +11,7 @@ import User from '../shared/models/User';
 import PaginatedList from '../components/PaginatedList';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 
-const PAGE_SIZE = 1
+const PAGE_SIZE = 10
 
 const SnitchesView: React.FC = () => {
   const [lastSnitch, setLastSnitch] = useState<SnitchEvent|undefined>(undefined);
