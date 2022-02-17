@@ -13,8 +13,6 @@ export class LocationService {
         /** Radius about the distance from McD's to their farthest drive-thru menu  */
         const radius = 0.00015;
         let places = await this.getPlacesApiAdapter().getRestaurantsInRadius(coord,radius);
-        console.log(places)
-        
         if (places.length === 1) return places[0];
 
         if (places.length > 1) {
