@@ -4,13 +4,6 @@ import PlacesApiAdapter, { RestaurantDetectionDetails } from "../PlacesApiAdapte
 import axios, { AxiosResponse } from 'axios';
 import { LatLonPair, BoundingBox } from "../../../../react-native-app/shared/models/CoordinateModels";
 
-const food_amenities = [
-    "fast_food",
-    "restaurant",
-    "ice_cream",
-    "cafe",
-]
-
 type OverpassElement = {
     type: "way"|"node"|"relation";
     id: number;
@@ -25,10 +18,6 @@ type OverpassElement = {
 /**
  * Adapter for getting places info from the OpenStreetMap Overpass API
  */
-// TODO: This adapter currently only queries for "NODE" type map elements, but many restaurants
-// are defined as "WAY" types. WAY types do not have lat/lon coords but rather have a list of
-// NODE element IDs that create a fence around an area. In order to get location data for a WAY
-// it is necessary to also query one or all of the nodes.
 
 
 function getNameFromElement(el: OverpassElement) {
@@ -85,13 +74,36 @@ export default class OverpassAdapter implements PlacesApiAdapter {
     private buildRestaurantQuery(bbox: BoundingBox) {
         // Example:
         // [out:json][bbox:40.248069,-111.66167,40.254069,-111.65567];(nwr[amenity=fast_food];>;nwr[amenity=restaurant];>;nwr[amenity=ice_cream];>;nwr[amenity=cafe];>;);out;
-        let query = "[out:json]"+this.createBboxFilter(bbox)+";(";
-        for (let value of food_amenities) {
-            query += `nwr[amenity=${value}];>;`;
-        }
-        query += ");out;"
+        let query = "[out:json]"
+            + this.createBboxFilter(bbox)+";("
+            + amenitiesQueries
+            + ");out;"
         return query;
     }
 
 }
+
+
+/**
+ * This list contains all food-related amenities that account for
+ * > 0.01% of all OSM nodes with the amenity tag
+ */
+const food_amenities = [
+    "bakery",
+    "bar",
+    "bistro",
+    "cafe",
+    "coffee_shop",
+    "cuisine",
+    "deli",
+    "food",
+    "fast_food",
+    "food_court",
+    "ice_cream",
+    "juice_bar",
+    "restaurant",
+    "pub",
+]
+
+const amenitiesQueries = food_amenities.reduce((string,a)=>string+`nwr[amenity='${a}'];>;`, "")
 
