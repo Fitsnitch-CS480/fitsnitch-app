@@ -7,7 +7,8 @@ import TableAccessObject, { Conditions, LogicalChainLink, LogicalConditionChain,
 import DB_TABLES from "./tables";
 
 export default class DynamoSnitchDao implements SnitchDao {
-    private table = new TableAccessObject<SnitchEvent>(DB_TABLES.SNITCHES);
+    private schema = DB_TABLES.SNITCHES;
+    private table = new TableAccessObject<SnitchEvent>(this.schema);
 
     async createSnitch(data: SnitchEvent) {
         await this.table.createOrUpdate(data);
@@ -118,6 +119,7 @@ export default class DynamoSnitchDao implements SnitchDao {
         await this.table.deleteByKeys(data.userId,data.created);
     }
 }
+
 
 class SnitchQueue extends PriorityQueue<SnitchEvent> {
     protected isHigherPriority(a: SnitchEvent, b: SnitchEvent): boolean {

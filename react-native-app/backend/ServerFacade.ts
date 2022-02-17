@@ -7,6 +7,7 @@ import TrainerClientPair from '../shared/models/TrainerClientPair';
 import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
 import User from '../shared/models/User'
 import PartnerRequest from '../shared/models/PartnerRequest';
+import SnitchEvent from '../shared/models/SnitchEvent';
 
 
 /**
@@ -92,6 +93,8 @@ class ExecutionError<T> extends ExecutionResult<T> {
     
   }
 
+
+
   static async checkLocation(){
     //request user location
     //specify endpoint
@@ -105,6 +108,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
     const response = await executeRequest("/check-location", payload);
     return response;
   }
+
 
   static async reportSnitch(){
     const response = await executeRequest("/snitch-on-user", null);
@@ -182,6 +186,11 @@ class ExecutionError<T> extends ExecutionResult<T> {
     }
     return res.data
   }
+
+  static async createSnitch(snitch: SnitchEvent){
+    let res = await executeRequest("/snitch_create", snitch);
+  }
+
 
   // PARTNER / USER RELATIONSHIPS
   static async getPartnerStatus(partner:User,user:User): Promise<PartnerStatusResponse> {
