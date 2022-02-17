@@ -1,15 +1,15 @@
 import { LAT_MIN, LAT_MAX, LONG_MIN, LONG_MAX } from "../constants/CoordinateConstants";
 
-export class LatLongPair {
+export class LatLonPair {
     constructor(
         public lat: number,
-        public long: number
+        public lon: number
     ) {
         if (lat < LAT_MIN || lat > LAT_MAX) {
             throw new Error(`Latitudes must be within ${LAT_MIN} and ${LAT_MAX}! Recieved: ${lat}`);
         }
-        if (long < LONG_MIN || long > LONG_MAX) {
-            throw new Error(`Longitudes must be within ${LONG_MIN} and ${LONG_MAX}! Recieved: ${long}`);
+        if (lon < LONG_MIN || lon > LONG_MAX) {
+            throw new Error(`Longitudes must be within ${LONG_MIN} and ${LONG_MAX}! Recieved: ${lon}`);
         }
     }
 }
@@ -26,7 +26,7 @@ export class BoundingBox {
         public east: number
     ) {
         // Quick boundary verification
-        new LatLongPair(south,west);
-        new LatLongPair(north,east);
+        new LatLonPair(south,west);
+        new LatLonPair(north,east);
     }
 }

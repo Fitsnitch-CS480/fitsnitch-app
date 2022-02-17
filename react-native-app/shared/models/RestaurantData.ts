@@ -1,8 +1,8 @@
-import { LatLongPair } from "./CoordinateModels";
+import { LatLonPair } from "./CoordinateModels";
 
 type RestaurantData = {
     name?: string,
-    location?: LatLongPair
+    location?: LatLonPair
 }
 
 export default RestaurantData;

@@ -28,6 +28,7 @@
     "@aws-sdk/client-dynamodb": "^3.44.0",
     "@aws-sdk/util-dynamodb": "^3.44.0",
     "aws-sdk": "^2.831.0",
-    "axios": "^0.24.0"
+    "axios": "^0.24.0",
+    "robust-point-in-polygon": "^1.0.3"
   }
 }

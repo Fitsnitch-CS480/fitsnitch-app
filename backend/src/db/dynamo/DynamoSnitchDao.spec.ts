@@ -21,7 +21,7 @@ describe(DynamoSnitchDao, ()=>{
     let created1 = "2022-01-05T5:30:00"
 
     function generateFakeSnitch(userId,created) {
-        return new SnitchEvent(userId,created,{lat:0,long:0},{name:"Wendy's",location:{lat:0,long:0}})
+        return new SnitchEvent(userId,created,{lat:0,lon:0},{name:"Wendy's",location:{lat:0,lon:0}})
     }
 
     beforeEach(()=>{

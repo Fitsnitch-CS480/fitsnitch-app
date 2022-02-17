@@ -102,7 +102,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
       userId: 'dummy',
       location: {
         lat: 40.2508,
-        long: -111.6613
+        lon: -111.6613
       } 
     }
     const response = await executeRequest("/check-location", payload);

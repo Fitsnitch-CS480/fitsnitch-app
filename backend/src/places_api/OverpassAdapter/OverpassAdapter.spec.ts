@@ -1,4 +1,4 @@
-import { LatLongPair } from "../../../../react-native-app/shared/models/CoordinateModels";
+import { LatLonPair } from "../../../../react-native-app/shared/models/CoordinateModels";
 import OverpassAdapter from "./OverpassAdapter"
 
 describe(OverpassAdapter, ()=>{
@@ -13,8 +13,8 @@ describe(OverpassAdapter, ()=>{
      */
     describe(adapter.getRestaurantsInRadius, ()=>{
         it("should execute query", async ()=>{
-            let res = await adapter.getRestaurantsInRadius(new LatLongPair(40.251069,-111.658670),.003);
-            // console.debug(JSON.stringify(res,null,2));
+            let res = await adapter.getRestaurantsInRadius(new LatLonPair(40.2510228, -111.6583718),.0002);
+            console.debug(JSON.stringify(res,null,2));
         })
   
     })
