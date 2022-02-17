@@ -1,4 +1,4 @@
-import { PartnerStatusResponse } from './../shared/models/requests/PartnerStatusResponse';
+import PartnerStatusResponse from './../shared/models/requests/PartnerStatusResponse';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
@@ -14,7 +14,7 @@ import SnitchEvent from '../shared/models/SnitchEvent';
  * Acts as a Facade to the FitSnitch server. All network requests to the server should go through
  * this class.
  * All methods should be async. We should use REST (fetch data)
- */ 
+ */
 
 const apiBaseUrl = "https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev"
 

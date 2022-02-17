@@ -6,7 +6,6 @@ import base64ImagesData from '../../utils/base64';
 import SnitchEvent from "../../shared/models/SnitchEvent";
 import UserDataService from "./UserDataService";
 import { notifyMessage } from "../../utils/UiUtils";
-import DaoFactory from "../db/DaoFactory";
 
 export default class SnitchService {
     public async getFeedUsers(userId:string): Promise<User[]> {
@@ -42,10 +41,5 @@ export default class SnitchService {
             notifyMessage("Could not share snitch")
         }
     }
-
-    public async createSnitch(snitch:SnitchEvent){
-        await DaoFactory.getSnitchDao.createSnitch(snitch)
-    }
-
     
 }
