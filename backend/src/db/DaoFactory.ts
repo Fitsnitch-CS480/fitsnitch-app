@@ -8,7 +8,7 @@ import TrainersDao from "./TrainersDAO";
 import UserDao from "./UserDAO";
 import DynamoPartnerAssociationDao from "./dynamo/DynamoPartnerAssociationDao";
 import DynamoPartnerAssociationRequestDao from "./dynamo/DynamoPartnerAssociationRequestDao";
-import PartnerAssociationDao from "./PartnerAssociationDAO";
+import PartnerAssociationDao from "./PartnerAssociationDao";
 import PartnerAssociationRequestDao from "./PartnerAssociationRequestDao";
 
 export default class DaoFactory {
