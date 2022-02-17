@@ -1,4 +1,4 @@
-import { PartnerStatusResponse } from './../../../react-native-app/shared/models/requests/PartnerStatusResponse';
+import PartnerStatusResponse from './../../../react-native-app/shared/models/requests/PartnerStatusResponse';
 import RelationshipStatus from "../../../react-native-app/shared/constants/RelationshipStatus";
 import PartnerAssociationPair from "../../../react-native-app/shared/models/PartnerAssociationPair";
 import PartnerRequest from "../../../react-native-app/shared/models/PartnerRequest";
