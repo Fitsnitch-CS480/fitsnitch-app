@@ -103,7 +103,7 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
         <Text>{profileOwner.firstname} wants you to be their partner!</Text>
         <View style={[styles.buttonContainer, styles.buttonContainerSideBySide]}>
           <View style={styles.mainButton}>
-            <Button title={"Approve"} onPress={()=>approveUser(profileOwner,currentUser)}></Button>
+            <Button title={"Accept"} onPress={()=>approveUser(profileOwner,currentUser)}></Button>
           </View>
           <View style={styles.secondButton}>
             <Button title={"Deny"} color="red" onPress={()=>cancelRequest(profileOwner,currentUser)}></Button>
