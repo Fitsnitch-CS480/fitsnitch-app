@@ -10,7 +10,7 @@ type state = {
   processing: boolean,
   relationship?: PartnerStatusResponse
 }
-
+//
 export type Props = {
   profileOwner: User;
 };
