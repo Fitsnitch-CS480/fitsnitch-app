@@ -1,18 +1,39 @@
-import React, { useContext } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import ClientTrainerService from '../backend/services/ClientTrainerService';
+import PartnerAssociationService from '../backend/services/PartnerAssociationService';
+import SnitchService from '../backend/services/SnitchService';
 import { userContext } from '../navigation/mainNavigator';
+import RelationshipStatus from '../shared/constants/RelationshipStatus';
+import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
+import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import ClientTrainerRequestButton from './ClientTrainerRequestButton';
+import PaginatedList from './PaginatedList';
 import PartnerAssociationRequestButton from './PartnerAssociationRequestButton';
 import ProfileImage from './ProfileImage';
+import SnitchEventCard from './SnitchEventCard';
+
+
+const PAGE_SIZE = 10
+
+type state = {
+  partnerRelationship?: RelationshipStatus,
+  trainerRelationship?: RelationshipStatus,
+}
 
 export type Props = {
   profileOwner: User;
 };
 
 const Profile: React.FC<Props> = ({
-  profileOwner
+  profileOwner,
 }) => {
+
+  const [state, setState] = useState<state>({
+    trainerRelationship: undefined,
+    partnerRelationship: undefined,
+  });
 
   const {currentUser} = useContext(userContext);
   if (!currentUser) return <></>
@@ -23,6 +44,33 @@ const Profile: React.FC<Props> = ({
   // profileOwner = testFitSnitchUser
 
   const isCurrentUser = profileOwner.userId === currentUser.userId;
+
+
+  if (!state.trainerRelationship ) {
+    loadRelationships(currentUser, profileOwner);
+    // if (!state.processing) return <></>
+    // else return <Button title="Processing..."></Button>
+  }
+
+  async function loadRelationships(currentUser:User,profileOwner:User) {
+    let userAsTrainer = await new ClientTrainerService().getTrainerStatus(currentUser,profileOwner);
+    let partnership = await new PartnerAssociationService().getPartnerStatus(currentUser,profileOwner);
+    
+    setState({
+      trainerRelationship: userAsTrainer,
+      partnerRelationship: partnership.status
+    })
+
+  }
+  
+  async function loadNextPage(prevPage?: UserSnitchesResponse) {
+
+    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:20}
+    let response = await new SnitchService().getUserSnitchFeedPage([profileOwner.userId],page)
+    response.records.sort((a,b)=>a.created<b.created?1:-1)
+
+    return response;
+  }
 
 
   return (
@@ -116,12 +164,24 @@ const Profile: React.FC<Props> = ({
               <Text style={{fontSize: 15, padding: 20}}>No Cheats to report</Text>
               </View>
 
-
+            {currentUser === profileOwner || state.trainerRelationship === RelationshipStatus.APPROVED || state.partnerRelationship === RelationshipStatus.APPROVED
+            ?
               <View style={styles.updateHeader}>
+
                 <View style={{flex: 1}}>
+
                   <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
-                      Updates
+                      Snitches
                   </Text>
+                  <PaginatedList
+                      loadNextPage={loadNextPage}
+                      itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
+                      renderItem={(snitch=>(
+                      <View>
+                        <SnitchEventCard snitch={snitch} user={profileOwner}></SnitchEventCard>
+                      </View>
+                    ))}
+                  />
                 </View>
                 <View style={{}}>
                   <Text>
@@ -129,48 +189,8 @@ const Profile: React.FC<Props> = ({
                   </Text>
                 </View>
               </View>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 1
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 2
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 3
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 4
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 5
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 6
-                </Text>
-              </View>
-              <Text></Text>
-              <View style={[styles.updates, {backgroundColor: 'lightgrey'}]}>
-                <Text>
-                  Update 7
-                </Text>
-              </View>
-              <Text></Text>
+            :<></>}
+
             </View>
           </View>
         </ScrollView>
@@ -263,6 +283,9 @@ const styles = StyleSheet.create({
     fontSize: 15, 
     padding: 20
   },
+  snitchContainer: {
+  },
 });
 
 export default Profile;
+
