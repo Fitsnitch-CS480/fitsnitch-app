@@ -1,5 +1,5 @@
 import { LAT_MIN, LAT_MAX, LONG_MAX } from "../../../react-native-app/shared/constants/CoordinateConstants";
-import { LatLongPair, BoundingBox } from "../../../react-native-app/shared/models/CoordinateModels";
+import { LatLonPair, BoundingBox } from "../../../react-native-app/shared/models/CoordinateModels";
 import { SafeMath } from "./SafeMath";
 
 export default class CoordinateUtils {
@@ -31,18 +31,18 @@ export default class CoordinateUtils {
     }
 
     /**
-     * Returns the longitude of `long` shifted East/West by `delta`. Result is normalized between
+     * Returns the longitude of `lon` shifted East/West by `delta`. Result is normalized between
      * -180 and 180.
      * 
      * Postiive `delta` = Shift eastward.
      * Negative `delta` = Shift westward.
      * 
-     * @param long Original longitude
+     * @param lon Original longitude
      * @param delta How many degrees to shift longitude in which direction.
      * @returns Resulting longitude normalized between -180 and 180.
      */
-    public static shiftLongitude(long:number,delta:number): number {
-        let newLong = SafeMath.add(long,delta);
+    public static shiftLongitude(lon:number,delta:number): number {
+        let newLong = SafeMath.add(lon,delta);
 
         // Find equivalent Longitude within accepted range
         let absLong = Math.abs(newLong);
@@ -65,11 +65,11 @@ export default class CoordinateUtils {
      * @param coord Original coordinates
      * @param radius Degrees to extend the box in each compass direction
      */
-    public static createBoxAroundCoord(coord:LatLongPair, radius: number) {
+    public static createBoxAroundCoord(coord:LatLonPair, radius: number) {
         let south = CoordinateUtils.shiftLatitude(coord.lat,-radius);
         let north = CoordinateUtils.shiftLatitude(coord.lat,radius);
-        let west = CoordinateUtils.shiftLongitude(coord.long,-radius);
-        let east = CoordinateUtils.shiftLongitude(coord.long,radius);
+        let west = CoordinateUtils.shiftLongitude(coord.lon,-radius);
+        let east = CoordinateUtils.shiftLongitude(coord.lon,radius);
 
         return new BoundingBox(south,west,north,east);
     }
