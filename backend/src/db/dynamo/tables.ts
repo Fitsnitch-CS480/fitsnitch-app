@@ -40,15 +40,20 @@ const DB_TABLES = {
       tableName:"PartnerRequests",
       primaryKey:"requester",
       sortKey:"requestee"
-  },
+    },
     PARTNER_REQUESTS_BY_REQUESTEE: {
       tableName:"PartnerRequests",
       asIndex:"requestee-requester-index",
       primaryKey:"requestee",
       sortKey:"requester"
-  },
+    },
     SNITCHES: {
         tableName:"Snitches",
+        primaryKey:"userId",
+        sortKey:"created"
+    },
+    CHEAT_MEALS: {
+        tableName:"CheatMeals",
         primaryKey:"userId",
         sortKey:"created"
     }
