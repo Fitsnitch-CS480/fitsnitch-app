@@ -16,7 +16,10 @@ import SnitchEvent from '../shared/models/SnitchEvent';
  * All methods should be async. We should use REST (fetch data)
  */
 
-const apiBaseUrl = "https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev"
+const DEVMODE = true;
+
+const apiBaseUrl = DEVMODE ? "http://10.0.2.2:3000"
+  : "https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev"
 
 function asRawString(data:string) {
   return `"${data}"`
