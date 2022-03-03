@@ -38,6 +38,7 @@
     "aws-sdk": "^2.831.0",
     "axios": "^0.24.0",
     "dotenv": "^16.0.0",
+    "nodemon": "^2.0.15",
     "robust-point-in-polygon": "^1.0.3"
   }
 }
