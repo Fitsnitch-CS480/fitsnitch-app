@@ -8,6 +8,8 @@ import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
 import User from '../shared/models/User'
 import PartnerRequest from '../shared/models/PartnerRequest';
 import SnitchEvent from '../shared/models/SnitchEvent';
+import { GetSnitchRequest } from '../shared/models/requests/GetSnitchRequest';
+import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
 
 
 /**
@@ -18,7 +20,7 @@ import SnitchEvent from '../shared/models/SnitchEvent';
 
 const DEVMODE = true;
 
-const apiBaseUrl = DEVMODE ? "http://10.0.2.2:3000"
+const apiBaseUrl = DEVMODE ? "http://10.0.2.2:4000"
   : "https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev"
 
 function asRawString(data:string) {
@@ -112,12 +114,20 @@ class ExecutionError<T> extends ExecutionResult<T> {
     return response;
   }
 
+  // TODO - Remove old method
+  // static async reportSnitch(){
+  //   const response = await executeRequest("/snitch-on-user", null);
+  // }
 
-  static async reportSnitch(){
-    const response = await executeRequest("/snitch-on-user", null);
+  static async pushSnitchNotification(){
+    let listString = ["F3E278BA-9EDA-449B-B5F6-3AC6440ACB6F"];
+    let response = await executeRequest("/push-snitch-notification", listString);
+    return response;
   }
 
-
+  static async snitchOnUser(snitch: CreateSnitchRequest){
+    let res = await executeRequest("/snitch-on-user", snitch);
+  }
 
 
   // TRAINER / CLIENT RELATIONSHIPS
