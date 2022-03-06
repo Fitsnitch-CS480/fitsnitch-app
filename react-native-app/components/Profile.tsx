@@ -3,12 +3,16 @@ import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import ClientTrainerService from '../backend/services/ClientTrainerService';
 import PartnerAssociationService from '../backend/services/PartnerAssociationService';
 import SnitchService from '../backend/services/SnitchService';
+import CheatMealService from '../backend/services/CheatMealService';
 import { userContext } from '../navigation/mainNavigator';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
+import CheatMealEvent from '../shared/models/CheatMealEvent';
+import { UserCheatMealResponse } from '../shared/models/requests/UserCheatMealRequest';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import ClientTrainerRequestButton from './ClientTrainerRequestButton';
+import CheatMealEventCard from './MealEventCard';
 import PaginatedList from './PaginatedList';
 import PartnerAssociationRequestButton from './PartnerAssociationRequestButton';
 import ProfileImage from './ProfileImage';
@@ -61,6 +65,15 @@ const Profile: React.FC<Props> = ({
       partnerRelationship: partnership.status
     })
 
+  }
+
+  async function loadNextCheatMealPage(prevPage?: UserCheatMealResponse) {
+
+    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:20}
+    let response = await new CheatMealService().getUserChealMealFeedPage(profileOwner.userId,page)
+    response.records.sort((a,b)=>a.created<b.created?1:-1)
+    console.log("MY RESPONSE DATA: ", response.records);
+    return response;
   }
   
   async function loadNextPage(prevPage?: UserSnitchesResponse) {
@@ -148,7 +161,30 @@ const Profile: React.FC<Props> = ({
               <View style={[styles.rowContainer, {backgroundColor: 'lightgrey'}]}>
                 <Text style={{fontSize: 15, padding: 20}}>Update your Plan</Text>
               </View>
-              <View style={[styles.rowContainer]}>
+
+              {currentUser === profileOwner?
+            
+              <View style={styles.updateHeader}>
+
+                <View style={{flex: 1}}>
+
+
+                  <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
+                      Cheat Meals
+                  </Text>
+                  <PaginatedList
+                      loadNextPage={loadNextCheatMealPage}
+                      itemKey={(meal:CheatMealEvent)=>meal.created+meal.userId}
+                      renderItem={(meal=>(
+                      <View>
+                        <CheatMealEventCard meal={meal} user={profileOwner}></CheatMealEventCard>
+                      </View>
+                    ))}
+                  />
+                </View>
+              </View>
+               :<></>}
+              {/* <View style={[styles.rowContainer]}>
                 <View style={{flex: 1}}>
                   <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
                       Cheats Summary
@@ -162,13 +198,14 @@ const Profile: React.FC<Props> = ({
               </View>
               <View style={[styles.rowContainer, {backgroundColor: 'lightgrey'}]}>
               <Text style={{fontSize: 15, padding: 20}}>No Cheats to report</Text>
-              </View>
+              </View> */}
 
             {currentUser === profileOwner || state.trainerRelationship === RelationshipStatus.APPROVED || state.partnerRelationship === RelationshipStatus.APPROVED
             ?
               <View style={styles.updateHeader}>
 
                 <View style={{flex: 1}}>
+
 
                   <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
                       Snitches
