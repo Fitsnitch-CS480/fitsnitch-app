@@ -208,7 +208,6 @@ class ExecutionError<T> extends ExecutionResult<T> {
   // Cheat Meals
   static async getUserCheatMealFeedPage(pageRequest: UserCheatMealRequest): Promise<UserCheatMealResponse> {
     let res = await executeRequest<UserCheatMealResponse>("/cheatmeal-get-for-users", pageRequest);
-    console.log("RES DATA: ", res.data);
     if (res.error || !res.data) {
       // give error feedback in UI
       return {
@@ -217,7 +216,6 @@ class ExecutionError<T> extends ExecutionResult<T> {
         pageSize: pageRequest.pageSize
       }
     }
-
     return res.data
   }
 

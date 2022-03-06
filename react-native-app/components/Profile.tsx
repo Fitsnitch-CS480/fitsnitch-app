@@ -72,7 +72,6 @@ const Profile: React.FC<Props> = ({
     let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:20}
     let response = await new CheatMealService().getUserChealMealFeedPage(profileOwner.userId,page)
     response.records.sort((a,b)=>a.created<b.created?1:-1)
-    console.log("MY RESPONSE DATA: ", response.records);
     return response;
   }
   
