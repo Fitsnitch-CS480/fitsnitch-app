@@ -7,6 +7,12 @@ import User from "../shared/models/User";
 import EncryptedStorage from 'react-native-encrypted-storage';
 import ServerFacade from '../backend/ServerFacade';
 import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
+import { GetSnitchRequest } from "../shared/models/requests/GetSnitchRequest";
+import { CreateSnitchRequest } from "../shared/models/requests/CreateSnitchRequest";
+import { LatLonPair } from "../shared/models/CoordinateModels";
+import RestaurantData from "../shared/models/RestaurantData";
+
+
 
 export const userContext = createContext<{setCurrentUser:(user:User)=>void,currentUser:User|null}>({currentUser:null,setCurrentUser:()=>{}});
 
@@ -46,6 +52,12 @@ const MainNavigator : React.FC = () => {
     
     const componentDidMount = async() => {
         // await loadApp();
+
+        //  Run this to test handler on dev server
+        // let snitchRequest = new CreateSnitchRequest("testUser1", {name:"name", location:(new LatLonPair(10,10))}, new LatLonPair(10,10) )
+        // await ServerFacade.snitchOnUser(snitchRequest);
+
+
         console.log("Component mounted")
         try {
           const authentication = await EncryptedStorage.getItem("user_auth");

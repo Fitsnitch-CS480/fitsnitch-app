@@ -33,7 +33,9 @@ app.post("/:path", async (req,res)=>{
             console.log("There is no handler for path",req.path)
             return res.sendStatus(404)
         }
+        
         let proxyRes = await handler(albProxy as APIGatewayProxyEventV2)
+        console.log("This is the proxyres being called on the server %s", proxyRes);
         res.status(proxyRes.statusCode || 200);
         if (proxyRes.headers) {
             for (let [header,val] of Object.entries(proxyRes.headers)) {
@@ -52,7 +54,7 @@ app.post("/:path", async (req,res)=>{
     }
 })
 
-let port = 3000;
+let port = 4000;
 app.listen(port, ()=>{
     console.log("Server listening on port "+port);
 })

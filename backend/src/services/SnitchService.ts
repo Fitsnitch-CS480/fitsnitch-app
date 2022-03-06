@@ -3,6 +3,7 @@ import {UserSnitchesRequest, UserSnitchesResponse} from "../../../react-native-a
 import {GetSnitchRequest} from "../../../react-native-app/shared/models/requests/GetSnitchRequest";
 import {CreateSnitchRequest} from "../../../react-native-app/shared/models/requests/CreateSnitchRequest";
 import DaoFactory from "../db/DaoFactory";
+import { APNSService } from "./APNSService";
 
 export default class SnitchService {
     /**
@@ -30,5 +31,16 @@ export default class SnitchService {
 
     async deleteSnitch(data:SnitchEvent) {
         await DaoFactory.getSnitchDao().deleteSnitch(data);
+    }
+
+    // TODO - change data to a Request model instead of string[].
+    async pushSnitchNotification(data: string[]){
+        console.log("Entering SnitchService and pushSnitchNotification method...");
+            
+        // TODO - Make DAO Factory call for this 
+        let response = await APNSService.sendMessageTo(data);
+        console.log("Response is %s", response);
+
+        return response;
     }
 }
