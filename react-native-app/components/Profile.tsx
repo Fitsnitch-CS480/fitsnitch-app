@@ -184,21 +184,6 @@ const Profile: React.FC<Props> = ({
                 </View>
               </View>
                :<></>}
-              {/* <View style={[styles.rowContainer]}>
-                <View style={{flex: 1}}>
-                  <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
-                      Cheats Summary
-                  </Text>
-                </View>
-                <View style={{}}>
-                  <Text>
-                    Edit
-                  </Text>
-                </View>
-              </View>
-              <View style={[styles.rowContainer, {backgroundColor: 'lightgrey'}]}>
-              <Text style={{fontSize: 15, padding: 20}}>No Cheats to report</Text>
-              </View> */}
 
             {currentUser === profileOwner || state.trainerRelationship === RelationshipStatus.APPROVED || state.partnerRelationship === RelationshipStatus.APPROVED
             ?
