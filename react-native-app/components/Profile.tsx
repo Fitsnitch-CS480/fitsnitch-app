@@ -161,7 +161,7 @@ const Profile: React.FC<Props> = ({
                 <Text style={{fontSize: 15, padding: 20}}>Update your Plan</Text>
               </View>
 
-              {currentUser === profileOwner?
+              {currentUser === profileOwner || state.trainerRelationship === RelationshipStatus.APPROVED || state.partnerRelationship === RelationshipStatus.APPROVED?
             
               <View style={styles.updateHeader}>
 
@@ -184,8 +184,7 @@ const Profile: React.FC<Props> = ({
               </View>
                :<></>}
 
-            {currentUser === profileOwner || state.trainerRelationship === RelationshipStatus.APPROVED || state.partnerRelationship === RelationshipStatus.APPROVED
-            ?
+            {currentUser === profileOwner || state.trainerRelationship === RelationshipStatus.APPROVED || state.partnerRelationship === RelationshipStatus.APPROVED?
               <View style={styles.updateHeader}>
 
                 <View style={{flex: 1}}>

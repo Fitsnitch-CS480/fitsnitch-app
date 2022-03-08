@@ -1,10 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ClientTrainerService from '../backend/services/ClientTrainerService';
-import UserDataService from '../backend/services/UserDataService';
-import { userContext } from '../navigation/mainNavigator';
-import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import User from '../shared/models/User';
 
 export type Props = {
