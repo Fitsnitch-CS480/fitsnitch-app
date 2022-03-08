@@ -75,7 +75,7 @@ const Profile: React.FC<Props> = ({
     return response;
   }
   
-  async function loadNextPage(prevPage?: UserSnitchesResponse) {
+  async function loadNextSnitchPage(prevPage?: UserSnitchesResponse) {
 
     let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:20}
     let response = await new SnitchService().getUserSnitchFeedPage([profileOwner.userId],page)
@@ -194,7 +194,7 @@ const Profile: React.FC<Props> = ({
                       Snitches
                   </Text>
                   <PaginatedList
-                      loadNextPage={loadNextPage}
+                      loadNextPage={loadNextSnitchPage}
                       itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
                       renderItem={(snitch=>(
                       <View>
