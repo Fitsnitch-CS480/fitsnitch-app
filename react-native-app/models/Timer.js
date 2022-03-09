@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Button } from 'react-native';
-import ServerFacade from '../backend/ServerFacade';
 
 class Timer extends React.Component {
   constructor(props) {

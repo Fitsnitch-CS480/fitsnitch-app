@@ -10,6 +10,7 @@ import PartnerRequest from '../shared/models/PartnerRequest';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import { GetSnitchRequest } from '../shared/models/requests/GetSnitchRequest';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
+import { LatLonPair } from '../shared/models/CoordinateModels';
 
 
 /**
@@ -18,7 +19,7 @@ import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchReque
  * All methods should be async. We should use REST (fetch data)
  */
 
-const DEVMODE = true;
+const DEVMODE = false;
 
 const apiBaseUrl = DEVMODE ? "http://10.0.2.2:4000"
   : "https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev"
@@ -98,17 +99,12 @@ class ExecutionError<T> extends ExecutionResult<T> {
     
   }
 
-
-
-  static async checkLocation(){
+  static async checkLocation(lat : number, lon : number){
     //request user location
     //specify endpoint
     const payload = {
       userId: 'dummy',
-      location: {
-        lat: 40.2508,
-        lon: -111.6613
-      } 
+      location: new LatLonPair(lat, lon)
     }
     const response = await executeRequest("/check-location", payload);
     return response;

@@ -12,7 +12,7 @@ import { CreateSnitchRequest } from "../shared/models/requests/CreateSnitchReque
 import { LatLonPair } from "../shared/models/CoordinateModels";
 import RestaurantData from "../shared/models/RestaurantData";
 
-
+// console.log(ActivityIndicator)
 
 export const userContext = createContext<{setCurrentUser:(user:User)=>void,currentUser:User|null}>({currentUser:null,setCurrentUser:()=>{}});
 
@@ -98,7 +98,7 @@ const MainNavigator : React.FC = () => {
             resizeMode="contain"
             style={styles.image}
           ></Image>
-          <ActivityIndicator size={30} />
+          <ActivityIndicator color="0000ff"size={30} color="0000ff" />
         </View>
       )
     }

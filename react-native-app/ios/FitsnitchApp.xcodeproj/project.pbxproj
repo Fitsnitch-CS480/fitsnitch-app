@@ -8,10 +8,35 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* FitsnitchAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* FitsnitchAppTests.m */; };
+		05F27DB7305F4B55A6D43CEE /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7B4B13967AFD492CBCB106DA /* Feather.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		20C4CF3BC930464383EFD7CA /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1340F8F27D6E40A8B3846213 /* Foundation.ttf */; };
+		20E2D729D4F146A283FAFA44 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F5E96651CE248DBA7AF5CE6 /* FontAwesome.ttf */; };
+		2EB0479AF5CD420995693185 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7DBB70C6C4F4FC990708DD8 /* FontAwesome5_Solid.ttf */; };
+		44DBE9062A214A5093BDBC67 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B03BE777B0C64306B60DAF05 /* Ionicons.ttf */; };
+		44F77B26269AEEBB37AD910E /* Pods_FitsnitchApp_FitsnitchAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 87175BE07AA428F97E23DDDA /* Pods_FitsnitchApp_FitsnitchAppTests.framework */; };
+		54F6EB4F87B58E4BB0577536 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0331B76C6D241E82FCEFE31 /* ExpoModulesProvider.swift */; };
+		5948CA28E00C429CB4448844 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65D99A3E86E64D3A869E7EF9 /* EvilIcons.ttf */; };
+		7BBCE5D84501489FB52637B8 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 222BE39CC24B45A3A7B6FF1A /* Zocial.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		89647CCAE92A4AB49C6EB82B /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 234EBFFAE7A2462EA3DDB96A /* Entypo.ttf */; };
+		915A239800F24D9B96A22100 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 42143DD18D744068BF4884A2 /* MaterialIcons.ttf */; };
+		93C36B336E274C7C823E2AA2 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 798AFE69B28C46AB84241487 /* Octicons.ttf */; };
+		9ECE2BC73F884D2AA8B494B2 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 21DE9F25DE9646D0807F5682 /* FontAwesome5_Regular.ttf */; };
+		A210BB17275960A7004D17A5 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A210BB16275960A7004D17A5 /* GameKit.framework */; };
+		A210BB19275960AD004D17A5 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A210BB18275960AD004D17A5 /* StoreKit.framework */; };
+		A28C32D4279F84810038C45F /* MyLocationDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A28C32D3279F84810038C45F /* MyLocationDataManager.m */; };
+		A2F2BC0E2758AFF8003F1E2C /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = A2F2BC0D2758AFF8003F1E2C /* awsconfiguration.json */; };
+		A2F2BC0F2758B0C7003F1E2C /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = A2F2BC0D2758AFF8003F1E2C /* awsconfiguration.json */; };
+		A81A1290A96D45F682A5604E /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 72A33CE392824FFAB834400F /* FontAwesome5_Brands.ttf */; };
+		B93AC74BE26246BA9E455AB7 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4FA32BC8BB7445D5B175F0A3 /* SimpleLineIcons.ttf */; };
+		BE69DED88CEA4060BC65E28A /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E65F3A6230454CE0A51AE807 /* Fontisto.ttf */; };
+		C2702A69B22B3725C754EE0F /* Pods_FitsnitchApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DEB1F7940A28C17BFECF754 /* Pods_FitsnitchApp.framework */; };
+		C46C72118E5B86EA3E729CE1 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7C4CE10F8893328842368C /* ExpoModulesProvider.swift */; };
+		DA0D078559944553AF28004E /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A7454B321DAB44E0AFCB792B /* MaterialCommunityIcons.ttf */; };
+		EC3B9DFA9D3E4FA098B116BF /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCEDD8D33FB44F50A5BC898B /* AntDesign.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,13 +53,44 @@
 		00E356EE1AD99517003FC87E /* FitsnitchAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitsnitchAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* FitsnitchAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FitsnitchAppTests.m; sourceTree = "<group>"; };
+		1340F8F27D6E40A8B3846213 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* FitsnitchApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitsnitchApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = FitsnitchApp/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = FitsnitchApp/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = FitsnitchApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = FitsnitchApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = FitsnitchApp/main.m; sourceTree = "<group>"; };
+		21DE9F25DE9646D0807F5682 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
+		222BE39CC24B45A3A7B6FF1A /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
+		234EBFFAE7A2462EA3DDB96A /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
+		3812604386A4773BA243806C /* Pods-FitsnitchApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FitsnitchApp.release.xcconfig"; path = "Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp.release.xcconfig"; sourceTree = "<group>"; };
+		3F5E96651CE248DBA7AF5CE6 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		42143DD18D744068BF4884A2 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
+		4FA32BC8BB7445D5B175F0A3 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		58DB7DED462D7983F0B6D546 /* Pods-FitsnitchApp-FitsnitchAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FitsnitchApp-FitsnitchAppTests.release.xcconfig"; path = "Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests.release.xcconfig"; sourceTree = "<group>"; };
+		65D99A3E86E64D3A869E7EF9 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		72A33CE392824FFAB834400F /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
+		798AFE69B28C46AB84241487 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		79E08E1D624A77FA15C52224 /* Pods-FitsnitchApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FitsnitchApp.debug.xcconfig"; path = "Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp.debug.xcconfig"; sourceTree = "<group>"; };
+		7B4B13967AFD492CBCB106DA /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
+		7DEB1F7940A28C17BFECF754 /* Pods_FitsnitchApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FitsnitchApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = FitsnitchApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		87175BE07AA428F97E23DDDA /* Pods_FitsnitchApp_FitsnitchAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FitsnitchApp_FitsnitchAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A210BB1527595B6F004D17A5 /* FitsnitchApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = FitsnitchApp.entitlements; path = FitsnitchApp/FitsnitchApp.entitlements; sourceTree = "<group>"; };
+		A210BB16275960A7004D17A5 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
+		A210BB18275960AD004D17A5 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		A28C32D2279F84620038C45F /* MyLocationDataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyLocationDataManager.h; sourceTree = "<group>"; };
+		A28C32D3279F84810038C45F /* MyLocationDataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyLocationDataManager.m; sourceTree = "<group>"; };
+		A2D11DB42758740B0087F522 /* AWSPinpoint.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AWSPinpoint.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2F2BC0D2758AFF8003F1E2C /* awsconfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
+		A7454B321DAB44E0AFCB792B /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
+		B03BE777B0C64306B60DAF05 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		BCEDD8D33FB44F50A5BC898B /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
+		C0331B76C6D241E82FCEFE31 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-FitsnitchApp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		C7DBB70C6C4F4FC990708DD8 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Solid.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
+		D8AB21BB705C42CA527BD107 /* Pods-FitsnitchApp-FitsnitchAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FitsnitchApp-FitsnitchAppTests.debug.xcconfig"; path = "Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E65F3A6230454CE0A51AE807 /* Fontisto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = Fontisto.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Fontisto.ttf"; sourceTree = "<group>"; };
+		EC7C4CE10F8893328842368C /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -43,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				44F77B26269AEEBB37AD910E /* Pods_FitsnitchApp_FitsnitchAppTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,6 +107,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A210BB19275960AD004D17A5 /* StoreKit.framework in Frameworks */,
+				C2702A69B22B3725C754EE0F /* Pods_FitsnitchApp.framework in Frameworks */,
+				A210BB17275960A7004D17A5 /* GameKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,25 +133,85 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0AD4BE0BA054D323FD2B20A1 /* FitsnitchAppTests */ = {
+			isa = PBXGroup;
+			children = (
+				EC7C4CE10F8893328842368C /* ExpoModulesProvider.swift */,
+			);
+			name = FitsnitchAppTests;
+			sourceTree = "<group>";
+		};
 		13B07FAE1A68108700A75B9A /* FitsnitchApp */ = {
 			isa = PBXGroup;
 			children = (
+				A210BB1527595B6F004D17A5 /* FitsnitchApp.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				A28C32D3279F84810038C45F /* MyLocationDataManager.m */,
+				A28C32D2279F84620038C45F /* MyLocationDataManager.h */,
 			);
 			name = FitsnitchApp;
+			sourceTree = "<group>";
+		};
+		28D9B13F485F24A7187D0CD6 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				79E08E1D624A77FA15C52224 /* Pods-FitsnitchApp.debug.xcconfig */,
+				3812604386A4773BA243806C /* Pods-FitsnitchApp.release.xcconfig */,
+				D8AB21BB705C42CA527BD107 /* Pods-FitsnitchApp-FitsnitchAppTests.debug.xcconfig */,
+				58DB7DED462D7983F0B6D546 /* Pods-FitsnitchApp-FitsnitchAppTests.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A210BB18275960AD004D17A5 /* StoreKit.framework */,
+				A210BB16275960A7004D17A5 /* GameKit.framework */,
+				A2D11DB42758740B0087F522 /* AWSPinpoint.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				7DEB1F7940A28C17BFECF754 /* Pods_FitsnitchApp.framework */,
+				87175BE07AA428F97E23DDDA /* Pods_FitsnitchApp_FitsnitchAppTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6327319AE6E34494A9EA7C4A /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				BCEDD8D33FB44F50A5BC898B /* AntDesign.ttf */,
+				234EBFFAE7A2462EA3DDB96A /* Entypo.ttf */,
+				65D99A3E86E64D3A869E7EF9 /* EvilIcons.ttf */,
+				7B4B13967AFD492CBCB106DA /* Feather.ttf */,
+				3F5E96651CE248DBA7AF5CE6 /* FontAwesome.ttf */,
+				72A33CE392824FFAB834400F /* FontAwesome5_Brands.ttf */,
+				21DE9F25DE9646D0807F5682 /* FontAwesome5_Regular.ttf */,
+				C7DBB70C6C4F4FC990708DD8 /* FontAwesome5_Solid.ttf */,
+				E65F3A6230454CE0A51AE807 /* Fontisto.ttf */,
+				1340F8F27D6E40A8B3846213 /* Foundation.ttf */,
+				B03BE777B0C64306B60DAF05 /* Ionicons.ttf */,
+				A7454B321DAB44E0AFCB792B /* MaterialCommunityIcons.ttf */,
+				42143DD18D744068BF4884A2 /* MaterialIcons.ttf */,
+				798AFE69B28C46AB84241487 /* Octicons.ttf */,
+				4FA32BC8BB7445D5B175F0A3 /* SimpleLineIcons.ttf */,
+				222BE39CC24B45A3A7B6FF1A /* Zocial.ttf */,
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
+		786C0F6C255112407C09923E /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				BE2366EE30DDD2F28180C947 /* FitsnitchApp */,
+				0AD4BE0BA054D323FD2B20A1 /* FitsnitchAppTests */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -104,11 +224,15 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				A2F2BC0D2758AFF8003F1E2C /* awsconfiguration.json */,
 				13B07FAE1A68108700A75B9A /* FitsnitchApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* FitsnitchAppTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
+				28D9B13F485F24A7187D0CD6 /* Pods */,
+				786C0F6C255112407C09923E /* ExpoModulesProviders */,
+				6327319AE6E34494A9EA7C4A /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -124,6 +248,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		BE2366EE30DDD2F28180C947 /* FitsnitchApp */ = {
+			isa = PBXGroup;
+			children = (
+				C0331B76C6D241E82FCEFE31 /* ExpoModulesProvider.swift */,
+			);
+			name = FitsnitchApp;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -131,9 +263,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "FitsnitchAppTests" */;
 			buildPhases = (
+				3775BF13BB80DE0D27C9514D /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
+				0BB2A2E9C5D452C2D1752DD9 /* [CP] Embed Pods Frameworks */,
+				2B9FEA7DCD1D6C9643AFF616 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -149,11 +284,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "FitsnitchApp" */;
 			buildPhases = (
+				CF4BB32A4320022FD7209668 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
+				389A5D63EC15B47AB604BD53 /* [CP] Embed Pods Frameworks */,
+				AFC5F5534C274A49F44E8F5A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -170,7 +308,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1310;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -205,6 +343,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2F2BC0F2758B0C7003F1E2C /* awsconfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,6 +353,23 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				A2F2BC0E2758AFF8003F1E2C /* awsconfiguration.json in Resources */,
+				EC3B9DFA9D3E4FA098B116BF /* AntDesign.ttf in Resources */,
+				89647CCAE92A4AB49C6EB82B /* Entypo.ttf in Resources */,
+				5948CA28E00C429CB4448844 /* EvilIcons.ttf in Resources */,
+				05F27DB7305F4B55A6D43CEE /* Feather.ttf in Resources */,
+				20E2D729D4F146A283FAFA44 /* FontAwesome.ttf in Resources */,
+				A81A1290A96D45F682A5604E /* FontAwesome5_Brands.ttf in Resources */,
+				9ECE2BC73F884D2AA8B494B2 /* FontAwesome5_Regular.ttf in Resources */,
+				2EB0479AF5CD420995693185 /* FontAwesome5_Solid.ttf in Resources */,
+				BE69DED88CEA4060BC65E28A /* Fontisto.ttf in Resources */,
+				20C4CF3BC930464383EFD7CA /* Foundation.ttf in Resources */,
+				44DBE9062A214A5093BDBC67 /* Ionicons.ttf in Resources */,
+				DA0D078559944553AF28004E /* MaterialCommunityIcons.ttf in Resources */,
+				915A239800F24D9B96A22100 /* MaterialIcons.ttf in Resources */,
+				93C36B336E274C7C823E2AA2 /* Octicons.ttf in Resources */,
+				B93AC74BE26246BA9E455AB7 /* SimpleLineIcons.ttf in Resources */,
+				7BBCE5D84501489FB52637B8 /* Zocial.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,6 +389,118 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+		0BB2A2E9C5D452C2D1752DD9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2B9FEA7DCD1D6C9643AFF616 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp-FitsnitchAppTests/Pods-FitsnitchApp-FitsnitchAppTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		3775BF13BB80DE0D27C9514D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FitsnitchApp-FitsnitchAppTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		389A5D63EC15B47AB604BD53 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AFC5F5534C274A49F44E8F5A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-FitsnitchApp/Pods-FitsnitchApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CF4BB32A4320022FD7209668 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-FitsnitchApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -261,6 +529,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E356F31AD99517003FC87E /* FitsnitchAppTests.m in Sources */,
+				C46C72118E5B86EA3E729CE1 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,6 +539,8 @@
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				A28C32D4279F84810038C45F /* MyLocationDataManager.m in Sources */,
+				54F6EB4F87B58E4BB0577536 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -286,14 +557,19 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D8AB21BB705C42CA527BD107 /* Pods-FitsnitchApp-FitsnitchAppTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development: Brady Bess (NSNS738M86)";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = RSLA756H6U;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = FitsnitchAppTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -306,17 +582,24 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FitsnitchApp.app/FitsnitchApp";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 58DB7DED462D7983F0B6D546 /* Pods-FitsnitchApp-FitsnitchAppTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development: Brady Bess (NSNS738M86)";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = RSLA756H6U;
 				INFOPLIST_FILE = FitsnitchAppTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -329,18 +612,27 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FitsnitchApp.app/FitsnitchApp";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 79E08E1D624A77FA15C52224 /* Pods-FitsnitchApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = FitsnitchApp/FitsnitchApp.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development: Brady Bess (NSNS738M86)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RSLA756H6U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = FitsnitchApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -350,8 +642,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fitsnitch.fitsnitchapp;
 				PRODUCT_NAME = FitsnitchApp;
+				PROVISIONING_PROFILE_SPECIFIER = BradyDevelopProvisionProfile;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -360,11 +653,18 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3812604386A4773BA243806C /* Pods-FitsnitchApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = FitsnitchApp/FitsnitchApp.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development: Brady Bess (NSNS738M86)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RSLA756H6U;
 				INFOPLIST_FILE = FitsnitchApp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -374,8 +674,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.fitsnitch.fitsnitchapp;
 				PRODUCT_NAME = FitsnitchApp;
+				PROVISIONING_PROFILE_SPECIFIER = BradyProvisioningProfile;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -410,10 +711,12 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development: Brady Bess (NSNS738M86)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -429,7 +732,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -475,10 +778,12 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "Apple Development: Brady Bess (NSNS738M86)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -487,7 +792,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",

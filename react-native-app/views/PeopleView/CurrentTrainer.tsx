@@ -29,7 +29,7 @@ const CurrentTrainer: React.FC = () => {
   if (loading) {
     return (
     <PageSection title={TITLE}>
-      <ActivityIndicator size={30} />
+      <ActivityIndicator color="0000ff"size={30} />
     </PageSection>
     )
   }
