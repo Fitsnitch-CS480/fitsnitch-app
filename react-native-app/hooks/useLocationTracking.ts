@@ -216,9 +216,11 @@ export default function useLocationTracking(onLog?:any) {
                             }
     
                             else {
-                                try {
-                                    setWouldLeaveTime(null);
+                                if (wouldLeaveTime) {
                                     log("Grace time is up!")
+                                    setWouldLeaveTime(null);
+                                }
+                                try {
                                     await checkForLocationChange()
                                 }
                                 catch(error) {
