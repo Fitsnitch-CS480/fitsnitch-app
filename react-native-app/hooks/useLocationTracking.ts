@@ -89,6 +89,7 @@ export default function useLocationTracking() {
         if (currLocation == null) { 
             console.log("NULL CurrLocation...API CALL")
             _checkLocationForRestaurant(newCoords)
+            setLocation(locationToMeasure);
         }
         else { //measure a distance 
             let deltaLat = Math.abs(currLocation.coords.latitude - newCoords.lat);
@@ -151,7 +152,12 @@ export default function useLocationTracking() {
                 request(PERMISSIONS.IOS.LOCATION_ALWAYS).then((result) => {
                     console.log("Permission Requested:");
                     console.log(result);
-                  });
+                });
+                request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION).then((result) => {
+                    console.log("Permission Requested:");
+                    console.log(result);
+                });
+                
                 break;
             case RESULTS.LIMITED:
                 console.log('The permission is limited: some actions are possible');
@@ -165,18 +171,22 @@ export default function useLocationTracking() {
                         if (!isGettingSnitchedOnFlag) {
                             setIsGettingSnitchedOnFlag(true);
                         }
-                    } else { //dont ping for location when user is getting snitched on
+                    }
+                    else { //dont ping for location when user is getting snitched on
                         if (isGettingSnitchedOnFlag) {  //user just exited GetSnitchedOn screen, this may have been due to a commitment to leave or because they have been snitched on, wait 30 sec before pinging again
+                            console.log("user is getting snitched on")
                             setWouldLeaveTimer(userLeavingGraceTime);    
                             setLocation(undefined);
                             setIsGettingSnitchedOnFlag(false);
                         }
 
                         if (wouldLeaveTimer <= 0) {
+                            console.log("getting location")
                             let location = Location.getCurrentPositionAsync({})
                                 .then(function(location) { _measureLatestLocationUpdate(location) })
                                 .catch(function(error) { console.log("Error getting location"); console.log(error)});
-                        } else {
+                        }
+                        else {
                             setWouldLeaveTimer(wouldLeaveTimer => wouldLeaveTimer - (locationCheckFrequencyMS / 1000));
                         }
                     }
