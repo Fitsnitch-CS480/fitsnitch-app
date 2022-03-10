@@ -8,7 +8,8 @@ import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
 import User from '../shared/models/User'
 import PartnerRequest from '../shared/models/PartnerRequest';
 import SnitchEvent from '../shared/models/SnitchEvent';
-import { GetSnitchRequest } from '../shared/models/requests/GetSnitchRequest';
+import { UserCheatMealRequest, UserCheatMealResponse } from '../shared/models/requests/UserCheatMealRequest';
+import CheatMealEvent from '../shared/models/CheatMealEvent';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
 
 
@@ -18,7 +19,7 @@ import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchReque
  * All methods should be async. We should use REST (fetch data)
  */
 
-const DEVMODE = true;
+const DEVMODE = false;
 
 const apiBaseUrl = DEVMODE ? "http://10.0.2.2:4000"
   : "https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev"
@@ -201,7 +202,25 @@ class ExecutionError<T> extends ExecutionResult<T> {
   }
 
   static async createSnitch(snitch: SnitchEvent){
-    let res = await executeRequest("/snitch_create", snitch);
+    let res = await executeRequest("/snitch-create", snitch);
+  }
+
+  // Cheat Meals
+  static async getUserCheatMealFeedPage(pageRequest: UserCheatMealRequest): Promise<UserCheatMealResponse> {
+    let res = await executeRequest<UserCheatMealResponse>("/cheatmeal-get-for-users", pageRequest);
+    if (res.error || !res.data) {
+      // give error feedback in UI
+      return {
+        records:[],
+        pageBreakKey: pageRequest.pageBreakKey,
+        pageSize: pageRequest.pageSize
+      }
+    }
+    return res.data
+  }
+
+  static async createCheatMeal(meal: CheatMealEvent){
+    let res = await executeRequest("/cheatmeal-create", meal);
   }
 
 
