@@ -125,7 +125,7 @@ export default function useLocationTracking() {
         let result = null;
 
         if (Platform.OS == "android") {
-            result = await check(PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION)
+            result = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
             .catch((error) => {
                 console.log("Error while checking Android permissions");
                 console.log(error);
