@@ -1,5 +1,5 @@
-import React, {useContext, useState} from 'react';
-import {authContext, userContext} from '../navigation/mainNavigator';
+import React, {useContext} from 'react';
+import {authContext} from '../navigation/mainNavigator';
 import {Auth} from '@aws-amplify/auth';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
