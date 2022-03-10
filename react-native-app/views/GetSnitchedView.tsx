@@ -4,11 +4,10 @@ import Timer from '../models/Timer';
 import ServerFacade from '../backend/ServerFacade';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
-import { userContext } from '../navigation/mainNavigator';
+import { globalContext } from '../navigation/appNavigator';
 
 export default function GetSnitchedView({ navigation, route }: any) {
-    const {currentUser} = useContext(userContext);
-    if (!currentUser) return null;
+  const [currentUser] = useContext(globalContext).currentUser;
 
     const [buttonPopup, setButtonPopup] = useState(false);
     const [timedPopUp, setTimedPopUp] = useState(false);

@@ -4,15 +4,14 @@ import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native'
 import PartnerAssociationService from '../../backend/services/PartnerAssociationService';
 import PageSection from '../../components/PageSection';
 import ProfileImage from '../../components/ProfileImage';
-import { userContext } from '../../navigation/mainNavigator';
+import { globalContext } from '../../navigation/appNavigator';
 import User from '../../shared/models/User';
 
 const TITLE = "Your Partners"
 
 const CurrentPartners: React.FC = () => {
   const navigation = useNavigation();
-  const {currentUser} = useContext(userContext)
-  if (!currentUser) return null;
+  const [currentUser] = useContext(globalContext).currentUser;
 
   let [partners, setPartners] = useState<User[]>([])
   
@@ -26,7 +25,7 @@ const CurrentPartners: React.FC = () => {
   if (!partners) {
     return (
       <PageSection title={TITLE}>
-        <ActivityIndicator color="0000ff"size={30} />
+        <ActivityIndicator color="0000ff" size={30} />
       </PageSection>
     )
   }

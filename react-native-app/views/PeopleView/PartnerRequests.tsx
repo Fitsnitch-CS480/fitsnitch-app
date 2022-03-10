@@ -4,18 +4,17 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 import PartnerAssociationService from '../../backend/services/PartnerAssociationService';
 import PageSection from '../../components/PageSection';
 import ProfileImage from '../../components/ProfileImage';
-import { userContext } from '../../navigation/mainNavigator';
 import User from '../../shared/models/User';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { notifyMessage } from '../../utils/UiUtils';
 import Badge from '../../components/Badge';
+import { globalContext } from '../../navigation/appNavigator';
 
 const TITLE = "Partner Requests"
 
 const PartnerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) => {
   const navigation = useNavigation();
-  const {currentUser, setCurrentUser} = useContext(userContext)
-  if (!currentUser) return null;
+  const [currentUser] = useContext(globalContext).currentUser;
 
   let [requesters, setRequesters] = useState<User[]>([])
   

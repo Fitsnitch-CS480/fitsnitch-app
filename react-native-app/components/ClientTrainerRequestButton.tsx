@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import ClientTrainerService from '../backend/services/ClientTrainerService';
+import { globalContext } from '../navigation/appNavigator';
 import { userContext } from '../navigation/mainNavigator';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import User from '../shared/models/User';
@@ -32,17 +33,16 @@ const ClientTrainerRequestButton: React.FC<Props> = ({
     setState({...flexibleState})
   }
 
-  const {currentUser} = useContext(userContext);
-  if (!currentUser) return <></>
+  const [currentUser] = useContext(globalContext).currentUser;
 
   if (!state.relationship) {
     loadRelationships(currentUser, profileOwner);
     if (!state.processing) return <></>
-    else return <Button title="Processing..."></Button>
+    else return <Button title="Processing..." onPress={()=>{}}></Button>
   }
 
   if (state.processing) {
-    return <Button title="Processing..."></Button>
+    return <Button title="Processing..." onPress={()=>{}}></Button>
   }
 
   async function loadRelationships(currentUser:User,profileOwner:User) {

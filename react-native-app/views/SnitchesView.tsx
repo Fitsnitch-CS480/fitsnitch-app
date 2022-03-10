@@ -4,7 +4,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import SnitchService from '../backend/services/SnitchService';
 import PageSection from '../components/PageSection';
 import SnitchEventCard from '../components/SnitchEventCard';
-import { userContext } from '../navigation/mainNavigator';
 import moment from 'moment';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
@@ -12,6 +11,7 @@ import PaginatedList from '../components/PaginatedList';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import { useNavigation } from '@react-navigation/native';
 import { LatLonPair } from '../shared/models/CoordinateModels';
+import { globalContext } from '../navigation/appNavigator';
 
 const PAGE_SIZE = 10
 
@@ -20,7 +20,7 @@ const SnitchesView: React.FC = () => {
   const [userDict, setUserDict] = useState<Map<string,User>>(new Map());
   const [feedIds, setFeedIds] = useState<string[]|null>(null);
 
-  const {currentUser} = useContext(userContext);
+  const [currentUser] = useContext(globalContext).currentUser;
   const navigation = useNavigation()
 
   useEffect(()=>{
@@ -30,7 +30,6 @@ const SnitchesView: React.FC = () => {
   if (!feedIds) return null;
 
   async function getFeedUsers() {
-    if (!currentUser) throw new Error("There is no logged in user!")
     let users = await new SnitchService().getFeedUsers(currentUser.userId)
     let ids:string[] = [];
     let map = new Map<string, User>();

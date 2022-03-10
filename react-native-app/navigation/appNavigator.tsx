@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useState } from "react";
 import { getFocusedRouteNameFromRoute, NavigationContainer, useNavigation } from '@react-navigation/native';
 import SnitchesView from '../views/SnitchesView';
 import OtherUserProfile from '../views/OtherUserProfile';
@@ -15,15 +15,31 @@ import LocationTracker from '../components/LocationTracker';
 import { createStackNavigator } from "@react-navigation/stack";
 import GetSnitchedView from "../views/GetSnitchedView";
 import TabNavigator from "./tabNavigator";
+import User from "../shared/models/User";
 
+type props = {
+  authUser: User
+}
 
-const AppNavigator : React.FC = () => {
+export var globalContext: React.Context<{
+  currentUser
+}>;
 
+const AppNavigator : React.FC<props> = ({authUser}) => {
+    if (!authUser) return null;
+    
     const Tab = createBottomTabNavigator();
     const Stack = createNativeStackNavigator();
 
-    return (
-      <><Stack.Navigator initialRouteName="Tabs">
+    const gCtx = {
+      currentUser: useState<User>(authUser)
+    }
+
+    globalContext = createContext(gCtx)
+
+    return (<>
+      <globalContext.Provider value={gCtx}>
+      <Stack.Navigator initialRouteName="Tabs">
         <Tab.Screen name="Tabs" component={TabViewNavigator} options={{ headerShown: false }} />
         <Tab.Screen name="Search" component={UserSearch} />
         <Tab.Screen name="OtherUserProfile"
@@ -35,8 +51,10 @@ const AppNavigator : React.FC = () => {
             };
           } } />
         <Stack.Screen name="GetSnitchedOn" component={GetSnitchedView} />
-      </Stack.Navigator><LocationTracker/></>
-  );
+      </Stack.Navigator>
+      <LocationTracker/>
+      </globalContext.Provider>
+    </>);
 }
 
 

@@ -14,13 +14,12 @@ import RestaurantData from "../shared/models/RestaurantData";
 
 // console.log(ActivityIndicator)
 
-export const userContext = createContext<{setCurrentUser:(user:User)=>void,currentUser:User|null}>({currentUser:null,setCurrentUser:()=>{}});
-
+export const authContext = createContext<{setAuthUser:(user:User|null)=>void,authUser:User|null}>({authUser:null,setAuthUser:()=>{}});
 
 const MainNavigator : React.FC = () => {
     
   const [loading, setLoading] = useState<boolean>(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [authUser, setAuthUser] = useState<User|null>(null);
 
     // This method uses Amplify to succesfully resurrect a user session without making
     // them log in again. However, Filipe says he read that it is somehow insecure
@@ -53,11 +52,6 @@ const MainNavigator : React.FC = () => {
     const componentDidMount = async() => {
         // await loadApp();
 
-        //  Run this to test handler on dev server
-        // let snitchRequest = new CreateSnitchRequest("testUser1", {name:"name", location:(new LatLonPair(10,10))}, new LatLonPair(10,10) )
-        // await ServerFacade.snitchOnUser(snitchRequest);
-
-
         console.log("Component mounted")
         try {
           const authentication = await EncryptedStorage.getItem("user_auth");
@@ -67,8 +61,9 @@ const MainNavigator : React.FC = () => {
             //If we get a user back, setCurrentUser in mainNavigator.
             // Use the UserID from Cognito to look up the User in our DB
             let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);   
+            if (!user) throw new Error("Could not load user!")
             // Setting the user will trigger a navigation to the rest of the app
-            setCurrentUser(user);
+            setAuthUser(user);
             setLoading(false)
             console.log("Logged in with previous user:", user)
           }
@@ -88,6 +83,9 @@ const MainNavigator : React.FC = () => {
         componentDidMount();
     }, [])
 
+    useEffect(()=>{
+      console.log("Authuser changed!",authUser)
+    }, [authUser])
 
     if (loading) {
       return (
@@ -98,18 +96,21 @@ const MainNavigator : React.FC = () => {
             resizeMode="contain"
             style={styles.image}
           ></Image>
-          <ActivityIndicator color="0000ff"size={30} color="0000ff" />
+          <ActivityIndicator color="0000ff"size={30} />
         </View>
       )
     }
 
+
+    console.log("updating mainNav. authUser:", authUser)
+
     //If user is logged in, go to normal app screens. If not, go to the login screens. 
     return(
-        <userContext.Provider value={{currentUser, setCurrentUser}}>
+        <authContext.Provider value={{authUser, setAuthUser}}>
         <NavigationContainer>
-            {currentUser !== null ? <AppNavigator /> : <LoginNavigator/>}
+            {authUser !== null ? <AppNavigator authUser={authUser} /> : <LoginNavigator />}
         </NavigationContainer>
-        </userContext.Provider>
+        </authContext.Provider>
     )
 }
 

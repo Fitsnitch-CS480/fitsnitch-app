@@ -1,12 +1,10 @@
 import React, { useContext } from 'react';
 import Profile from '../components/Profile';
-import { userContext } from '../navigation/mainNavigator';
+import { globalContext } from '../navigation/appNavigator';
 
 
 const CurrentUserProfile: React.FC = () => {
-  const {currentUser} = useContext(userContext);
-
-  if (!currentUser) return <></>
+  const [currentUser] = useContext(globalContext).currentUser;
 
   return (
     <Profile profileOwner={currentUser}>

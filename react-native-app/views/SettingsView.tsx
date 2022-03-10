@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react';
-import {userContext} from '../navigation/mainNavigator';
+import {authContext, userContext} from '../navigation/mainNavigator';
 import {Auth} from '@aws-amplify/auth';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -16,13 +16,13 @@ const SettingsView: React.FC<Props> = ({
 
 
   //Get user from Context from mainNavigator
-  const {currentUser, setCurrentUser} = useContext(userContext);
+  const {authUser, setAuthUser} = useContext(authContext);
 
 
   let logout = async () => {
     await Auth.signOut()
     .then(async async => {
-      setCurrentUser(null);
+      setAuthUser(null);
       try {
         await EncryptedStorage.removeItem("user_auth");
         

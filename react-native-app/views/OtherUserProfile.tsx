@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import Profile from '../components/Profile';
-import { userContext } from '../navigation/mainNavigator';
+import { globalContext } from '../navigation/appNavigator';
 
 export type props = {
   route: any
@@ -9,9 +9,9 @@ export type props = {
 
 const OtherUserProfile: React.FC<props> = ({route}) => {
   const {profileOwner} = route.params;
+  const [currentUser] = useContext(globalContext).currentUser;
 
-  const {currentUser} = useContext(userContext);
-  if (profileOwner.userId == currentUser?.userId) {
+  if (profileOwner.userId == currentUser.userId) {
     useNavigation().navigate("Profile");
     return null;
   }

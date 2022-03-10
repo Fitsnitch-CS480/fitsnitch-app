@@ -5,15 +5,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import ClientTrainerService from '../../backend/services/ClientTrainerService';
 import PageSection from '../../components/PageSection';
 import ProfileImage from '../../components/ProfileImage';
-import { userContext } from '../../navigation/mainNavigator';
+import { globalContext } from '../../navigation/appNavigator';
 import User from '../../shared/models/User';
 
 const TITLE = "Your Clients"
 
 const CurrentClients: React.FC = () => {
   const navigation = useNavigation();
-  const {currentUser, setCurrentUser} = useContext(userContext)
-  if (!currentUser) return null;
+  const [currentUser] = useContext(globalContext).currentUser;
 
   let [clients, setClients] = useState<User[]|null>(null)
   

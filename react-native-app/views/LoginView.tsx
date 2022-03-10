@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Platform, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
-import {userContext} from '../navigation/mainNavigator';
+import {authContext, userContext} from '../navigation/mainNavigator';
 import {check, checkNotifications, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Popup from '../components/Popup';
 import ServerFacade from '../backend/ServerFacade';
@@ -26,7 +26,7 @@ export default function LoginView() {
   }
   
   //Get user from Context from mainNavigator
-  const {currentUser, setCurrentUser} = useContext(userContext);
+  const {authUser, setAuthUser} = useContext(authContext);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function LoginView() {
 
           // Setting the user will trigger a navigation to the rest of the app
           setLoading(false)
-          setCurrentUser(user);
+          setAuthUser(user);
         })
         //Handle the multiple errors
         .catch((err:any) => {

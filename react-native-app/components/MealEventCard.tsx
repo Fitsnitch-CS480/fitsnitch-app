@@ -8,6 +8,7 @@ import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
 import moment from 'moment';
 import CheatMealService from '../backend/services/CheatMealService';
+import { globalContext } from '../navigation/appNavigator';
 
 export type Props = {
   meal: CheatMealEvent;
@@ -37,8 +38,7 @@ const CheatMealEventCard: React.FC<Props> = ({
   //   new CheatMealService().shareMeal(meal,mealOwner)
   // }
 
-  const {currentUser} = useContext(userContext);
-  if (!currentUser) return <></>
+  const [currentUser] = useContext(globalContext).currentUser;
 
   if (error) {
     return <Text>{error}</Text>

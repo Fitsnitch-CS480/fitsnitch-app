@@ -17,6 +17,7 @@ import PaginatedList from './PaginatedList';
 import PartnerAssociationRequestButton from './PartnerAssociationRequestButton';
 import ProfileImage from './ProfileImage';
 import SnitchEventCard from './SnitchEventCard';
+import { globalContext } from '../navigation/appNavigator';
 
 
 const PAGE_SIZE = 10
@@ -39,8 +40,7 @@ const Profile: React.FC<Props> = ({
     partnerRelationship: undefined,
   });
 
-  const {currentUser} = useContext(userContext);
-  if (!currentUser) return <></>
+  const [currentUser] = useContext(globalContext).currentUser;
 
   // HACK: these are for development only and should be removed or commented before submitting a PR!!!
   // let testArthurUser = {email: "", userId: "833b9875-e922-45b4-a2c3-c34efdbc3367", firstname:"Arthur",lastname:"Test"}

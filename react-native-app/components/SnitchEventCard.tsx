@@ -8,6 +8,7 @@ import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
 import moment from 'moment';
 import SnitchService from '../backend/services/SnitchService';
+import { globalContext } from '../navigation/appNavigator';
 
 export type Props = {
   snitch: SnitchEvent;
@@ -37,8 +38,7 @@ const SnitchEventCard: React.FC<Props> = ({
     new SnitchService().shareSnitch(snitch,snitchOwner)
   }
 
-  const {currentUser} = useContext(userContext);
-  if (!currentUser) return <></>
+  const [currentUser] = useContext(globalContext).currentUser;
 
   if (error) {
     return <Text>{error}</Text>
