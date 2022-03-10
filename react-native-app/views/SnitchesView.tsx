@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SnitchService from '../backend/services/SnitchService';
 import PageSection from '../components/PageSection';
@@ -10,6 +10,8 @@ import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import PaginatedList from '../components/PaginatedList';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
+import { useNavigation } from '@react-navigation/native';
+import { LatLonPair } from '../shared/models/CoordinateModels';
 
 const PAGE_SIZE = 10
 
@@ -19,6 +21,7 @@ const SnitchesView: React.FC = () => {
   const [feedIds, setFeedIds] = useState<string[]|null>(null);
 
   const {currentUser} = useContext(userContext);
+  const navigation = useNavigation()
 
   useEffect(()=>{
     getFeedUsers();
@@ -61,6 +64,17 @@ const SnitchesView: React.FC = () => {
     }
   })();
 
+
+  function demoSnitch() {
+    navigation.navigate('GetSnitchedOn', { 
+      restaurant: {
+        name: "Domino's"
+      },
+      coords: new LatLonPair(-41,-111)
+    })
+  }
+
+
   return (
   <ScrollView style={{height: '100%'}}>
     <View style={styles.container}>
@@ -77,6 +91,10 @@ const SnitchesView: React.FC = () => {
       :
         null
       }
+
+      <View>
+        <Button title="Demo Snitch" onPress={demoSnitch}></Button>
+      </View>
 
       <PageSection title="Recent Snitches">
         <PaginatedList
