@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View, Alert, AppState } from 'react-native';
 import Timer from '../models/Timer';
-import SnitchPopUp from'../components/SnitchPopUp';
 import ServerFacade from '../backend/ServerFacade';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
 
-export default function GetSnitchedView({ navigation, route }: { navigation: any, route: any }) {
+export default function GetSnitchedView({ navigation, route }: any) {
     const [buttonPopup, setButtonPopup] = useState(false);
     const [timedPopUp, setTimedPopUp] = useState(false);
-    const timer = new Timer();
-  
-    useEffect(() => {
-
-    }, [])
+    const {restaurant, coords} = route.params;
 
     let onTimesUp = async () => {
+      // TODO notify Android
         if (AppState.currentState == "background") {  //alert by notification
             let localNotification = PushNotificationIOS.addNotificationRequest({
                 id: "1",
@@ -26,9 +23,10 @@ export default function GetSnitchedView({ navigation, route }: { navigation: any
         setButtonPopup(false);
         Alert.alert("You've Been Snitched On!", "Open FitSnitch to request a change or use a cheat meal");
         //Send snitch
-        ServerFacade.reportSnitch();
+        ServerFacade.snitchOnUser(new CreateSnitchRequest("test2", restaurant, coords));
       }
       
+      // The code belows is a resource for reimplementing the Chef soundclips
       let checkLocation = async () => {
         //navigate.push("GetSnitchedOn")
         // const response = await ServerFacade.checkLocation(-1,-1);
@@ -75,34 +73,67 @@ export default function GetSnitchedView({ navigation, route }: { navigation: any
         // }
       }
 
+      let doNothing = async () => {
+        setButtonPopup(false);
+        Alert.alert("Great Decision! Remember your goals!");
+      }
+    
+      let useCheat = async () => {
+        setButtonPopup(false);
+        Alert.alert("Checking if you have cheats available. Otherwise you will be snitched on!");
+      }
+      
       return (
-        <View style={styles.container}>
-          <View>
-            <View>
-              <SnitchPopUp trigger={true} setTrigger={setButtonPopup}>
-                <Timer onTimesUp={onTimesUp} duration={30}/>
-              </SnitchPopUp>
-            </View>
-          </View>
-        </View>
+       <View style={styles.container}>
+          <Text style={styles.text1}>Are you at {restaurant.name}?</Text>
+          <Text></Text>
+          
+          <Timer onTimesUp={onTimesUp} duration={30}/>
         
-      );
+          <Text></Text>
+          <Text style={styles.text2}>Select an option below to stop us from snitching on you! </Text>
+          <Text></Text>
+
+          <View style={styles.buttonContainer}>
+            <Button title="I'll Leave" color='black' onPress={doNothing}>Snitch</Button>
+            <Text>   </Text>
+            <Button title="Use A Cheat" color='black' onPress={useCheat}>Cheat Meal</Button>
+          </View>
+          <Text style={styles.errorText}>Report an error</Text>
+       </View>
+     );
 
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'space-around',
-      backgroundColor: 'white',
-    },
-    greeting: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      margin: 16
-    },
-    container2: {
-      marginTop: 100
-    }
+  buttonContainer: {
+    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  errorText: {
+    alignSelf: "center",
+    textDecorationLine: 'underline'
+  },
+
+  text1:{
+    color: 'black',
+    alignSelf: "center",
+    fontSize: 30,
+  },
+
+  text2:{
+    color: 'black',
+    alignSelf: "center",
+    fontSize: 20,
+  },
+
+  container: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: 'white',
+  },
 });

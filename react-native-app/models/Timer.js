@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, Button } from 'react-native';
 class Timer extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { count: 30};
+    this.state = { count: props.duration ?? 30};
   }
 
   componentDidMount() {
@@ -24,10 +24,6 @@ class Timer extends React.Component {
       }
     }
   }
-  // locationName(){
-  //   this.location = this.props.location;
-  //   return this.location;
-  // }
 
   fmtMSS(s) { return(s-(s%=60))/60+(9<s?':':':0')+s}
 
@@ -35,25 +31,13 @@ class Timer extends React.Component {
     let {count} = this.state;
     return(
         <View>
-          <Text style={styles.text1}>Are you at Dominos?</Text>
-          <Text></Text>
           <Text style={styles.seconds}>{this.fmtMSS(count)}</Text>
-          <Text></Text>
-          <Text style={styles.text2}>Select an option below to stop us from snitching on you! </Text>
-          <Text></Text>
         </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: "20%",
-    backgroundColor: "white",
-  },
   seconds: {
     fontStyle: 'italic', 
     fontSize: 50,
@@ -63,16 +47,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     backgroundColor: 'white',
   },
-  text1:{
-    color: 'black',
-    alignSelf: "center",
-    fontSize: 30,
-  },
-  text2:{
-    color: 'black',
-    alignSelf: "center",
-    fontSize: 20,
-  }
 });
 
 export default Timer;
