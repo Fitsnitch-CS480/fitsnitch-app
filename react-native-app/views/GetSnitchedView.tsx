@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View, Alert, AppState } from 'react-native';
 import Timer from '../models/Timer';
 import ServerFacade from '../backend/ServerFacade';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
+import { userContext } from '../navigation/mainNavigator';
 
 export default function GetSnitchedView({ navigation, route }: any) {
+    const {currentUser} = useContext(userContext);
+    if (!currentUser) return null;
+
     const [buttonPopup, setButtonPopup] = useState(false);
     const [timedPopUp, setTimedPopUp] = useState(false);
     const {restaurant, coords} = route.params;
@@ -23,7 +27,7 @@ export default function GetSnitchedView({ navigation, route }: any) {
         setButtonPopup(false);
         Alert.alert("You've Been Snitched On!", "Open FitSnitch to request a change or use a cheat meal");
         //Send snitch
-        ServerFacade.snitchOnUser(new CreateSnitchRequest("test2", restaurant, coords));
+        ServerFacade.snitchOnUser(new CreateSnitchRequest(currentUser.userId, restaurant, coords));
       }
       
       // The code belows is a resource for reimplementing the Chef soundclips
