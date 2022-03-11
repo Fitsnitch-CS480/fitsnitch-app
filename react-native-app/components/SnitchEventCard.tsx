@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View} from 'react-native';
+import React, { Component, ReactElement, useContext, useEffect, useRef, useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, FlatList, UIManager, findNodeHandle } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ServerFacade from '../backend/ServerFacade';
 import { userContext } from '../navigation/mainNavigator';
@@ -8,6 +8,9 @@ import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
 import moment from 'moment';
 import SnitchService from '../backend/services/SnitchService';
+import PopupMenu from './SnitchOptionsDropdown';
+
+const ICON_SIZE = 24
 
 export type Props = {
   snitch: SnitchEvent;
@@ -15,10 +18,12 @@ export type Props = {
 };
 
 const SnitchEventCard: React.FC<Props> = ({
-  snitch, user
+  snitch, user, 
 }) => {
-  const [snitchOwner, setSnitchOwner] = useState<User|undefined>(undefined)
-  const [error, setError] = useState<string>("")
+  const [snitchOwner, setSnitchOwner] = useState<User|undefined>(undefined);
+  const [error, setError] = useState<string>("");
+  const [visible, setVisible] = useState(false);
+
 
   useEffect(()=>{
     if (user) setSnitchOwner(user);
@@ -31,7 +36,16 @@ const SnitchEventCard: React.FC<Props> = ({
       setError("Could not load Snitch")
     }
   }
+  
+  const onPopupEvent = (snitch:SnitchEvent, index:Number) => {
+    if (!snitch) return
+    if (index === 0) switchToCheatmeal(snitch)
+    else {}
+  }
 
+  function switchToCheatmeal(snitch:SnitchEvent){
+    
+  }
   
   function shareSnitch(snitch:SnitchEvent) {
     new SnitchService().shareSnitch(snitch,snitchOwner)
@@ -64,7 +78,11 @@ const SnitchEventCard: React.FC<Props> = ({
           <View style={styles.detailRowIcon}><Icon name="event" color="#888" size={18}></Icon></View>
             <Text>{getRelativeTime(snitch.created)}</Text>
           </View>
-    
+            <View style={styles.snitchToCheatmeal}>
+              <View>
+                <PopupMenu actions={['Switch To Cheatmeal']} onPress={onPopupEvent} />
+              </View>
+            </View>
           <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
 
         </View>
@@ -106,6 +124,11 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   shareButton: {
+  },
+  snitchToCheatmeal: {
+    position: 'absolute',
+    right: 0, //5   -10
+    top: -40,  //-25  , -40
   },
 });
 
