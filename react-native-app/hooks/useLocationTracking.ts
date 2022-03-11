@@ -152,7 +152,7 @@ export default function useLocationTracking(onLog?:any) {
         setDoCheck(false);
         console.log("\n\n");
 
-        let permission = null;
+        let permission;
 
         if (Platform.OS == "android") {
             permission = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION)
