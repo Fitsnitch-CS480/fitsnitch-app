@@ -83,10 +83,6 @@ const MainNavigator : React.FC = () => {
         componentDidMount();
     }, [])
 
-    useEffect(()=>{
-      console.log("Authuser changed!",authUser)
-    }, [authUser])
-
     if (loading) {
       return (
         <View style={styles.loadingScreen}>
@@ -101,8 +97,6 @@ const MainNavigator : React.FC = () => {
       )
     }
 
-
-    console.log("updating mainNav. authUser:", authUser)
 
     //If user is logged in, go to normal app screens. If not, go to the login screens. 
     return(
