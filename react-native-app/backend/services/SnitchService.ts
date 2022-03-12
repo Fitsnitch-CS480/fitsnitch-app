@@ -1,3 +1,4 @@
+import { SwitchSnitchToCheatmealRequest } from './../../shared/models/requests/SwitchSnitchToCheatmealRequest';
 import { UserSnitchesRequest, UserSnitchesResponse } from "../../shared/models/requests/UserSnitchesRequest";
 import User from "../../shared/models/User";
 import ServerFacade from "../ServerFacade";
@@ -41,5 +42,9 @@ export default class SnitchService {
             notifyMessage("Could not share snitch")
         }
     }
-    
+    public async switchToCheatmeal(snitch: SnitchEvent){
+      await ServerFacade.switchToCheatmeal(
+        new SwitchSnitchToCheatmealRequest(snitch.userId, snitch.created, snitch.restaurantData, snitch.originCoords)
+      );
+    }
 }

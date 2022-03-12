@@ -1,5 +1,5 @@
-import React, { Component, ReactElement, useContext, useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Modal, FlatList, UIManager, findNodeHandle } from 'react-native';
+import React, { Component, ReactElement, useContext, useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ServerFacade from '../backend/ServerFacade';
 import { userContext } from '../navigation/mainNavigator';
@@ -37,14 +37,13 @@ const SnitchEventCard: React.FC<Props> = ({
     }
   }
   
-  const onPopupEvent = (snitch:SnitchEvent, index:Number) => {
-    if (!snitch) return
-    if (index === 0) switchToCheatmeal(snitch)
-    else {}
-  }
-
-  function switchToCheatmeal(snitch:SnitchEvent){
-    
+  const onPopupEvent = (event: any, index:Number) => {
+    console.log("Snitch is: ", snitch);
+    console.log("index is : ", index);
+    if (event !== 'itemSelected') return
+    if (index === 0){
+        new SnitchService().switchToCheatmeal(snitch);
+    }
   }
   
   function shareSnitch(snitch:SnitchEvent) {
@@ -79,12 +78,12 @@ const SnitchEventCard: React.FC<Props> = ({
             <Text>{getRelativeTime(snitch.created)}</Text>
           </View>
             <View style={styles.snitchToCheatmeal}>
-              <View>
-                <PopupMenu actions={['Switch To Cheatmeal']} onPress={onPopupEvent} />
-              </View>
+  
+            <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
+            <View>
+              <PopupMenu actions={['Switch To Cheatmeal']} onPress={onPopupEvent} />
             </View>
-          <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
-
+          </View>
         </View>
       </View>
     </View>
@@ -126,9 +125,11 @@ const styles = StyleSheet.create({
   shareButton: {
   },
   snitchToCheatmeal: {
+    display: 'flex',
+    flexDirection: 'row',
     position: 'absolute',
-    right: 0, //5   -10
-    top: -40,  //-25  , -40
+    right: 10, //Vertical: -5   Horizontal: 0
+    top: -30,  //Vertical: -35  , Horizontal: -40
   },
 });
 

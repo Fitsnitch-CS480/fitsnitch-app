@@ -1,3 +1,4 @@
+import { SwitchSnitchToCheatmealRequest } from './../../../react-native-app/shared/models/requests/SwitchSnitchToCheatmealRequest';
 import SnitchEvent from "../../../react-native-app/shared/models/SnitchEvent";
 import {UserSnitchesRequest, UserSnitchesResponse} from "../../../react-native-app/shared/models/requests/UserSnitchesRequest";
 import {GetSnitchRequest} from "../../../react-native-app/shared/models/requests/GetSnitchRequest";
@@ -27,6 +28,10 @@ export default class SnitchService {
 
     async getUserSnitches(request:UserSnitchesRequest): Promise<UserSnitchesResponse> {
         return await DaoFactory.getSnitchDao().getSnitchesForUsers(request);
+    }
+
+    async switchSnitchToCheatmeal(data: SwitchSnitchToCheatmealRequest){
+      await DaoFactory.getSnitchDao().switchSnitchToCheatmeal(data);
     }
 
     async deleteSnitch(data:SnitchEvent) {

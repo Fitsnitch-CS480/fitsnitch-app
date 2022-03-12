@@ -32,7 +32,7 @@ export default class PopupMenu extends Component<any, any> {
       <View>
         <TouchableOpacity onPress={this.onPress}>
           <Icon
-            name='keyboard-control'
+            name='more-vert'
             size={ICON_SIZE}
             color={'grey'}
             ref={this.onRef} />
