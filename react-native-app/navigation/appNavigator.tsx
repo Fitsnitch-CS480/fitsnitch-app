@@ -1,28 +1,27 @@
 import React, { createContext, useState } from "react";
-import { getFocusedRouteNameFromRoute, NavigationContainer, useNavigation } from '@react-navigation/native';
-import SnitchesView from '../views/SnitchesView';
 import OtherUserProfile from '../views/OtherUserProfile';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import PeopleView from '../views/PeopleView/PeopleView';
-import SettingsView from '../views/SettingsView';
 import TabViewNavigator from "./TabViewNavigator";
 import UserSearch from "../views/UserSearch";
-import Profile from "../components/Profile";
-import { Button, Settings, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import LocationTracker from '../components/LocationTracker';
-import { createStackNavigator } from "@react-navigation/stack";
 import GetSnitchedView from "../views/GetSnitchedView";
-import TabNavigator from "./tabNavigator";
 import User from "../shared/models/User";
+import LocationStore from "../stores/LocationStore";
+import UseLocationTracking from "../hooks/useLocationTracking";
+import LogUI from "../components/LogUI";
+import LogStore from "../stores/LogStore";
 
 type props = {
   authUser: User
 }
 
+type statePiece<T> = [T, React.Dispatch<React.SetStateAction<T>>]
+
 export var globalContext: React.Context<{
-  currentUser
+  currentUserState: statePiece<User>,
+  locationStore: LocationStore
+  logStore: LogStore
 }>;
 
 const AppNavigator : React.FC<props> = ({authUser}) => {
@@ -32,7 +31,9 @@ const AppNavigator : React.FC<props> = ({authUser}) => {
     const Stack = createNativeStackNavigator();
 
     const gCtx = {
-      currentUser: useState<User>(authUser)
+      currentUserState: useState<User>(authUser),
+      locationStore: new LocationStore(),
+      logStore: new LogStore()
     }
 
     globalContext = createContext(gCtx)
@@ -52,7 +53,8 @@ const AppNavigator : React.FC<props> = ({authUser}) => {
           } } />
         <Stack.Screen name="GetSnitchedOn" component={GetSnitchedView} />
       </Stack.Navigator>
-      <LocationTracker/>
+      <UseLocationTracking />
+      <LogUI />
       </globalContext.Provider>
     </>);
 }
