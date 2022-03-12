@@ -13,7 +13,7 @@ import { globalContext } from '../../navigation/appNavigator';
 const TITLE = "Trainer Requests"
 
 const TrainerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [currentUser] = useContext(globalContext).currentUserState;
 
   let [requests, setRequests] = useState<User[]>([])

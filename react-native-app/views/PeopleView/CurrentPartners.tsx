@@ -10,7 +10,7 @@ import User from '../../shared/models/User';
 const TITLE = "Your Partners"
 
 const CurrentPartners: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [currentUser] = useContext(globalContext).currentUserState;
 
   let [partners, setPartners] = useState<User[]>([])

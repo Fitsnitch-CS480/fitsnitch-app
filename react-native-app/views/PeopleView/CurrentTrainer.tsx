@@ -10,7 +10,7 @@ import User from '../../shared/models/User';
 const TITLE = "Your Trainer"
 
 const CurrentTrainer: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [currentUser] = useContext(globalContext).currentUserState;
 
   let [trainer, setTrainer] = useState<User|null>(null)

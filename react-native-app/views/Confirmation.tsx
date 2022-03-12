@@ -10,7 +10,7 @@ import Input from '../components/Input';
 
 const Confirmation : React.FC = ({route}) => {
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const [authCode, setAuthCode] = useState('');
     const [error, setError] = useState(' ');
     console.log('confirmation navigation: ', navigation);

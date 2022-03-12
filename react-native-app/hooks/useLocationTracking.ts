@@ -28,7 +28,7 @@ export default observer(function UseLocationTracking({onLog}: any) {
 
     const [doCheck, setDoCheck] = useState(true);
 
-    const navigator = useNavigation();
+    const navigator = useNavigation<any>();
     var routes = useNavigationState(state => state?.routes);
     var index = useNavigationState(state => state?.index);
 

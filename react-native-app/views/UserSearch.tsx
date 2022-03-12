@@ -18,7 +18,7 @@ type state = {
 const PAGE_SIZE = 20;
 
 const UserSearch: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   
   const [currentUser] = useContext(globalContext).currentUserState;
 

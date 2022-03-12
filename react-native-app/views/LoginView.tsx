@@ -11,7 +11,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 
 export default function LoginView() {
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [email, onChangeEmail] = useState('');
   const [password, onChangePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

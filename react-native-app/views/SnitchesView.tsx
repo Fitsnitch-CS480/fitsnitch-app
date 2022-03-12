@@ -21,7 +21,7 @@ const SnitchesView: React.FC = () => {
   const [feedIds, setFeedIds] = useState<string[]|null>(null);
 
   const [currentUser] = useContext(globalContext).currentUserState;
-  const navigation = useNavigation()
+  const navigation = useNavigation<any>()
 
   useEffect(()=>{
     getFeedUsers();

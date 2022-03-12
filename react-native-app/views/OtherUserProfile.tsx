@@ -12,7 +12,7 @@ const OtherUserProfile: React.FC<props> = ({route}) => {
   const [currentUser] = useContext(globalContext).currentUserState;
 
   if (profileOwner.userId == currentUser.userId) {
-    useNavigation().navigate("Profile");
+    useNavigation<any>().navigate("Profile");
     return null;
   }
   
