@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Platform, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
-import {authContext, userContext} from '../navigation/mainNavigator';
+import {authContext} from '../navigation/mainNavigator';
 import {check, checkNotifications, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Popup from '../components/Popup';
 import ServerFacade from '../backend/ServerFacade';
