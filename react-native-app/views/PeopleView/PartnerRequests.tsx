@@ -14,7 +14,7 @@ const TITLE = "Partner Requests"
 
 const PartnerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) => {
   const navigation = useNavigation();
-  const [currentUser] = useContext(globalContext).currentUser;
+  const [currentUser] = useContext(globalContext).currentUserState;
 
   let [requesters, setRequesters] = useState<User[]>([])
   

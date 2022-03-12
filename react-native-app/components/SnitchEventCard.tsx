@@ -38,7 +38,7 @@ const SnitchEventCard: React.FC<Props> = ({
     new SnitchService().shareSnitch(snitch,snitchOwner)
   }
 
-  const [currentUser] = useContext(globalContext).currentUser;
+  const [currentUser] = useContext(globalContext).currentUserState;
 
   if (error) {
     return <Text>{error}</Text>

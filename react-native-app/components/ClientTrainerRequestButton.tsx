@@ -33,7 +33,7 @@ const ClientTrainerRequestButton: React.FC<Props> = ({
     setState({...flexibleState})
   }
 
-  const [currentUser] = useContext(globalContext).currentUser;
+  const [currentUser] = useContext(globalContext).currentUserState;
 
   if (!state.relationship) {
     loadRelationships(currentUser, profileOwner);

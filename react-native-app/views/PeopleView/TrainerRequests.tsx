@@ -14,7 +14,7 @@ const TITLE = "Trainer Requests"
 
 const TrainerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) => {
   const navigation = useNavigation();
-  const [currentUser] = useContext(globalContext).currentUser;
+  const [currentUser] = useContext(globalContext).currentUserState;
 
   let [requests, setRequests] = useState<User[]>([])
   

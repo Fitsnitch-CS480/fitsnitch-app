@@ -30,7 +30,6 @@ export default function LoginView() {
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log("useEffect....");
     if (Platform.OS == "ios") {
       console.log("ios");
       checkNotifications().then(({status, settings}) => {

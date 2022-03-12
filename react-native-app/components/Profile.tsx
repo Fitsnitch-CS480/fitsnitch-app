@@ -40,7 +40,7 @@ const Profile: React.FC<Props> = ({
     partnerRelationship: undefined,
   });
 
-  const [currentUser] = useContext(globalContext).currentUser;
+  const [currentUser] = useContext(globalContext).currentUserState;
 
   // HACK: these are for development only and should be removed or commented before submitting a PR!!!
   // let testArthurUser = {email: "", userId: "833b9875-e922-45b4-a2c3-c34efdbc3367", firstname:"Arthur",lastname:"Test"}

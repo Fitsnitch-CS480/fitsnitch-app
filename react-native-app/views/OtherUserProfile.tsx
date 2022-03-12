@@ -9,7 +9,7 @@ export type props = {
 
 const OtherUserProfile: React.FC<props> = ({route}) => {
   const {profileOwner} = route.params;
-  const [currentUser] = useContext(globalContext).currentUser;
+  const [currentUser] = useContext(globalContext).currentUserState;
 
   if (profileOwner.userId == currentUser.userId) {
     useNavigation().navigate("Profile");

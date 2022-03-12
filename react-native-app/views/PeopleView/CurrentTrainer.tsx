@@ -11,7 +11,7 @@ const TITLE = "Your Trainer"
 
 const CurrentTrainer: React.FC = () => {
   const navigation = useNavigation();
-  const [currentUser] = useContext(globalContext).currentUser;
+  const [currentUser] = useContext(globalContext).currentUserState;
 
   let [trainer, setTrainer] = useState<User|null>(null)
   let [loading, setLoading] = useState<boolean>(true)

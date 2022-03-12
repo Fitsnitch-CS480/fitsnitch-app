@@ -11,7 +11,7 @@ const TITLE = "Your Partners"
 
 const CurrentPartners: React.FC = () => {
   const navigation = useNavigation();
-  const [currentUser] = useContext(globalContext).currentUser;
+  const [currentUser] = useContext(globalContext).currentUserState;
 
   let [partners, setPartners] = useState<User[]>([])
   

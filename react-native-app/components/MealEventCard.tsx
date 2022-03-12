@@ -38,7 +38,7 @@ const CheatMealEventCard: React.FC<Props> = ({
   //   new CheatMealService().shareMeal(meal,mealOwner)
   // }
 
-  const [currentUser] = useContext(globalContext).currentUser;
+  const [currentUser] = useContext(globalContext).currentUserState;
 
   if (error) {
     return <Text>{error}</Text>

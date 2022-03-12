@@ -12,7 +12,7 @@ const TITLE = "Your Clients"
 
 const CurrentClients: React.FC = () => {
   const navigation = useNavigation();
-  const [currentUser] = useContext(globalContext).currentUser;
+  const [currentUser] = useContext(globalContext).currentUserState;
 
   let [clients, setClients] = useState<User[]|null>(null)
   
