@@ -1,4 +1,4 @@
-import React, { Component, ReactElement, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ServerFacade from '../backend/ServerFacade';
@@ -10,8 +10,6 @@ import moment from 'moment';
 import SnitchService from '../backend/services/SnitchService';
 import PopupMenu from './SnitchOptionsDropdown';
 
-const ICON_SIZE = 24
-
 export type Props = {
   snitch: SnitchEvent;
   user?: User;
@@ -22,8 +20,6 @@ const SnitchEventCard: React.FC<Props> = ({
 }) => {
   const [snitchOwner, setSnitchOwner] = useState<User|undefined>(undefined);
   const [error, setError] = useState<string>("");
-  const [visible, setVisible] = useState(false);
-
 
   useEffect(()=>{
     if (user) setSnitchOwner(user);
@@ -38,8 +34,6 @@ const SnitchEventCard: React.FC<Props> = ({
   }
   
   const onPopupEvent = (event: any, index:Number) => {
-    console.log("Snitch is: ", snitch);
-    console.log("index is : ", index);
     if (event !== 'itemSelected') return
     if (index === 0){
         new SnitchService().switchToCheatmeal(snitch);
@@ -60,8 +54,6 @@ const SnitchEventCard: React.FC<Props> = ({
   if (!snitchOwner) {
     return <Text>Loading...</Text>
   }
-
-  const isUserOwner = snitch.userId === currentUser.userId;
 
   return (
     <View style={styles.container}>
@@ -128,8 +120,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     position: 'absolute',
-    right: 10, //Vertical: -5   Horizontal: 0
-    top: -30,  //Vertical: -35  , Horizontal: -40
+    right: 10,
+    top: -30, 
   },
 });
 

@@ -18,9 +18,6 @@ import PartnerAssociationRequestButton from './PartnerAssociationRequestButton';
 import ProfileImage from './ProfileImage';
 import SnitchEventCard from './SnitchEventCard';
 
-
-const PAGE_SIZE = 10
-
 type state = {
   partnerRelationship?: RelationshipStatus,
   trainerRelationship?: RelationshipStatus,
