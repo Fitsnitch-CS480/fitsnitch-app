@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useState, useEffect } from 'react';
 import { NativeModules, NativeEventEmitter, Platform, AppState } from "react-native";
 import * as Location from 'expo-location';
@@ -9,29 +9,31 @@ import ServerFacade from '../backend/ServerFacade';
 import useInterval from './useInterval';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { LatLonPair } from '../shared/models/CoordinateModels';
+import { globalContext } from "../navigation/appNavigator";
+import {observer} from 'mobx-react-lite'
+import { retry } from "@aws-amplify/core";
 
-export default function useLocationTracking(onLog?:any) {
+
+const distCheckThreshold = .0001
+const locationCheckFrequencyMS = 5000;
+
+export default observer(function UseLocationTracking({onLog}: any) {
+// export function useLocationTracking(onLog?:any) {
     var locationBgManager = NativeModules.MyLocationDataManager;
 
     const [currLocation, setLocation] = useState<Location.LocationObject>();
     const [wasMoving, setWasMoving] = useState(false);
 
-    const [isGettingSnitchedOnFlag, setIsGettingSnitchedOnFlag] = useState(false); //is the user in the GetSnitchedOn view?
-    const [wouldLeaveTime, setWouldLeaveTime] = useState<number|null>(null); //when the user says they will leave, they have 30 seconds before they are tracked again
-    const [commitedToLeaveFlag, setCommittedToLeaveFlag] = useState(false);
-    
-    const [doCheck, setDoCheck] = useState(true);
+    const {locationStore, logStore} = useContext(globalContext);
 
-    const distCheckThreshold = .0001
-    const locationCheckFrequencyMS = 5000;
-    const userLeavingGraceTime = 30000;
+    const [doCheck, setDoCheck] = useState(true);
 
     const navigator = useNavigation();
     var routes = useNavigationState(state => state?.routes);
     var index = useNavigationState(state => state?.index);
 
     function log(...logs:any[]) {
-        if (onLog) onLog(...logs);
+        logStore.log(...logs);
     }
 
     useEffect(() => {
@@ -70,7 +72,7 @@ export default function useLocationTracking(onLog?:any) {
         if (Platform.OS == "ios") {
             let localNotification = PushNotificationIOS.addNotificationRequest({
                 id: "1",
-                body: "You are in a forbidden restaurant! You have " + userLeavingGraceTime + " seconds to leave!",
+                body: "You are in a forbidden restaurant! Hurry and leave, before we snitch on you!",
                 title: "Uh Oh!",
                 category: "UHOH",
             });
@@ -78,77 +80,13 @@ export default function useLocationTracking(onLog?:any) {
         //TODO: add in android local notification logic
     }
 
-    const _checkLocationForRestaurant = async (coords:LatLonPair) => {
-        console.log("looking for restaurant...")
-        try {
-            let result = await ServerFacade.checkLocation(coords.lat, coords.lon)
-            log("Restaurant check:", result.response.data);
-            if (result.status == 200) {
-                log("IN RESTARAUNT");
-                log(AppState.currentState);
-                if (AppState.currentState !== "active") {
-                    _sendLocalNotification();
-                }
-                navigator.navigate("GetSnitchedOn", {restaurant: result.response.data, coords});
-            }
-            else if (result.status == 404) {
-                console.log("No restaurant here.")
-            }
-            return true
-        }
-        catch (e) {
-            log("Could not get restaurant data.", e)
-            return false
-        }
-        
-    }
 
-    const _measureLatestLocationUpdate = async(locationToMeasure : Location.LocationObject) => {
-        let newCoords = new LatLonPair(locationToMeasure.coords.latitude,locationToMeasure.coords.longitude)
-        log("Location:", newCoords)
-        if (currLocation == null) { 
-            log("No previous location - checking for restaurant...")
-            while (!await _checkLocationForRestaurant(newCoords)) {} 
-            setLocation(locationToMeasure);
-        }
-        else { //measure a distance 
-            let deltaLat = Math.abs(currLocation.coords.latitude - newCoords.lat);
-            let deltaLon = Math.abs(currLocation.coords.longitude - newCoords.lon);
-            let movedSignificantly = deltaLat > distCheckThreshold || deltaLon > distCheckThreshold;
-            log({deltaLat, deltaLon, movedSignificantly})
-
-            if (movedSignificantly) {
-                if (!wasMoving) {
-                    setWasMoving(true);
-                    log("Significant Change, is now moving");
-                    setLocation(locationToMeasure);
-                }
-                else {
-                    log("Still moving...")
-                }
-                setLocation(locationToMeasure);
-            }
-
-            else if (!movedSignificantly) {
-                if (wasMoving) {
-                    log("Movement Stopped - checking location...")
-                    setWasMoving(false);
-                    while (!await _checkLocationForRestaurant(newCoords)) {} 
-                }
-                else {
-                    log("Still not moving...")
-                }
-            }
-        }
-
-    }
-  
     const _getLocationAsync = async () => {        
         if (!doCheck) {
             log("(Prevented new check cycle...)")
             return;
         }
-
+    
         setDoCheck(false);
         console.log("\n\n");
 
@@ -190,60 +128,33 @@ export default function useLocationTracking(onLog?:any) {
                 log('The permission is limited: some actions are possible');
                 break;
             case RESULTS.GRANTED:
-                if (routes) {  //used to track visits to the GetSnitchedOn screen
-                    log("CURRSCREENNAME IS: " + routes[index].name);
-                    if (routes[index].name == "GetSnitchedOn") { //don't ping location when they've just been snitched on
-                        log("user is getting snitched on")
-                        if (!isGettingSnitchedOnFlag) {
-                            setIsGettingSnitchedOnFlag(true);
-                        }
-                    }
-                    else { //dont ping for location when user is getting snitched on
-
-                        // TODO: Use global context or state to manage snitching phases
-                        if (isGettingSnitchedOnFlag) {  //user just exited GetSnitchedOn screen, this may have been due to a commitment to leave or because they have been snitched on, wait 30 sec before pinging again
-                            log("user left GetSnitchedOn screen. Starting grace period")
-                            setWouldLeaveTime(Date.now());    
-                            setLocation(undefined);
-                            setIsGettingSnitchedOnFlag(false);
-                        }
-
-                        else {
-                            let timePassed = wouldLeaveTime? Date.now() - wouldLeaveTime : Infinity;
-                            let isInGracePeriod = timePassed < userLeavingGraceTime;
-                            if (isInGracePeriod) {
-                                log("Grace period progress: " + timePassed);
-                            }
-    
-                            else {
-                                if (wouldLeaveTime) {
-                                    log("Grace time is up!")
-                                    setWouldLeaveTime(null);
-                                }
-                                try {
-                                    await checkForLocationChange()
-                                }
-                                catch(error) {
-                                    log("Error getting location:", error);
-                                };
-                            
-                            }
-                        }
-                      
-                    }
-                }
-                else {  //will receive urgent location updates and initialize routes
+                if (shouldDoCheck()) {
+                    //will receive urgent location updates and initialize routes
                     await checkForLocationChange()
                 }
-
                 break;
-            case RESULTS.BLOCKED:
+            
+                case RESULTS.BLOCKED:
                 log('The permission is denied and not requestable anymore');
                 break;
             }
 
             setDoCheck(true);
             log("Ready for next check.")
+    }
+
+    function shouldDoCheck():boolean {
+        if (routes && routes[index].name == "GetSnitchedOn") {
+            log("user is getting snitched on")
+            setLocation(undefined) // make sure we refresh location next time
+            return false
+        }
+        if (locationStore.gracePeriodStatus) {
+            log("Grace period progress: " + locationStore.gracePeriodStatus);
+            setLocation(undefined) // make sure we refresh location next time
+            return false
+        }
+        return true;
     }
 
     async function checkForLocationChange() {
@@ -257,6 +168,96 @@ export default function useLocationTracking(onLog?:any) {
         };
     }
 
+    const _measureLatestLocationUpdate = async(locationToMeasure : Location.LocationObject) => {
+        let newCoords = new LatLonPair(locationToMeasure.coords.latitude,locationToMeasure.coords.longitude)
+
+        if (locationStore.checkSnitchOrCheatStatus(newCoords)) {
+            log("Still onsite of last snitch/cheat")
+            return;
+        }
+
+        log("Location:", newCoords)
+        if (currLocation == null) { 
+            log("No previous location - checking for restaurant...")
+            let success = await _checkLocationForRestaurant(newCoords)
+            setLocation(locationToMeasure);
+        }
+        else { //measure a distance 
+            let deltaLat = Math.abs(currLocation.coords.latitude - newCoords.lat);
+            let deltaLon = Math.abs(currLocation.coords.longitude - newCoords.lon);
+            let movedSignificantly = deltaLat > distCheckThreshold || deltaLon > distCheckThreshold;
+            log({deltaLat, deltaLon, movedSignificantly})
+
+            if (movedSignificantly) {
+                if (!wasMoving) {
+                    setWasMoving(true);
+                    log("Significant Change, is now moving");
+                    setLocation(locationToMeasure);
+                }
+                else {
+                    log("Still moving...")
+                }
+                setLocation(locationToMeasure);
+            }
+
+            else if (!movedSignificantly) {
+                if (wasMoving) {
+                    log("Movement Stopped - checking location...")
+                    setWasMoving(false);
+                    let success = await _checkLocationForRestaurant(newCoords)
+                    if (!success) setLocation(undefined) // make sure we try checking this location again next time
+                }
+                else {
+                    log("Still not moving...")
+                }
+            }
+        }
+    }
+  
+    /**
+     * Handles checking for restaurants at a location and routing to
+     * the snitch warning if there is one.
+     * 
+     * @param coords 
+     * @returns indicates whether or not the check was successful.
+     */
+    const _checkLocationForRestaurant = async (coords:LatLonPair, retryCount=0) => {
+        console.log("looking for restaurant...")
+        try {
+            let result = await ServerFacade.checkLocation(coords.lat, coords.lon)
+            if (result.response.status == 200) {
+                log("IN RESTARAUNT");
+                log(AppState.currentState);
+                if (AppState.currentState !== "active") {
+                    _sendLocalNotification();
+                }
+                navigator.navigate("GetSnitchedOn", {restaurant: result.response.data, coords});
+                return true
+            }
+            else if (result.response.status == 404) {
+                log("User is not in a restricted restaurant.")
+                return true
+            }
+            else if (result.response.status == 502) {
+                log(result.response.status+": likely a reqeuset timeout.")
+                if (retryCount < 3) {
+                    log("Trying again...")
+                    return await _checkLocationForRestaurant(coords, retryCount++)
+                }
+                else return false;
+            }
+            else {
+                log("Unsupported return code.", result.response)
+                return false;
+            }
+        }
+        catch (e) {
+            log("Could not get restaurant data.", e)
+            return false;
+        }
+    }
+
     useInterval(_getLocationAsync, locationCheckFrequencyMS);
 
-}
+    return null;
+})
