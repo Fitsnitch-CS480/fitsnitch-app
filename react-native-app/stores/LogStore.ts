@@ -3,7 +3,7 @@ import { observable, action, computed, makeObservable } from "mobx";
 const MAX_LOGS = 100;
 
 export default class LogStore {
-    constructor(stores) {
+    constructor() {
 	    makeObservable(this)
     }
 
