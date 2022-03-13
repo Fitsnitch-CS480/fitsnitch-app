@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ServerFacade from '../backend/ServerFacade';
 import { userContext } from '../navigation/mainNavigator';
@@ -37,6 +37,8 @@ const SnitchEventCard: React.FC<Props> = ({
     if (event !== 'itemSelected') return
     if (index === 0){
         new SnitchService().switchToCheatmeal(snitch);
+        // this.location.reload(false);
+        // Alert.alert("This was turned into a cheatmeal!");
     }
   }
   

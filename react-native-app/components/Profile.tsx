@@ -81,7 +81,6 @@ const Profile: React.FC<Props> = ({
     return response;
   }
 
-
   return (
     <View style={[styles.container]}>
       <ScrollView style={styles.scrollView}>
