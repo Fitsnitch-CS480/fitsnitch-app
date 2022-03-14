@@ -1,4 +1,4 @@
-import { PartnerStatusResponse } from './../../shared/models/requests/PartnerStatusResponse';
+import PartnerStatusResponse from './../../shared/models/requests/PartnerStatusResponse';
 import User from "../../shared/models/User";
 import ServerFacade from "../ServerFacade";
 
