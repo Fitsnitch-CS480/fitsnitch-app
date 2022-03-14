@@ -11,29 +11,39 @@ import LocationStore from "../stores/LocationStore";
 import UseLocationTracking from "../hooks/useLocationTracking";
 import LogUI from "../components/LogUI";
 import LogStore from "../stores/LogStore";
+import {ClientStore, PartnerStore, TrainerStore} from "../stores/PeopleStores";
+import { PartnerRequestForUserStore, TrainerRequestForUserStore } from "../stores/RequestStores";
 
 type props = {
   authUser: User
 }
 
-type statePiece<T> = [T, React.Dispatch<React.SetStateAction<T>>]
-
 export var globalContext: React.Context<{
-  currentUserState: statePiece<User>,
+  currentUser: User,
   locationStore: LocationStore
-  logStore: LogStore
+  logStore: LogStore,
+  partnerStore: PartnerStore,
+  clientStore: ClientStore,
+  trainerStore: TrainerStore,
+  trainerRequestsForUser: TrainerRequestForUserStore,
+  partnerRequestsForUser: PartnerRequestForUserStore,
 }>;
 
 const AppNavigator : React.FC<props> = ({authUser}) => {
-    if (!authUser) return null;
+  if (!authUser) return null;
     
     const Tab = createBottomTabNavigator();
     const Stack = createNativeStackNavigator();
 
     const gCtx = {
-      currentUserState: useState<User>(authUser),
+      currentUser: authUser,
       locationStore: new LocationStore(),
-      logStore: new LogStore()
+      logStore: new LogStore(),
+      partnerStore: new PartnerStore(authUser),
+      clientStore: new ClientStore(authUser),
+      trainerStore: new TrainerStore(authUser),
+      trainerRequestsForUser: new TrainerRequestForUserStore(authUser),
+      partnerRequestsForUser: new PartnerRequestForUserStore(authUser)
     }
 
     globalContext = createContext(gCtx)
