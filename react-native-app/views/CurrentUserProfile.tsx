@@ -4,7 +4,7 @@ import { globalContext } from '../navigation/appNavigator';
 
 
 const CurrentUserProfile: React.FC = () => {
-  const [currentUser] = useContext(globalContext).currentUserState;
+  const {currentUser} = useContext(globalContext);
 
   return (
     <Profile profileOwner={currentUser}>

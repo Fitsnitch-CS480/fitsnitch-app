@@ -20,7 +20,7 @@ const SnitchesView: React.FC = () => {
   const [userDict, setUserDict] = useState<Map<string,User>>(new Map());
   const [feedIds, setFeedIds] = useState<string[]|null>(null);
 
-  const [currentUser] = useContext(globalContext).currentUserState;
+  const {currentUser} = useContext(globalContext);
   const navigation = useNavigation<any>()
 
   useEffect(()=>{

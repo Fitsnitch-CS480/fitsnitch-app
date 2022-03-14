@@ -9,8 +9,7 @@ import {observer} from 'mobx-react-lite'
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 
 export default observer(function GetSnitchedView({ navigation, route }: any) {
-    const {currentUserState, locationStore} = useContext(globalContext);
-    const [currentUser] = currentUserState;
+    const {currentUser, locationStore} = useContext(globalContext);
 
     const [buttonPopup, setButtonPopup] = useState(false);
     const [didSnitch, setDidSnitch] = useState(false);

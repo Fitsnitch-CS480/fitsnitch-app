@@ -20,7 +20,7 @@ const PAGE_SIZE = 20;
 const UserSearch: React.FC = () => {
   const navigation = useNavigation<any>();
   
-  const [currentUser] = useContext(globalContext).currentUserState;
+  const {currentUser} = useContext(globalContext);
 
   const [state, setState] = useState<state>({
     results: [],
