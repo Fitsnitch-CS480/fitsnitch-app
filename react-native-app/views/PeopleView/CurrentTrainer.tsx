@@ -1,31 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
-import ClientTrainerService from '../../backend/services/ClientTrainerService';
 import PageSection from '../../components/PageSection';
 import ProfileImage from '../../components/ProfileImage';
 import { globalContext } from '../../navigation/appNavigator';
-import User from '../../shared/models/User';
 
 const TITLE = "Your Trainer"
 
-const CurrentTrainer: React.FC = () => {
+const CurrentTrainer = observer(() => {
   const navigation = useNavigation<any>();
-  const {currentUser} = useContext(globalContext);
+  const {currentUser, trainerStore} = useContext(globalContext);
 
-  let [trainer, setTrainer] = useState<User|null>(null)
-  let [loading, setLoading] = useState<boolean>(true)
+  const trainer = trainerStore.data;
   
-  useEffect(()=>{
-    new ClientTrainerService().getUserTrainer(currentUser.userId).then((trainer)=>{
-      setTrainer(trainer)
-      setLoading(false)
-    });  
-  }, [])
-
-
-  
-  if (loading) {
+  if (trainerStore.loading) {
     return (
     <PageSection title={TITLE}>
       <ActivityIndicator color="0000ff" size={30} />
@@ -45,7 +34,7 @@ const CurrentTrainer: React.FC = () => {
       }
       </PageSection>
   );
-};
+});
 
 const styles = StyleSheet.create({
   resultRow: {
