@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -10,26 +11,28 @@ import User from '../../shared/models/User';
 
 const TITLE = "Your Clients"
 
-const CurrentClients: React.FC = () => {
+const CurrentClients = observer(() => {
   const navigation = useNavigation<any>();
-  const [currentUser] = useContext(globalContext).currentUserState;
+  const {clientStore} = useContext(globalContext);
 
-  let [clients, setClients] = useState<User[]|null>(null)
-  
-  useEffect(()=>{
-    new ClientTrainerService().getUserClients(currentUser.userId).then((clients)=>{
-      setClients(clients)
-    });  
-  }, [])
+  const clients = clientStore.data;
 
-
-  if (!clients) {
+  if (clientStore.loading) {
     return (
     <PageSection title={TITLE}>
-      <ActivityIndicator color="0000ff"size={30} />
+      <ActivityIndicator color="0000ff" size={30} />
     </PageSection>
     )
   }
+  
+  if (clients.length === 0) {
+    return (
+      <PageSection title={TITLE}>
+        <Text>You have no clients yet!</Text>
+      </PageSection>
+    )
+  }
+
 
   return (
     <PageSection title={TITLE}>
@@ -44,7 +47,7 @@ const CurrentClients: React.FC = () => {
       ))}
     </PageSection>
   );
-};
+});
 
 const styles = StyleSheet.create({
   resultRow: {
