@@ -40,7 +40,6 @@ export default function LoginView() {
         }
       });
     }
-    
   });
 
   const signInFunction = async () => {
@@ -102,15 +101,15 @@ export default function LoginView() {
     <View style={styles.container}>
       <View style={styles.materialButtonPrimary}>
         { loading ? 
-            <ActivityIndicator color="0000ff"size={30} />
+            <ActivityIndicator color="0000ff" size={30} />
           :
             <Button title="Log In" onPress={()=>loading? null : signInFunction()}></Button>
         }
       </View>
 
-      <Popup popupShow={notiAuthPopupShow} hidePopup={closePopUp} handleButton={handleButton}>
+      {/* <Popup popupShow={notiAuthPopupShow} hidePopup={closePopUp} handleButton={handleButton}>
         
-      </Popup>
+      </Popup> */}
       
       <Text style={styles.or2}>--------------- OR ---------------</Text>
       <Text style={styles.loremIpsum} onPress={() => navigation.navigate('signup')}>Don&#39;t have an account? Sign up</Text> 

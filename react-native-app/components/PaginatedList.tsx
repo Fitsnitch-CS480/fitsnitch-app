@@ -58,7 +58,7 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
       ))}
 
       { loading ?
-        <View style={styles.loadingWrapper}><ActivityIndicator color="0000ff"size={30} /></View>
+        <View style={styles.loadingWrapper}><ActivityIndicator color="0000ff" size={30} /></View>
       :
         lastPage?.pageBreakKey && results.length > 0 ?
           <Button title="Load More" onPress={loadMoreResults}></Button>

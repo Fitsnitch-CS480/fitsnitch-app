@@ -10,7 +10,7 @@ const LogUI = observer(()=>{
     const scrollViewRef:any = React.useRef();
 
     const [sticky, setSticky] = useState(true);
-    const [showLog, setShowLog] = useState(true);
+    const [showLog, setShowLog] = useState(false);
 
     function onScrollEnd(event:any){
         let scrollY = event.nativeEvent.contentOffset.y

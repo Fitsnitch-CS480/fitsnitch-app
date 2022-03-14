@@ -11,7 +11,7 @@ const TITLE = "Your Trainer"
 
 const CurrentTrainer: React.FC = () => {
   const navigation = useNavigation<any>();
-  const [currentUser] = useContext(globalContext).currentUserState;
+  const {currentUser} = useContext(globalContext);
 
   let [trainer, setTrainer] = useState<User|null>(null)
   let [loading, setLoading] = useState<boolean>(true)
@@ -28,7 +28,7 @@ const CurrentTrainer: React.FC = () => {
   if (loading) {
     return (
     <PageSection title={TITLE}>
-      <ActivityIndicator color="0000ff"size={30} />
+      <ActivityIndicator color="0000ff" size={30} />
     </PageSection>
     )
   }

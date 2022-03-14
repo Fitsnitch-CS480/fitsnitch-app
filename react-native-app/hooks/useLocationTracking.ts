@@ -88,8 +88,6 @@ export default observer(function UseLocationTracking({onLog}: any) {
         }
     
         setDoCheck(false);
-        console.log("\n\n");
-
         let permission;
 
         if (Platform.OS == "android") {
@@ -225,21 +223,21 @@ export default observer(function UseLocationTracking({onLog}: any) {
         console.log("looking for restaurant...")
         try {
             let result = await ServerFacade.checkLocation(coords.lat, coords.lon)
-            if (result.response.status == 200) {
+            if (result?.response?.status == 200) {
                 log("IN RESTARAUNT");
                 log(AppState.currentState);
                 if (AppState.currentState !== "active") {
                     _sendLocalNotification();
                 }
-                navigator.navigate("GetSnitchedOn", {restaurant: result.response.data, coords});
+                navigator.navigate("GetSnitchedOn", {restaurant: result?.response.data, coords});
                 return true
             }
-            else if (result.response.status == 404) {
+            else if (result?.response?.status == 404) {
                 log("User is not in a restricted restaurant.")
                 return true
             }
-            else if (result.response.status == 502) {
-                log(result.response.status+": likely a reqeuset timeout.")
+            else if (result?.response?.status == 502) {
+                log(result?.response.status+": likely a reqeuset timeout.")
                 if (retryCount < 3) {
                     log("Trying again...")
                     return await _checkLocationForRestaurant(coords, retryCount++)
@@ -247,7 +245,7 @@ export default observer(function UseLocationTracking({onLog}: any) {
                 else return false;
             }
             else {
-                log("Unsupported return code.", result.response)
+                log("Unsupported return code.", result?.response)
                 return false;
             }
         }
