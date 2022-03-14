@@ -9,20 +9,15 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { notifyMessage } from '../../utils/UiUtils';
 import Badge from '../../components/Badge';
 import { globalContext } from '../../navigation/appNavigator';
+import { observer } from 'mobx-react-lite';
 
 const TITLE = "Partner Requests"
 
-const PartnerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) => {
+const PartnerRequests = observer(() => {
   const navigation = useNavigation<any>();
-  const [currentUser] = useContext(globalContext).currentUserState;
+  const {currentUser, partnerStore, partnerRequestsForUser} = useContext(globalContext);
 
-  let [requesters, setRequesters] = useState<User[]>([])
-  
-  useEffect(()=>{
-    new PartnerAssociationService().getPartnerRequesters(currentUser.userId).then((requesters)=>{
-      setRequesters(requesters)
-    });  
-  }, [])
+  const requesters = partnerRequestsForUser.data;
 
   if (requesters.length === 0) {
     return null
@@ -31,19 +26,16 @@ const PartnerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) 
   async function approveRequest(requester:User) {
     if (!currentUser) return null;
     await new PartnerAssociationService().approveRequest(requester, currentUser);
-    requesters = requesters.filter(r=>r!==requester);
-    setRequesters(requesters)
     notifyMessage("Approved Request!")
-    if (onChange) onChange();
+    partnerRequestsForUser.fetch()
+    partnerStore.fetch()
   }
 
   async function deleteRequest(requester:User) {
     if (!currentUser) return null;
     await new PartnerAssociationService().deleteRequest(requester, currentUser);
-    requesters = requesters.filter(r=>r!==requester);
-    setRequesters(requesters)
+    partnerRequestsForUser.fetch()
     notifyMessage("Deleted Request")
-    if (onChange) onChange();
   }
 
   return (
@@ -63,7 +55,7 @@ const PartnerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) 
       ))}
     </PageSection>
   );
-};
+});
 
 const styles = StyleSheet.create({
   resultRow: {
