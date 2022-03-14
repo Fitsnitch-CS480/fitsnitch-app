@@ -32,7 +32,7 @@ const ClientTrainerRequestButton: React.FC<Props> = ({
     setState({...flexibleState})
   }
 
-  const {currentUser} = useContext(globalContext);
+  const {currentUser, clientStore, trainerRequestsForUser, trainerStore} = useContext(globalContext);
 
   if (!state.relationship) {
     loadRelationships(currentUser, profileOwner);
@@ -44,6 +44,11 @@ const ClientTrainerRequestButton: React.FC<Props> = ({
     return <Button title="Processing..." onPress={()=>{}}></Button>
   }
 
+  
+  // This component still needs to use the relationship endpoint
+  // because that's currently the only way to get the status of
+  // a request sent by the current user. In other cases, the data
+  // in the stores.
   async function loadRelationships(currentUser:User,profileOwner:User) {
     let userAsTrainer = await new ClientTrainerService().getTrainerStatus(currentUser,profileOwner);
     let userAsClient = await new ClientTrainerService().getTrainerStatus(profileOwner,currentUser);
@@ -60,7 +65,6 @@ const ClientTrainerRequestButton: React.FC<Props> = ({
     })
   }
 
-
   async function requestTrainer(trainer:User,client:User) {
     updateState({processing:true})
     await new ClientTrainerService().requestTrainerForClient(trainer,client)
@@ -70,18 +74,35 @@ const ClientTrainerRequestButton: React.FC<Props> = ({
   async function cancelRequest(trainer:User,client:User) {
     updateState({processing:true})
     await new ClientTrainerService().cancelTrainerRequest(trainer,client)
+    // Only bother updating requests when the currentuser
+    // is the trainer because we don't currently have a store
+    // for trainer requests FROM the currentuser.
+    if (trainer === currentUser) {
+      trainerRequestsForUser.fetch()
+    }
     updateState({relationship:null})
   }
   
   async function approveClient(trainer:User,client:User) {
     updateState({processing:true})
     await new ClientTrainerService().approveClient(trainer,client)
+    // This method is currently only called when the current user is the trainer
+    trainerRequestsForUser.fetch()
+    clientStore.fetch()
     updateState({relationship:null})
   }
 
   async function endRelationship(trainer:User,client:User) {
     updateState({processing:true})
     await new ClientTrainerService().removeTrainerFromClient(trainer,client)
+    if (trainer === currentUser) {
+      // update current users clients
+      clientStore.fetch()
+    }
+    else if (client === currentUser) {
+      // update current users trainer
+      trainerStore.fetch()
+    }
     updateState({relationship:null})
   }
 
