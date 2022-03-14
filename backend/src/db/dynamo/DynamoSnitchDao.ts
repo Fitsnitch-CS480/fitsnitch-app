@@ -1,10 +1,12 @@
+import { SwitchSnitchToCheatmealRequest } from './../../../../react-native-app/shared/models/requests/SwitchSnitchToCheatmealRequest';
 import { GetSnitchRequest } from "../../../../react-native-app/shared/models/requests/GetSnitchRequest";
 import { UserSnitchesRequest, UserSnitchesResponse } from "../../../../react-native-app/shared/models/requests/UserSnitchesRequest";
 import SnitchEvent from "../../../../react-native-app/shared/models/SnitchEvent";
 import SnitchDao from "../SnitchDao";
 import PriorityQueue from "./PriorityQueue";
-import TableAccessObject, { Conditions, LogicalChainLink, LogicalConditionChain, LogicalOperator, PaginationOptions, SortOp } from "./TableAccessObject";
+import TableAccessObject, { Conditions, PaginationOptions, SortOp } from "./TableAccessObject";
 import DB_TABLES from "./tables";
+import DynamoCheatMealDao from './DynamoCheatMealDao';
 
 export default class DynamoSnitchDao implements SnitchDao {
     private schema = DB_TABLES.SNITCHES;
@@ -18,6 +20,11 @@ export default class DynamoSnitchDao implements SnitchDao {
         let matches = await this.table.query(request.userId, SortOp.EQUALS, request.created);
         if (matches.length >= 1) return matches[0]
         else return null;
+    }
+
+    async switchSnitchToCheatmeal(data: SwitchSnitchToCheatmealRequest){
+      await new DynamoCheatMealDao().createCheatMeal(data);
+      await this.table.deleteByKeys(data.userId,data.created);
     }
 
     async getSnitchesForUsers(request: UserSnitchesRequest): Promise<UserSnitchesResponse> {
