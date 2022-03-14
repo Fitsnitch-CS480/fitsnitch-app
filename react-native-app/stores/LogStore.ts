@@ -12,7 +12,7 @@ export default class LogStore {
     
     @action log(...items:any[]) {
         if (this.recordLogs) {
-            console.log(...items)
+            // console.log(...items)
             this.logs.push(new LogEntry(items))
             if (this.logs.length > MAX_LOGS) this.logs.shift()
         }
