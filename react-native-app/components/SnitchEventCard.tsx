@@ -12,10 +12,11 @@ import PopupMenu from './SnitchOptionsDropdown';
 export type Props = {
   snitch: SnitchEvent;
   user?: User;
+  onSwitch?: ()=>void
 };
 
 const SnitchEventCard: React.FC<Props> = ({
-  snitch, user, 
+  snitch, user, onSwitch
 }) => {
   const [snitchOwner, setSnitchOwner] = useState<User|undefined>(undefined);
   const [error, setError] = useState<string>("");
@@ -36,6 +37,7 @@ const SnitchEventCard: React.FC<Props> = ({
     if (event !== 'itemSelected') return
     if (index === 0){
         new SnitchService().switchToCheatmeal(snitch);
+        if (onSwitch) onSwitch();
         // this.location.reload(false);
         // Alert.alert("This was turned into a cheatmeal!");
     }
