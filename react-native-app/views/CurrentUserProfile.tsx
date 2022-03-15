@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import Profile from '../components/profile/Profile';
+import Profile from '../components/Profile';
 import { globalContext } from '../navigation/appNavigator';
 
 
