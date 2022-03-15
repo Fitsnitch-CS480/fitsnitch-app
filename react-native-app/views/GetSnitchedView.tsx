@@ -14,9 +14,12 @@ const soundFiles = [
   require('../assets/chefRushSoundBytes/sound1.m4a'),
   require('../assets/chefRushSoundBytes/sound2.m4a'),
   require('../assets/chefRushSoundBytes/sound3.m4a'),
-  require('../assets/chefRushSoundBytes/sound4.m4a'),
   require('../assets/chefRushSoundBytes/sound5.m4a'),
   require('../assets/chefRushSoundBytes/sound6.m4a'),
+  // This one has the countdown, so it can be last.
+  // These tracks with the current config take exactly
+  // 30 seconds to play 
+  require('../assets/chefRushSoundBytes/sound4.m4a'),
 ]
 
 let longestDuration = 0;
