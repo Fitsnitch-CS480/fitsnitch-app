@@ -61,7 +61,7 @@ const AppNavigator : React.FC<props> = ({authUser}) => {
               headerTitle: `${profileOwner?.firstname}'s Profile` || "Profile"
             };
           } } />
-        <Stack.Screen name="GetSnitchedOn" component={GetSnitchedView} />
+        <Stack.Screen name="GetSnitchedOn" options={{title:"Snitch Warning"}} component={GetSnitchedView} />
       </Stack.Navigator>
       <UseLocationTracking />
       <LogUI />
