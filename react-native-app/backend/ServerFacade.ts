@@ -12,6 +12,7 @@ import SnitchEvent from '../shared/models/SnitchEvent';
 import { UserCheatMealRequest, UserCheatMealResponse } from '../shared/models/requests/UserCheatMealRequest';
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
+import { LatLonPair } from '../shared/models/CoordinateModels';
 
 
 /**
@@ -100,17 +101,12 @@ class ExecutionError<T> extends ExecutionResult<T> {
     
   }
 
-
-
-  static async checkLocation(){
+  static async checkLocation(lat : number, lon : number){
     //request user location
     //specify endpoint
     const payload = {
       userId: 'dummy',
-      location: {
-        lat: 40.2508,
-        lon: -111.6613
-      } 
+      location: new LatLonPair(lat, lon)
     }
     const response = await executeRequest("/check-location", payload);
     return response;

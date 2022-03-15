@@ -14,7 +14,7 @@ export type Props = {
 
 const PeopleView: React.FC<Props> = ({
 }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   return (
     <ScrollView>

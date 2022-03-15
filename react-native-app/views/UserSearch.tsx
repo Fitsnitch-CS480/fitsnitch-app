@@ -4,7 +4,7 @@ import { Button, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableHig
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import UserDataService from '../backend/services/UserDataService';
 import ProfileImage from '../components/ProfileImage';
-import { userContext } from '../navigation/mainNavigator';
+import { globalContext } from '../navigation/appNavigator';
 import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import User from '../shared/models/User';
 
@@ -18,10 +18,9 @@ type state = {
 const PAGE_SIZE = 20;
 
 const UserSearch: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   
-  const {currentUser} = useContext(userContext);
-  if (!currentUser) return <></>
+  const {currentUser} = useContext(globalContext);
 
   const [state, setState] = useState<state>({
     results: [],

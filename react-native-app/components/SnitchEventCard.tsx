@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ServerFacade from '../backend/ServerFacade';
-import { userContext } from '../navigation/mainNavigator';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
@@ -45,9 +44,6 @@ const SnitchEventCard: React.FC<Props> = ({
   function shareSnitch(snitch:SnitchEvent) {
     new SnitchService().shareSnitch(snitch,snitchOwner)
   }
-
-  const {currentUser} = useContext(userContext);
-  if (!currentUser) return <></>
 
   if (error) {
     return <Text>{error}</Text>

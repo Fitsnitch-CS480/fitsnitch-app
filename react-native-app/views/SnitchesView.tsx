@@ -1,15 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SnitchService from '../backend/services/SnitchService';
 import PageSection from '../components/PageSection';
 import SnitchEventCard from '../components/SnitchEventCard';
-import { userContext } from '../navigation/mainNavigator';
 import moment from 'moment';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import PaginatedList from '../components/PaginatedList';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
+import { useNavigation } from '@react-navigation/native';
+import { LatLonPair } from '../shared/models/CoordinateModels';
+import { globalContext } from '../navigation/appNavigator';
 
 const PAGE_SIZE = 10
 
@@ -18,7 +20,8 @@ const SnitchesView: React.FC = () => {
   const [userDict, setUserDict] = useState<Map<string,User>>(new Map());
   const [feedIds, setFeedIds] = useState<string[]|null>(null);
 
-  const {currentUser} = useContext(userContext);
+  const {currentUser} = useContext(globalContext);
+  const navigation = useNavigation<any>()
 
   useEffect(()=>{
     getFeedUsers();
@@ -27,7 +30,6 @@ const SnitchesView: React.FC = () => {
   if (!feedIds) return null;
 
   async function getFeedUsers() {
-    if (!currentUser) throw new Error("There is no logged in user!")
     let users = await new SnitchService().getFeedUsers(currentUser.userId)
     let ids:string[] = [];
     let map = new Map<string, User>();
@@ -61,6 +63,17 @@ const SnitchesView: React.FC = () => {
     }
   })();
 
+
+  function demoSnitch() {
+    navigation.navigate('GetSnitchedOn', { 
+      restaurant: {
+        name: "Domino's"
+      },
+      coords: new LatLonPair(-41,-111)
+    })
+  }
+
+
   return (
   <ScrollView style={{height: '100%'}}>
     <View style={styles.container}>
@@ -77,6 +90,10 @@ const SnitchesView: React.FC = () => {
       :
         null
       }
+
+      <View>
+        <Button title="Demo Snitch" onPress={demoSnitch}></Button>
+      </View>
 
       <PageSection title="Recent Snitches">
         <PaginatedList

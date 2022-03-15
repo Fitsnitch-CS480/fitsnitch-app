@@ -1,32 +1,34 @@
 import { useNavigation } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
 import PartnerAssociationService from '../../backend/services/PartnerAssociationService';
 import PageSection from '../../components/PageSection';
 import ProfileImage from '../../components/ProfileImage';
-import { userContext } from '../../navigation/mainNavigator';
+import { globalContext } from '../../navigation/appNavigator';
 import User from '../../shared/models/User';
 
 const TITLE = "Your Partners"
 
-const CurrentPartners: React.FC = () => {
-  const navigation = useNavigation();
-  const {currentUser} = useContext(userContext)
-  if (!currentUser) return null;
+const CurrentPartners = observer(() => {
+  const navigation = useNavigation<any>();
 
-  let [partners, setPartners] = useState<User[]>([])
-  
-  useEffect(()=>{
-    new PartnerAssociationService().getUserPartners(currentUser.userId).then((partners)=>{
-      setPartners(partners)
-    });  
-  }, [])
+  const {currentUser, partnerStore} = useContext(globalContext);
 
+  const partners = partnerStore.data;
 
-  if (!partners) {
+  if (partnerStore.loading) {
     return (
       <PageSection title={TITLE}>
-        <ActivityIndicator size={30} />
+        <ActivityIndicator color="0000ff" size={30} />
+      </PageSection>
+    )
+  }
+
+  if (partners.length === 0) {
+    return (
+      <PageSection title={TITLE}>
+        <Text>You have no partners yet!</Text>
       </PageSection>
     )
   }
@@ -44,7 +46,9 @@ const CurrentPartners: React.FC = () => {
       ))}
     </PageSection>
   );
-};
+});
+export default CurrentPartners;
+
 
 const styles = StyleSheet.create({
   resultRow: {
@@ -63,5 +67,3 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   }
 });
-
-export default CurrentPartners;

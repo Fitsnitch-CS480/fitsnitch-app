@@ -9,15 +9,11 @@ const stackNavigator = createNativeStackNavigator();
 
 const LoginNavigator : React.FC = () => {
     return(
-        
         <stackNavigator.Navigator>
             <stackNavigator.Screen name="login" component={LoginView} options={{headerShown: false,}}/>
             <stackNavigator.Screen name="signup" component={SignUpView} options={{headerShown: false,}}/>
-            <stackNavigator.Screen name="confirmation" component={Confirmation} options={{headerShown: false,}}/>            
-                   
+            <stackNavigator.Screen name="confirmation" component={Confirmation} options={{headerShown: false,}}/>
         </stackNavigator.Navigator>
-        
-        
     )
 }
 

@@ -2,12 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ServerFacade from '../backend/ServerFacade';
-import { userContext } from '../navigation/mainNavigator';
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
 import moment from 'moment';
 import CheatMealService from '../backend/services/CheatMealService';
+import { globalContext } from '../navigation/appNavigator';
 
 export type Props = {
   meal: CheatMealEvent;
@@ -32,13 +32,12 @@ const CheatMealEventCard: React.FC<Props> = ({
     }
   }
 
-  
+
   // function shareMeal(meal:CheatMealEvent) {
   //   new CheatMealService().shareMeal(meal,mealOwner)
   // }
 
-  const {currentUser} = useContext(userContext);
-  if (!currentUser) return <></>
+  const {currentUser} = useContext(globalContext);
 
   if (error) {
     return <Text>{error}</Text>
