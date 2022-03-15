@@ -18,9 +18,6 @@ import ProfileImage from './ProfileImage';
 import SnitchEventCard from './SnitchEventCard';
 import { globalContext } from '../navigation/appNavigator';
 
-
-const PAGE_SIZE = 10
-
 type state = {
   partnerRelationship?: RelationshipStatus,
   trainerRelationship?: RelationshipStatus,
@@ -82,7 +79,6 @@ const Profile: React.FC<Props> = ({
 
     return response;
   }
-
 
   return (
     <View style={[styles.container]}>

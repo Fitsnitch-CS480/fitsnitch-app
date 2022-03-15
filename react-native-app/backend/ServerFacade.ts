@@ -1,3 +1,4 @@
+import { SwitchSnitchToCheatmealRequest } from './../shared/models/requests/SwitchSnitchToCheatmealRequest';
 import PartnerStatusResponse from './../shared/models/requests/PartnerStatusResponse';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
@@ -201,6 +202,10 @@ class ExecutionError<T> extends ExecutionResult<T> {
     let res = await executeRequest("/snitch-create", snitch);
   }
 
+  static async switchToCheatmeal(data: SwitchSnitchToCheatmealRequest){
+    let res = await executeRequest("/switch-snitch-to-cheatmeal", data);
+  }
+
   // Cheat Meals
   static async getUserCheatMealFeedPage(pageRequest: UserCheatMealRequest): Promise<UserCheatMealResponse> {
     let res = await executeRequest<UserCheatMealResponse>("/cheatmeal-get-for-users", pageRequest);
@@ -215,8 +220,8 @@ class ExecutionError<T> extends ExecutionResult<T> {
     return res.data
   }
 
-  static async createCheatMeal(meal: CheatMealEvent){
-    let res = await executeRequest("/cheatmeal-create", meal);
+  static async createCheatMeal(cheatmeal: CheatMealEvent){
+    let res = await executeRequest("/cheatmeal-create", cheatmeal);
   }
 
 
