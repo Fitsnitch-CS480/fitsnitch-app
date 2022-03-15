@@ -7,14 +7,58 @@ import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchReque
 import { globalContext } from '../navigation/appNavigator';
 import {observer} from 'mobx-react-lite'
 import CheatMealEvent from '../shared/models/CheatMealEvent';
+import Sound from 'react-native-sound';
+import useInterval from '../hooks/useInterval';
+
+const soundFiles = [
+  require('../assets/chefRushSoundBytes/sound1.m4a'),
+  require('../assets/chefRushSoundBytes/sound2.m4a'),
+  require('../assets/chefRushSoundBytes/sound3.m4a'),
+  require('../assets/chefRushSoundBytes/sound4.m4a'),
+  require('../assets/chefRushSoundBytes/sound5.m4a'),
+  require('../assets/chefRushSoundBytes/sound6.m4a'),
+]
+
+let longestDuration = 0;
+
+const sounds = soundFiles.map(file => {
+  let sound = new Sound(file, Sound.MAIN_BUNDLE, (error) =>{
+    if(error) {
+      console.log("failed to load sound", error);
+      return;
+    }
+  })
+  if (sound.getDuration() > longestDuration) {
+    longestDuration = sound.getDuration();
+  }
+  return sound;
+});
+
+const soundWaitTime = 5000 + longestDuration * 1000
 
 export default observer(function GetSnitchedView({ navigation, route }: any) {
     const {currentUser, locationStore} = useContext(globalContext);
 
     const [buttonPopup, setButtonPopup] = useState(false);
     const [didSnitch, setDidSnitch] = useState(false);
-    const [timedPopUp, setTimedPopUp] = useState(false);
+    const [nextSoundIdx, setNextSoundIdx] = useState(0);
     const {restaurant, coords} = route.params;
+
+
+    function playNextSound() {
+      sounds[nextSoundIdx].play((success)=>{
+        if (!success) {
+          console.log("Could not play sounds[0]!")
+        }
+      })
+      setNextSoundIdx((nextSoundIdx+1)%sounds.length)
+    }
+
+    useEffect(()=>{
+      playNextSound()
+    }, [])
+
+    useInterval(playNextSound,soundWaitTime)
 
     let onTimesUp = async () => {
       // TODO notify Android
