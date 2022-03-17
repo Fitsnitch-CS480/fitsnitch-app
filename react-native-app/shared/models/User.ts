@@ -6,6 +6,7 @@ export default class User {
         public lastname?: string,
         public image?: string,
         public phone?: string,
+        public cheatmealSchedule?: string,
     ) {}
 }
 

@@ -17,6 +17,7 @@ import PaginatedList from './PaginatedList';
 import PartnerAssociationRequestButton from './PartnerAssociationRequestButton';
 import ProfileImage from './ProfileImage';
 import SnitchEventCard from './SnitchEventCard';
+import CheatMealSchedule from './CheatMealSchedule';
 
 
 const PAGE_SIZE = 10
@@ -109,15 +110,21 @@ const Profile: React.FC<Props> = ({
           <View style={{}}>
             <View style={[styles.body]}>
 
-              {!isCurrentUser ?              
+              {!isCurrentUser ?
               <View>
                 <View style={{paddingBottom: 5}}>
-                  {/* Client/Trainer Relationship */}
                   <ClientTrainerRequestButton profileOwner={profileOwner}></ClientTrainerRequestButton>
                 </View>
                 <View style={{paddingTop : 5}}>
-                  {/* Client/Trainer Relationship */}
                   <PartnerAssociationRequestButton profileOwner={profileOwner}></PartnerAssociationRequestButton>
+                </View>
+              </View>
+              : <></>}
+
+              {state.trainerRelationship ?
+              <View>
+                <View style={{paddingBottom: 5}}>
+                  <CheatMealSchedule profileOwner={profileOwner}></CheatMealSchedule>
                 </View>
               </View>
               : <></>}
