@@ -32,5 +32,6 @@ export default class DynamoPartnerAssociationDao implements PartnerAssociationDa
     
     async removePartnership(data: PartnerAssociationPair) {
         await this.table.deleteByKeys(data.partnerId1,data.partnerId2);
+        await this.index.deleteByKeys(data.partnerId1,data.partnerId2);
     }
 }

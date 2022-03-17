@@ -4,7 +4,6 @@ import ClientTrainerService from '../backend/services/ClientTrainerService';
 import PartnerAssociationService from '../backend/services/PartnerAssociationService';
 import SnitchService from '../backend/services/SnitchService';
 import CheatMealService from '../backend/services/CheatMealService';
-import { userContext } from '../navigation/mainNavigator';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 import { UserCheatMealResponse } from '../shared/models/requests/UserCheatMealRequest';
@@ -18,9 +17,7 @@ import PartnerAssociationRequestButton from './PartnerAssociationRequestButton';
 import ProfileImage from './ProfileImage';
 import SnitchEventCard from './SnitchEventCard';
 import CheatMealSchedule from './CheatMealSchedule';
-
-
-const PAGE_SIZE = 10
+import { globalContext } from '../navigation/appNavigator';
 
 type state = {
   partnerRelationship?: RelationshipStatus,
@@ -40,8 +37,7 @@ const Profile: React.FC<Props> = ({
     partnerRelationship: undefined,
   });
 
-  const {currentUser} = useContext(userContext);
-  if (!currentUser) return <></>
+  const {currentUser} = useContext(globalContext);
 
   // HACK: these are for development only and should be removed or commented before submitting a PR!!!
   // let testArthurUser = {email: "", userId: "833b9875-e922-45b4-a2c3-c34efdbc3367", firstname:"Arthur",lastname:"Test"}
@@ -84,7 +80,6 @@ const Profile: React.FC<Props> = ({
 
     return response;
   }
-
 
   return (
     <View style={[styles.container]}>

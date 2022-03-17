@@ -52,7 +52,6 @@ export const handlers: {[key:string]:(event:APIGatewayProxyEventV2)=>Promise<Pro
     "/partner-request-approve": partnerRequestApprove,
     "/partner-remove": partnerRemove,
     "/push-snitch-notification" : pushSnitchNotification,
-    // TODO: snitchOnUser
-    // TODO: cheatMealCreate
-    // TODO: cheatMealGetForUser
+    "/cheatmeal-create" : cheatmealCreate,
+    "/cheatmeal-get-for-users" : cheatmealGetForUser,
 }

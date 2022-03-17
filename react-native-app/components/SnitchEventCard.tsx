@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View} from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ServerFacade from '../backend/ServerFacade';
-import { userContext } from '../navigation/mainNavigator';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
 import moment from 'moment';
 import SnitchService from '../backend/services/SnitchService';
+import PopupMenu from './SnitchOptionsDropdown';
 
 export type Props = {
   snitch: SnitchEvent;
@@ -15,10 +15,10 @@ export type Props = {
 };
 
 const SnitchEventCard: React.FC<Props> = ({
-  snitch, user
+  snitch, user, 
 }) => {
-  const [snitchOwner, setSnitchOwner] = useState<User|undefined>(undefined)
-  const [error, setError] = useState<string>("")
+  const [snitchOwner, setSnitchOwner] = useState<User|undefined>(undefined);
+  const [error, setError] = useState<string>("");
 
   useEffect(()=>{
     if (user) setSnitchOwner(user);
@@ -31,14 +31,19 @@ const SnitchEventCard: React.FC<Props> = ({
       setError("Could not load Snitch")
     }
   }
-
+  
+  const onPopupEvent = (event: any, index:Number) => {
+    if (event !== 'itemSelected') return
+    if (index === 0){
+        new SnitchService().switchToCheatmeal(snitch);
+        // this.location.reload(false);
+        // Alert.alert("This was turned into a cheatmeal!");
+    }
+  }
   
   function shareSnitch(snitch:SnitchEvent) {
     new SnitchService().shareSnitch(snitch,snitchOwner)
   }
-
-  const {currentUser} = useContext(userContext);
-  if (!currentUser) return <></>
 
   if (error) {
     return <Text>{error}</Text>
@@ -47,8 +52,6 @@ const SnitchEventCard: React.FC<Props> = ({
   if (!snitchOwner) {
     return <Text>Loading...</Text>
   }
-
-  const isUserOwner = snitch.userId === currentUser.userId;
 
   return (
     <View style={styles.container}>
@@ -64,9 +67,13 @@ const SnitchEventCard: React.FC<Props> = ({
           <View style={styles.detailRowIcon}><Icon name="event" color="#888" size={18}></Icon></View>
             <Text>{getRelativeTime(snitch.created)}</Text>
           </View>
-    
-          <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
-
+            <View style={styles.snitchToCheatmeal}>
+  
+            <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
+            <View>
+              <PopupMenu actions={['Switch To Cheatmeal']} onPress={onPopupEvent} />
+            </View>
+          </View>
         </View>
       </View>
     </View>
@@ -106,6 +113,13 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   shareButton: {
+  },
+  snitchToCheatmeal: {
+    display: 'flex',
+    flexDirection: 'row',
+    position: 'absolute',
+    right: 10,
+    top: -30, 
   },
 });
 

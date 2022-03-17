@@ -4,26 +4,20 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 import ClientTrainerService from '../../backend/services/ClientTrainerService';
 import PageSection from '../../components/PageSection';
 import ProfileImage from '../../components/ProfileImage';
-import { userContext } from '../../navigation/mainNavigator';
 import User from '../../shared/models/User';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { notifyMessage } from '../../utils/UiUtils';
 import Badge from '../../components/Badge';
+import { globalContext } from '../../navigation/appNavigator';
+import { observer } from 'mobx-react-lite';
 
 const TITLE = "Trainer Requests"
 
-const TrainerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) => {
-  const navigation = useNavigation();
-  const {currentUser, setCurrentUser} = useContext(userContext)
-  if (!currentUser) return null;
+const TrainerRequests = observer(() => {
+  const navigation = useNavigation<any>();
+  const {currentUser, trainerRequestsForUser, clientStore} = useContext(globalContext);
 
-  let [requests, setRequests] = useState<User[]>([])
-  
-  useEffect(()=>{
-    new ClientTrainerService().getTrainerRequestsByTrainer(currentUser.userId).then((requests)=>{
-      setRequests(requests)
-    });  
-  }, [])
+  const requests = trainerRequestsForUser.data
 
   if (requests.length === 0) {
     return null
@@ -32,19 +26,16 @@ const TrainerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) 
   async function approveRequest(client:User) {
     if (!currentUser) return null;
     await new ClientTrainerService().approveClient(currentUser, client);
-    requests = requests.filter(r=>r!==client);
-    setRequests(requests)
+    trainerRequestsForUser.fetch();
+    clientStore.fetch();
     notifyMessage("Approved Trainer Request!")
-    if (onChange) onChange();
   }
 
   async function deleteRequest(client:User) {
     if (!currentUser) return null;
     await new ClientTrainerService().cancelTrainerRequest(currentUser, client);
-    requests = requests.filter(r=>r!==client);
-    setRequests(requests)
+    trainerRequestsForUser.fetch();
     notifyMessage("Deleted Trainer Request")
-    if (onChange) onChange();
   }
 
   return (
@@ -64,7 +55,7 @@ const TrainerRequests: React.FC<{onChange?:(...arg:any[])=>any}> = ({onChange}) 
       ))}
     </PageSection>
   );
-};
+});
 
 const styles = StyleSheet.create({
   resultRow: {

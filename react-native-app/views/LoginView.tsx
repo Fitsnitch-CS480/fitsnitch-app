@@ -1,22 +1,46 @@
-import React, {useContext, useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, ActivityIndicator} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Platform, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
-import {userContext} from '../navigation/mainNavigator';
+import {authContext} from '../navigation/mainNavigator';
+import {check, checkNotifications, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import Popup from '../components/Popup';
 import ServerFacade from '../backend/ServerFacade';
 import User from '../shared/models/User';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
-const LoginView : React.FC = () => {
+export default function LoginView() {
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [email, onChangeEmail] = useState('');
   const [password, onChangePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [notiAuthPopupShow, setNotiAuthPopupShow] = useState(false);
+  //const [rejectNotis, setRejectNotis] = useState(false);
+  const closePopUp = () => {
+    setNotiAuthPopupShow(false);
+  }
+  const handleButton = () => {
+    console.log("Pressed");
+  }
   
   //Get user from Context from mainNavigator
-  const {currentUser, setCurrentUser} = useContext(userContext);
+  const {authUser, setAuthUser} = useContext(authContext);
   const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (Platform.OS == "ios") {
+      console.log("ios");
+      checkNotifications().then(({status, settings}) => {
+        if (status == RESULTS.BLOCKED) {  //user has rejected notifications
+          console.log("BLOCKED");
+          setNotiAuthPopupShow(true);
+          //setRejectNotis(true);
+        }
+      });
+    }
+  });
 
   const signInFunction = async () => {
     if (loading) return;
@@ -50,7 +74,7 @@ const LoginView : React.FC = () => {
 
           // Setting the user will trigger a navigation to the rest of the app
           setLoading(false)
-          setCurrentUser(user);
+          setAuthUser(user);
         })
         //Handle the multiple errors
         .catch((err:any) => {
@@ -75,14 +99,17 @@ const LoginView : React.FC = () => {
 
   return (
     <View style={styles.container}>
-      
       <View style={styles.materialButtonPrimary}>
         { loading ? 
-            <ActivityIndicator size={30} />
+            <ActivityIndicator color="0000ff" size={30} />
           :
             <Button title="Log In" onPress={()=>loading? null : signInFunction()}></Button>
         }
       </View>
+
+      {/* <Popup popupShow={notiAuthPopupShow} hidePopup={closePopUp} handleButton={handleButton}>
+        
+      </Popup> */}
       
       <Text style={styles.or2}>--------------- OR ---------------</Text>
       <Text style={styles.loremIpsum} onPress={() => navigation.navigate('signup')}>Don&#39;t have an account? Sign up</Text> 
@@ -201,7 +228,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     top: 0,
-    placeholder: "Sign up"
+    
   },
   materialUnderlineTextboxStack: {
     width: 289,
@@ -222,5 +249,3 @@ const styles = StyleSheet.create({
     marginLeft: 52
   }
 });
-
-export default LoginView;

@@ -1,7 +1,8 @@
+import { observer } from 'mobx-react-lite';
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import PartnerAssociationService from '../backend/services/PartnerAssociationService';
-import { userContext } from '../navigation/mainNavigator';
+import { globalContext } from '../navigation/appNavigator';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import PartnerStatusResponse from '../shared/models/requests/PartnerStatusResponse';
 import User from '../shared/models/User';
@@ -10,13 +11,11 @@ type state = {
   processing: boolean,
   relationship?: PartnerStatusResponse
 }
-//
+
 export type Props = {
   profileOwner: User;
 };
-const PartnerAssociationRequestButton: React.FC<Props> = ({
-  profileOwner
-}) => {
+const PartnerAssociationRequestButton = observer(({profileOwner}:Props) => {
   const [state, setState] = useState<state>({
     processing:false,
     relationship: undefined,
@@ -28,19 +27,22 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
     setState({...flexibleState})
   }
 
-  const {currentUser} = useContext(userContext);
-  if (!currentUser) return <></>
+  const {currentUser, partnerStore, partnerRequestsForUser} = useContext(globalContext);
 
   if (!state.relationship) {
     loadRelationships(currentUser, profileOwner);
     if (!state.processing) return <></>
-    else return <Button title="Processing..."></Button>
+    else return <Button title="Processing..." onPress={()=>{}}></Button>
   }
 
   if (state.processing) {
-    return <Button title="Processing..."></Button>
+    return <Button title="Processing..." onPress={()=>{}}></Button>
   }
 
+  // This component still needs to use the relationship endpoint
+  // because that's currently the only way to get the status of
+  // a request sent by the current user. In other cases, the data
+  // in the stores.
   async function loadRelationships(currentUser:User,profileOwner:User) {
     console.log("hit loadrelationship");
     let partnership = await new PartnerAssociationService().getPartnerStatus(currentUser,profileOwner);
@@ -62,18 +64,26 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
   async function cancelRequest(requester:User,requestee:User) {
     updateState({processing:true})
     await new PartnerAssociationService().deleteRequest(requester,requestee)
+    // Only bother fetching new requests when the currentuser
+    // is the requestee because we don't currently have a store
+    // for partner requests FROM the currentuser.
+    if (requestee === currentUser) {
+      partnerRequestsForUser.fetch()
+    }
     updateState({relationship:undefined})
   }
   
   async function approveUser(requester:User,requestee:User) {
     updateState({processing:true})
     await new PartnerAssociationService().approveRequest(requester,requestee)
+    partnerStore.fetch();
     updateState({relationship:undefined})
   }
 
-  async function endRelationship(requester:User,requestee:User) {
+  async function endRelationship(partner:User,user:User) {
     updateState({processing:true})
-    await new PartnerAssociationService().removePartnerFromUser(requester,requestee)
+    await new PartnerAssociationService().removePartnerFromUser(partner,user)
+    partnerStore.fetch();
     updateState({relationship:undefined})
   }
 
@@ -98,7 +108,7 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
       <></>
     }
 
-{state.relationship.status == RelationshipStatus.PENDING && currentUser.userId == state.relationship.request?.requestee?
+    {state.relationship.status == RelationshipStatus.PENDING && currentUser.userId == state.relationship.request?.requestee?
       <View>
         <Text>{profileOwner.firstname} wants you to be their partner!</Text>
         <View style={[styles.buttonContainer, styles.buttonContainerSideBySide]}>
@@ -124,7 +134,7 @@ const PartnerAssociationRequestButton: React.FC<Props> = ({
 
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   buttonContainerSideBySide: {

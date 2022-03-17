@@ -9,7 +9,7 @@ import ServerFacade from '../backend/ServerFacade';
 
 const SignUpView : React.FC = () => {
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [email, onChangeEmail] = useState('');
   const [password, onChangePassword] = useState('');
   const [phoneNumber, onChangePhoneNumber] = useState('');

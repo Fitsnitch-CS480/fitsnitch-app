@@ -17,7 +17,7 @@ import Input from '../components/Input';
 
 const PhoneConfirmation : React.FC = ({route}) => {
 
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
     const [authCode, setAuthCode] = useState('');
     const [error, setError] = useState(' ');
     console.log('phone confirmation navigation: ', navigation);

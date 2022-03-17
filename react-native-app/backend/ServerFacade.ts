@@ -1,3 +1,4 @@
+import { SwitchSnitchToCheatmealRequest } from './../shared/models/requests/SwitchSnitchToCheatmealRequest';
 import PartnerStatusResponse from './../shared/models/requests/PartnerStatusResponse';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
@@ -11,6 +12,7 @@ import SnitchEvent from '../shared/models/SnitchEvent';
 import { UserCheatMealRequest, UserCheatMealResponse } from '../shared/models/requests/UserCheatMealRequest';
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
+import { LatLonPair } from '../shared/models/CoordinateModels';
 
 
 /**
@@ -99,35 +101,30 @@ class ExecutionError<T> extends ExecutionResult<T> {
     return await executeRequest("/user_update", user);
   }
 
-
-
-  static async checkLocation(){
+  static async checkLocation(lat : number, lon : number){
     //request user location
     //specify endpoint
     const payload = {
       userId: 'dummy',
-      location: {
-        lat: 40.2508,
-        lon: -111.6613
-      } 
+      location: new LatLonPair(lat, lon)
     }
     const response = await executeRequest("/check-location", payload);
     return response;
   }
 
-  // TODO - Remove old method
+  // TODO - Remove old methods
   // static async reportSnitch(){
   //   const response = await executeRequest("/snitch-on-user", null);
   // }
 
-  static async pushSnitchNotification(){
-    let listString = ["F3E278BA-9EDA-449B-B5F6-3AC6440ACB6F"];
-    let response = await executeRequest("/push-snitch-notification", listString);
-    return response;
-  }
+  // static async pushSnitchNotification(){
+  //   let listString = ["F3E278BA-9EDA-449B-B5F6-3AC6440ACB6F"];
+  //   let response = await executeRequest("/push-snitch-notification", listString);
+  //   return response;
+  // }
 
   static async snitchOnUser(snitch: CreateSnitchRequest){
-    let res = await executeRequest("/snitch-on-user", snitch);
+    let res = await executeRequest("/snitch-on-user", snitch, true);
   }
 
 
@@ -201,8 +198,12 @@ class ExecutionError<T> extends ExecutionResult<T> {
     return res.data
   }
 
-  static async createSnitch(snitch: SnitchEvent){
-    let res = await executeRequest("/snitch-create", snitch);
+  // static async createSnitch(snitch: SnitchEvent){
+  //   let res = await executeRequest("/snitch-create", snitch);
+  // }
+
+  static async switchToCheatmeal(data: SwitchSnitchToCheatmealRequest){
+    let res = await executeRequest("/switch-snitch-to-cheatmeal", data);
   }
 
   // Cheat Meals
@@ -219,8 +220,8 @@ class ExecutionError<T> extends ExecutionResult<T> {
     return res.data
   }
 
-  static async createCheatMeal(meal: CheatMealEvent){
-    let res = await executeRequest("/cheatmeal-create", meal);
+  static async createCheatMeal(cheatmeal: CheatMealEvent){
+    let res = await executeRequest("/cheatmeal-create", cheatmeal);
   }
 
 
