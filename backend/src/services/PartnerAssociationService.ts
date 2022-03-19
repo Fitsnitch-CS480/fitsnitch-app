@@ -31,7 +31,6 @@ export default class PartnerAssociationService {
     //
 
     async requestPartnerAssociation(data: PartnerRequest) {
-      // console.log("this is data for request partner: ", data)
         await DaoFactory.getPartnerAssociationRequestDao().createPartnerAssociationRequest(data);
     }
 
