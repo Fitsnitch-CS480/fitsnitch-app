@@ -3,7 +3,7 @@ import OtherUserProfile from '../views/OtherUserProfile';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabViewNavigator from "./TabViewNavigator";
 import UserSearch from "../views/UserSearch";
-import { StyleSheet } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import GetSnitchedView from "../views/GetSnitchedView";
 import User from "../shared/models/User";

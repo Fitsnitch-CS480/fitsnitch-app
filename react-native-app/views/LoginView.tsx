@@ -101,7 +101,7 @@ export default function LoginView() {
     <View style={styles.container}>
       <View style={styles.materialButtonPrimary}>
         { loading ? 
-            <ActivityIndicator color="0000ff" size={30} />
+            <ActivityIndicator color="#00bbff" size={30} />
           :
             <Button title="Log In" onPress={()=>loading? null : signInFunction()}></Button>
         }

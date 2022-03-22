@@ -92,7 +92,7 @@ const MainNavigator : React.FC = () => {
             resizeMode="contain"
             style={styles.image}
           ></Image>
-          <ActivityIndicator color="0000ff" size={30} />
+          <ActivityIndicator color="#00bbff" size={30} />
         </View>
       )
     }

@@ -7,9 +7,7 @@ const CurrentUserProfile: React.FC = () => {
   const {currentUser} = useContext(globalContext);
 
   return (
-    <Profile profileOwner={currentUser}>
-    </Profile>
-    
+    <Profile profileOwner={currentUser} />
   );
 };
 

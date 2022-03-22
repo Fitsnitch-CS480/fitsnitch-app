@@ -1,16 +1,12 @@
 import React, { createContext, useContext, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import ClientTrainerService from '../../backend/services/ClientTrainerService';
-import PartnerAssociationService from '../../backend/services/PartnerAssociationService';
+import { StyleSheet, Text, View, ScrollView, Button } from 'react-native';
 import SnitchService from '../../backend/services/SnitchService';
 import CheatMealService from '../../backend/services/CheatMealService';
-import RelationshipStatus from '../../shared/constants/RelationshipStatus';
 import CheatMealEvent from '../../shared/models/CheatMealEvent';
 import { UserCheatMealResponse } from '../../shared/models/requests/UserCheatMealRequest';
 import { UserSnitchesResponse } from '../../shared/models/requests/UserSnitchesRequest';
 import SnitchEvent from '../../shared/models/SnitchEvent';
 import User from '../../shared/models/User';
-import ClientTrainerRequestButton from '../ClientTrainerRequestButton';
 import CheatMealEventCard from '../MealEventCard';
 import PaginatedList from '../PaginatedList';
 import PartnerAssociationRequestButton from '../PartnerAssociationRequestButton';
@@ -18,34 +14,58 @@ import ProfileImage from '../ProfileImage';
 import SnitchEventCard from '../SnitchEventCard';
 import { globalContext } from '../../navigation/appNavigator';
 import { observer } from 'mobx-react-lite';
+import { ClientStore, PartnerStore, TrainerStore } from '../../stores/PeopleStores';
+import ProfilePartners from './ProfilePartners';
+import PageSection from '../PageSection';
+import ProfileTrainer from './ProfileTrainer';
+import MatButton from '../MatButton';
 
+const PAGE_SIZE = 5;
 
-type props = {
-  profileOwner: User
-}
+export var profileContext: React.Context<{
+  refresh:()=>void,
+  profileOwner: User,
+  isCurrentUser: boolean,
+  isClientOfCurrentUser: boolean,
+  isPartnerOfCurrentUser: boolean,
+  profilePartnerStore: PartnerStore,
+  profileClientStore: ClientStore,
+  profileTrainerStore: TrainerStore
+}>;
 
-export var profileContext;
-
-const Profile = observer(({profileOwner}:props) => {
+const Profile = observer(({profileOwner}:any) => {
   const [refreshCnt, setRefreshSCnt] = useState(0);
   
-  const {currentUser, clientStore, partnerStore} = useContext(globalContext);
+  const {currentUser, clientStore, partnerStore, trainerStore} = useContext(globalContext);
 
   const isCurrentUser = profileOwner.userId === currentUser.userId;
   const isClientOfCurrentUser = isCurrentUser? false : clientStore.isClientOfUser(profileOwner.userId)
   const isPartnerOfCurrentUser = isCurrentUser? false : partnerStore.isPartnerOfUser(profileOwner.userId)
 
+  const pCtx = {
+    refresh() {
+      setRefreshSCnt(refreshCnt+1)
+    },
+    profileOwner,
+    isCurrentUser,
+    isClientOfCurrentUser,
+    isPartnerOfCurrentUser,
+    profilePartnerStore: isCurrentUser? partnerStore : new PartnerStore(profileOwner),
+    profileClientStore: isCurrentUser? clientStore : new ClientStore(profileOwner),
+    profileTrainerStore: isCurrentUser? trainerStore : new TrainerStore(profileOwner)
+  }
+  profileContext = createContext(pCtx)
+
   async function loadNextCheatMealPage(prevPage?: UserCheatMealResponse) {
 
-    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:20}
+    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:PAGE_SIZE}
     let response = await new CheatMealService().getUserChealMealFeedPage(profileOwner.userId,page)
     response.records.sort((a,b)=>a.created<b.created?1:-1)
     return response;
   }
-  
-  async function loadNextSnitchPage(prevPage?: UserSnitchesResponse) {
 
-    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:20}
+  async function loadNextSnitchPage(prevPage?: UserSnitchesResponse) {
+    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:PAGE_SIZE}
     let response = await new SnitchService().getUserSnitchFeedPage([profileOwner.userId],page)
     response.records.sort((a,b)=>a.created<b.created?1:-1)
 
@@ -53,43 +73,33 @@ const Profile = observer(({profileOwner}:props) => {
   }
 
   return (
+    <profileContext.Provider value={pCtx}>
     <View style={[styles.container]}>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView>
         <View style={[styles.header]}>
           <ProfileImage user={profileOwner} size={75}></ProfileImage>
-          <Text style={styles.headerText}>{profileOwner.firstname || "Test"} {profileOwner.lastname || ""}</Text>
+          <View style={styles.headerDetails}>
+            <Text numberOfLines={1} style={styles.profileName}>{profileOwner.firstname || "Test"} {profileOwner.lastname || ""}</Text>
+            <View style={{flexDirection: 'row'}}>
+              { isCurrentUser ? (
+                <MatButton secondary title="Edit Profile" /> // TODO implement profile settings
+              ) : (
+                <PartnerAssociationRequestButton profileOwner={profileOwner} />
+              )}
+            </View>
+          </View>
         </View>
 
         <View style={{}}>
-          <View style={[styles.body]}>
 
-            {!isCurrentUser ?              
-            <View>
-              <View style={{paddingBottom: 5}}>
-                {/* Client/Trainer Relationship */}
-                <ClientTrainerRequestButton profileOwner={profileOwner}></ClientTrainerRequestButton>
-              </View>
-              <View style={{paddingTop : 5}}>
-                {/* Client/Trainer Relationship */}
-                <PartnerAssociationRequestButton profileOwner={profileOwner}></PartnerAssociationRequestButton>
-              </View>
-            </View>
-            : <></>}
-
-            <Text style={{fontSize: 15, paddingBottom: 5}}>
-              5 Partners: Chef Rush, +4
-            </Text>
+          <View style={styles.profileDetails}>
+            <ProfileTrainer />
+            <ProfilePartners />
+          </View>
 
             {currentUser === profileOwner || isClientOfCurrentUser || isPartnerOfCurrentUser ?
           
-            <View style={styles.updateHeader}>
-
-              <View style={{flex: 1}}>
-
-
-                <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
-                    Cheat Meals
-                </Text>
+              <PageSection title="Cheat Meals">
                 <PaginatedList
                     loadNextPage={loadNextCheatMealPage}
                     itemKey={(meal:CheatMealEvent)=>meal.created+meal.userId}
@@ -99,40 +109,31 @@ const Profile = observer(({profileOwner}:props) => {
                     </View>
                   ))}
                 />
-              </View>
-            </View>
-              :<></>}
+              </PageSection>
+            : null}
 
           {currentUser === profileOwner || isClientOfCurrentUser || isPartnerOfCurrentUser ?
-            <View style={styles.updateHeader}>
-
-              <View style={{flex: 1}}>
-
-
-                <Text style={{fontSize: 17, fontWeight: 'bold', paddingTop: 10}}>
-                    Snitches
-                </Text>
-                <PaginatedList
+            
+            <PageSection title="Snitches">
+              <PaginatedList
                     loadNextPage={loadNextSnitchPage}
                     itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
                     renderItem={(snitch=>(
                     <View>
-                      <SnitchEventCard onSwitch={()=>{setRefreshSCnt(refreshCnt+1)}}  snitch={snitch} user={profileOwner}></SnitchEventCard>
+                      <SnitchEventCard onSwitch={()=>setRefreshSCnt(refreshCnt+1)}
+                        snitch={snitch} user={profileOwner} />
                     </View>
                   ))}
                 />
-              </View>
-            </View>
+            </PageSection>
           :<></>}
 
-          </View>
         </View>
       </ScrollView>
     </View>
+    </profileContext.Provider>
   );
 });
-
-
 
 const EMPTY_COLOR = "grey";
 const PROGRESS_COLOR = "green";
@@ -142,50 +143,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  greeting: {
-    fontSize: 0,
-    fontWeight: 'bold',
-    margin: 16,
-  },
-  scrollView: {},
-  rowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  updateHeader: {
-    flexDirection: 'row',
-  },
   header: {
     flex: 1,
-    maxHeight:150,
+    maxHeight: 150,
     position: 'relative',
     flexDirection: 'row',
     backgroundColor: 'white',
-    padding: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 15,
     textAlign: 'left',
     alignItems: 'center',
-    borderBottomColor: 'black',
-    borderBottomWidth: 2,
-    borderTopColor: 'black',
-    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: 'black',
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  headerText: {
-    flex: 2,
-    backgroundColor:'white', 
-    color: 'black',
-    textAlign: 'center',
-    fontSize: 40,
+  headerDetails: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    padding: 3,
+    marginLeft: 15
   },
   profileName: {
+    flex: 2,
+    backgroundColor:'white',
+    fontSize: 28,
+    lineHeight: 28,
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+    color: '#333'
   },
-  body: {
-    position: 'relative',
-    flex: 1,
-    backgroundColor: 'white',
-    padding: 20,
-    justifyContent: 'space-around'
+  profileDetails: {
+    padding: 10,
+    marginVertical: 5
   },
   progressCircle: {
     flexDirection: 'row',
@@ -209,15 +198,6 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
 
-  updates: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    fontSize: 15, 
-    padding: 20
-  },
-  snitchContainer: {
-  },
 });
 
 export default Profile;
