@@ -19,4 +19,8 @@ export default class UserDataService {
     public async getUser(userId:string): Promise<User|undefined> {
         return await ServerFacade.getUserById(userId);
     }
+
+    public async updateUser(user: User) {
+        return await ServerFacade.updateUser(user);
+    }
 }

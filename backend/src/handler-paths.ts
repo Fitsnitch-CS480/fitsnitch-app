@@ -31,6 +31,7 @@ export const handlers: {[key:string]:(event:APIGatewayProxyEventV2)=>Promise<Pro
     "/user_get": userGet,
     "/user_search": userSearch,
     "/user_create": userCreate,
+    "/user_update": userUpdate,
     "/check-location": checkForRestaurant,
     "/trainer_get_status": trainerGetStatus,
     "/trainer_request_create": trainerRequestCreate,

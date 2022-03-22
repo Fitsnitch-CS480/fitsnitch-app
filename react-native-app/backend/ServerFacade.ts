@@ -98,7 +98,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
   }
 
   static async updateUser(user: User) {
-    
+    return await executeRequest("/user_update", user);
   }
 
   static async checkLocation(lat : number, lon : number){
