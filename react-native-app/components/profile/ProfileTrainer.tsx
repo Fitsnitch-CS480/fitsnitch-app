@@ -112,7 +112,7 @@ const ProfileTrainer = observer(() => {
 
       { userIsTrainer ?
         <IconRow icon="badge">
-          <Text style={styles.rowText}>You are currently training {profileOwner.firstname}</Text>
+          <Text style={styles.rowText}>You are {profileOwner.firstname}'s trainer</Text>
           <MatButton title="Stop Training" secondary onPress={()=>endRelationship(currentUser,profileOwner)}></MatButton>
         </IconRow>
       :
