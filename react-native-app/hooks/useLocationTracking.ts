@@ -184,8 +184,10 @@ export default observer(function UseLocationTracking({onLog}: any) {
         else { //measure a distance 
             let deltaLat = Math.abs(currLocation.coords.latitude - newCoords.lat);
             let deltaLon = Math.abs(currLocation.coords.longitude - newCoords.lon);
-            let movedSignificantly = deltaLat > distCheckThreshold || deltaLon > distCheckThreshold;
-            log({deltaLat, deltaLon, movedSignificantly})
+            let dist = Math.sqrt(deltaLat ** 2 + deltaLon ** 2)
+            // let movedSignificantly = deltaLat > distCheckThreshold || deltaLon > distCheckThreshold;
+            let movedSignificantly = dist > distCheckThreshold;
+            log({dist, movedSignificantly})
 
             if (movedSignificantly) {
                 if (!wasMoving) {
