@@ -4,16 +4,21 @@ import User from '../shared/models/User';
 import InputSpinner from "react-native-input-spinner";
 import {Picker} from '@react-native-picker/picker';
 import UserDataService from '../backend/services/UserDataService';
+import MatButton from './MatButton';
 
 export type Props = {
-  profileOwner: User
+  profileOwner: User,
+  canEdit: boolean
 }
 
 const CheatMealSchedule: React.FC<Props> = ({
-  profileOwner
+  profileOwner,
+  canEdit
 }) => {
   const [period, setPeriod] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(0);
+  const [editing, setEditing] = useState<boolean>(false);
+  const [working, setWorking] = useState<boolean>(false);
 
   useEffect(()=>{
     if (profileOwner.cheatmealSchedule) {
@@ -22,49 +27,66 @@ const CheatMealSchedule: React.FC<Props> = ({
       setQuantity(Number.parseInt(split[1]));
     }
   }, []);
-  
+
   async function updateSchedule(period, quantity) {
+    setQuantity(quantity);
+    setPeriod(period);
     profileOwner.cheatmealSchedule = period + "_" + quantity.toString();
-    let updateResult = await new UserDataService().updateUser(profileOwner);
+    setWorking(true);
+    await new UserDataService().updateUser(profileOwner);
+    setWorking(false);
+  }
+
+  function toggleEdit() {
+    setEditing(!editing)
   }
 
   return(
     <View>
-      <Text style={styles.title}>Cheat Meal Schedule</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Cheat Meal Schedule</Text>
+        {canEdit && <MatButton style={{width: 40}} secondary loading={working} icon={editing? 'check' : 'edit'} onPress={toggleEdit} /> }
+      </View>
       <View style={styles.container}>
-        <InputSpinner
-          style={styles.spinner}
-          min={0}
-          value={quantity}
-          color={'lightcoral'} // change when we make the app look pretty :)
-          onChange={(num: number) => {
-            updateSchedule(period, num);
-            setQuantity(num);
-          }}
-          buttonFontSize={25}
-          buttonLeftText="—" // A longer version of -
-          skin={"modern"}
-        />
-        <Text style={styles.label}>every</Text>
-        <Picker
-          style={styles.picker}
-          selectedValue={period}
-          onValueChange={(itemValue: string) => {
-            if (itemValue != "") {
+        { editing ?
+          <>
+          <InputSpinner
+            style={styles.spinner}
+            min={0}
+            value={quantity}
+            color={'lightcoral'} // change when we make the app look pretty :)
+            onChange={(num: number) => {
+              updateSchedule(period, num);
+            }}
+            buttonFontSize={25}
+            buttonLeftText="—" // A longer version of -
+            skin={"modern"}
+          />
+          <Text style={styles.label}>every</Text>
+          <Picker
+            style={styles.picker}
+            selectedValue={period}
+            onValueChange={(itemValue: string) => {
               updateSchedule(itemValue, quantity);
-              setPeriod(itemValue);
-            }
-          }}>
-          <Picker.Item label="--" value="" />
-          <Picker.Item label="week" value="week" />
-          <Picker.Item label="month" value="month" />
-        </Picker>
+            }}>
+            <Picker.Item label="--" value="" />
+            <Picker.Item label="week" value="week" />
+            <Picker.Item label="month" value="month" />
+          </Picker>
+          </>
+        :
+          <Text style={{fontSize:18}}>{period ? `${quantity} every ${period}` : 'No schedule'}</Text>
+        }
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -72,7 +94,8 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginVertical: 5
   },
   label: {
     fontSize: 16,
