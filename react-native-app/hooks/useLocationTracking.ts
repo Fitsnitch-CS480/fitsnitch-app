@@ -223,6 +223,7 @@ export default observer(function UseLocationTracking({onLog}: any) {
         console.log("looking for restaurant...")
         try {
             let result = await ServerFacade.checkLocation(coords.lat, coords.lon)
+
             if (result?.response?.status == 200) {
                 log("IN RESTARAUNT");
                 log(AppState.currentState);
@@ -240,7 +241,7 @@ export default observer(function UseLocationTracking({onLog}: any) {
                 log(result?.response.status+": likely a reqeuset timeout.")
                 if (retryCount < 3) {
                     log("Trying again...")
-                    return await _checkLocationForRestaurant(coords, retryCount++)
+                    return await _checkLocationForRestaurant(coords, retryCount + 1)
                 }
                 else return false;
             }
