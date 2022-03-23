@@ -32,7 +32,6 @@ export var globalContext: React.Context<{
 const AppNavigator : React.FC<props> = ({authUser}) => {
   if (!authUser) return null;
     
-    const Tab = createBottomTabNavigator();
     const Stack = createNativeStackNavigator();
 
     const gCtx = {
@@ -50,10 +49,11 @@ const AppNavigator : React.FC<props> = ({authUser}) => {
 
     return (<>
       <globalContext.Provider value={gCtx}>
+      
       <Stack.Navigator initialRouteName="Tabs">
-        <Tab.Screen name="Tabs" component={TabViewNavigator} options={{ headerShown: false }} />
-        <Tab.Screen name="Search" component={UserSearch} />
-        <Tab.Screen name="OtherUserProfile"
+        <Stack.Screen name="Tabs" component={TabViewNavigator} options={{ headerShown: false }} />
+        <Stack.Screen name="Search" component={UserSearch} />
+        <Stack.Screen name="OtherUserProfile"
           component={OtherUserProfile}
           options={({ route }) => {
             let { profileOwner } = route.params as any;
@@ -63,8 +63,10 @@ const AppNavigator : React.FC<props> = ({authUser}) => {
           } } />
         <Stack.Screen name="GetSnitchedOn" options={{title:"Snitch Warning"}} component={GetSnitchedView} />
       </Stack.Navigator>
+      
       <UseLocationTracking />
       <LogUI />
+      
       </globalContext.Provider>
     </>);
 }
