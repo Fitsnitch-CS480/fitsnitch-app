@@ -57,7 +57,7 @@ const MatButton: React.FC<Props> = (props) => {
   return (
     <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
       { props.loading ? 
-        <ActivityIndicator size={SIZE * 1.5} color={TEXT_COLOR} />
+        <ActivityIndicator size={SIZE * 1.25} color={TEXT_COLOR} />
       :
         props.children ? props.children
       :
