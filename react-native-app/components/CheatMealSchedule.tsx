@@ -23,7 +23,7 @@ const CheatMealSchedule: React.FC<Props> = ({
     }
   }, []);
   
-  async function updateSchedule() {
+  async function updateSchedule(period, quantity) {
     profileOwner.cheatmealSchedule = period + "_" + quantity.toString();
     let updateResult = await new UserDataService().updateUser(profileOwner);
     console.log(updateResult);
@@ -40,8 +40,8 @@ const CheatMealSchedule: React.FC<Props> = ({
           value={quantity}
           color={'lightcoral'} // change when we make the app look pretty :)
           onChange={(num: number) => {
+            updateSchedule(period, num);
             setQuantity(num);
-            updateSchedule();
           }}
           skin={"modern"}
         />
@@ -51,8 +51,8 @@ const CheatMealSchedule: React.FC<Props> = ({
           selectedValue={period}
           onValueChange={(itemValue: string) => {
             if (itemValue != "") {
+              updateSchedule(itemValue, quantity);
               setPeriod(itemValue);
-              updateSchedule();
             }
           }}>
           <Picker.Item label="--" value="" />
