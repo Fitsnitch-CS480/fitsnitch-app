@@ -1,5 +1,5 @@
 /**
- * A simple server for local development. Exposes the memri-lambda-api
+ * A simple server for local development. Exposes the lambda-api
  * handler and acts like the AWS Application Load Balancer that fields
  * real requests to the Staging and Prod servers.
  */
