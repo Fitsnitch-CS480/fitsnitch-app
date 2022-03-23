@@ -1,5 +1,5 @@
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { profileContext } from './Profile';
 import NameLink from '../NameLink';
@@ -85,6 +85,18 @@ const ProfileTrainer = observer(() => {
     updateState({relationship:null})
   }
 
+  
+  function promptEndRelationship(trainer:User,client:User) {
+    Alert.alert("Stop Training?",
+      `Are you sure you want to stop training ${userIsTrainer ? client.firstname : "with "+trainer.firstname }?`,
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'Remove', style: 'destructive', onPress: ()=>endRelationship(trainer,client) }
+      ]
+    );
+  }
+
+
   async function endRelationship(trainer:User,client:User) {
     updateState({processing:true})
     await new ClientTrainerService().removeTrainerFromClient(trainer,client)
@@ -113,7 +125,7 @@ const ProfileTrainer = observer(() => {
       { userIsTrainer ?
         <IconRow icon="badge">
           <Text style={styles.rowText}>You are {profileOwner.firstname}'s trainer</Text>
-          <MatButton title="Stop Training" secondary onPress={()=>endRelationship(currentUser,profileOwner)}></MatButton>
+          <MatButton title="Stop Training" secondary onPress={()=>promptEndRelationship(currentUser,profileOwner)}></MatButton>
         </IconRow>
       :
       state.relationship?.userAsTrainer == RelationshipStatus.PENDING?
@@ -131,7 +143,7 @@ const ProfileTrainer = observer(() => {
       { userIsClient ?
         <IconRow icon="fitness-center">
           <Text style={styles.rowText}>{profileOwner.firstname} is your trainer</Text>
-          <MatButton title="Stop Training" secondary onPress={()=>endRelationship(profileOwner,currentUser)}></MatButton>
+          <MatButton title="Stop Training" secondary onPress={()=>promptEndRelationship(profileOwner,currentUser)}></MatButton>
         </IconRow>
       :
       state.relationship?.userAsClient == RelationshipStatus.PENDING?

@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import PartnerAssociationService from '../backend/services/PartnerAssociationService';
 import { globalContext } from '../navigation/appNavigator';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
@@ -70,7 +70,15 @@ const PartnerAssociationRequestButton = observer(({profileOwner, relationship}:P
     updateState({processing:true})
     await new PartnerAssociationService().approveRequest(requester,requestee)
     partnerStore.fetch();
+    partnerRequestsForUser.fetch()
     updateState({relationship:undefined})
+  }
+
+  function promptEndRelationship(partner:User,user:User) {
+    Alert.alert("Remove partner?", "Are you sure you want to end this partnership?", [
+      {text: 'Cancel', style: 'cancel'},
+      {text: 'Remove', style: 'destructive', onPress: ()=>endRelationship(partner,user) }
+    ]);
   }
 
   async function endRelationship(partner:User,user:User) {
@@ -90,7 +98,7 @@ const PartnerAssociationRequestButton = observer(({profileOwner, relationship}:P
         <MatButton title="End Partnership"
                   icon="person-remove"
                   secondary
-                  onPress={()=>endRelationship(profileOwner, currentUser)} />
+                  onPress={()=>promptEndRelationship(profileOwner, currentUser)} />
       </View>
     :
     state.relationship.status == RelationshipStatus.PENDING && currentUser.userId == state.relationship.request?.requester?
