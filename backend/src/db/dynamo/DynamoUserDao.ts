@@ -11,7 +11,7 @@ export default class DynamoUserDao implements UserDao {
     private userTable = new TableAccessObject<UserTableData>(this.schema);
     
     async createUser(data: User) {
-        await this.userTable.createOrUpdate(new UserTableData(data));
+        await this.userTable.createOrUpdate(userToTableData(data));
     }
 
     async getUser(id: string): Promise<User|undefined> {
@@ -39,7 +39,7 @@ export default class DynamoUserDao implements UserDao {
     }
 
     async updateUser(data: User) {
-        await this.userTable.createOrUpdate(new UserTableData(data));
+        await this.userTable.createOrUpdate(userToTableData(data));
     }
 
     async deleteUser(id: string) {
@@ -48,17 +48,17 @@ export default class DynamoUserDao implements UserDao {
 }
 
 
+interface UserTableData extends User {
+    searchStrings: string;
+}
 
-
-class UserTableData extends User {
-    public searchStrings: string;
-
-    constructor(user:User) {
-        super(user.userId,user.email,user.firstname,user.lastname,user.image,user.phone);
-        this.searchStrings = `${user.firstname ?? ""}_${user.lastname ?? ""}`.toLowerCase();
+function userToTableData(user:User): UserTableData {
+    return {
+        ...user,
+        searchStrings: `${user.firstname ?? ""}_${user.lastname ?? ""}`.toLowerCase()
     }
 }
 
 function tableDataToUser(data:UserTableData): User {
-    return new User(data.userId,data.email,data.firstname,data.lastname,data.image,data.phone)
+    return data as User;
 }
