@@ -106,9 +106,9 @@ const Profile = observer(({profileOwner}:any) => {
             {currentUser === profileOwner || isClientOfCurrentUser || isPartnerOfCurrentUser ?
           
               <PageSection title="Cheat Meals">
-                {isClientOfCurrentUser || (isCurrentUser && !trainerStore.data) &&
-                  <View style={{paddingBottom: 5}}>
-                    <CheatMealSchedule profileOwner={profileOwner} />
+                {(isClientOfCurrentUser || isCurrentUser) &&
+                  <View style={{marginBottom: 10}}>
+                    <CheatMealSchedule profileOwner={profileOwner} canEdit={isClientOfCurrentUser || !trainerStore.data} />
                   </View>
                 }
                 <PaginatedList
