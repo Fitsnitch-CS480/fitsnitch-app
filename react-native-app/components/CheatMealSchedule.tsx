@@ -26,13 +26,11 @@ const CheatMealSchedule: React.FC<Props> = ({
   async function updateSchedule(period, quantity) {
     profileOwner.cheatmealSchedule = period + "_" + quantity.toString();
     let updateResult = await new UserDataService().updateUser(profileOwner);
-    console.log(updateResult);
   }
 
   return(
     <View>
       <Text style={styles.title}>Cheat Meal Schedule</Text>
-      <Text>{period}</Text>
       <View style={styles.container}>
         <InputSpinner
           style={styles.spinner}
@@ -43,6 +41,8 @@ const CheatMealSchedule: React.FC<Props> = ({
             updateSchedule(period, num);
             setQuantity(num);
           }}
+          buttonFontSize={25}
+          buttonLeftText="—" // A longer version of -
           skin={"modern"}
         />
         <Text style={styles.label}>every</Text>
