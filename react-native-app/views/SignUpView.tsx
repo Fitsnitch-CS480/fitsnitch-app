@@ -43,7 +43,6 @@ const SignUpView : React.FC = () => {
       {
         //onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
         newphoneNumber = "+1".concat(phoneNumber)
-        console.log('Phone number is: ', newphoneNumber);
       }
       
       await Auth.signUp({

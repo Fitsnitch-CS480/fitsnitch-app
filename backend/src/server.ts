@@ -35,7 +35,6 @@ app.post("/:path", async (req,res)=>{
         }
         
         let proxyRes = await handler(albProxy as APIGatewayProxyEventV2)
-        console.log("This is the proxyres being called on the server %s", proxyRes);
         res.status(proxyRes.statusCode || 200);
         if (proxyRes.headers) {
             for (let [header,val] of Object.entries(proxyRes.headers)) {

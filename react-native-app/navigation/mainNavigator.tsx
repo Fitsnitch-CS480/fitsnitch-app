@@ -52,7 +52,6 @@ const MainNavigator : React.FC = () => {
     const componentDidMount = async() => {
         // await loadApp();
 
-        console.log("Component mounted")
         try {
           const authentication = await EncryptedStorage.getItem("user_auth");
           // console.log("authentication JSON:", authentication)

@@ -21,9 +21,6 @@ export default function LoginView() {
   const closePopUp = () => {
     setNotiAuthPopupShow(false);
   }
-  const handleButton = () => {
-    console.log("Pressed");
-  }
   
   //Get user from Context from mainNavigator
   const {authUser, setAuthUser} = useContext(authContext);
@@ -31,10 +28,8 @@ export default function LoginView() {
 
   useEffect(() => {
     if (Platform.OS == "ios") {
-      console.log("ios");
       checkNotifications().then(({status, settings}) => {
         if (status == RESULTS.BLOCKED) {  //user has rejected notifications
-          console.log("BLOCKED");
           setNotiAuthPopupShow(true);
           //setRejectNotis(true);
         }
@@ -51,7 +46,6 @@ export default function LoginView() {
       await Auth.signIn(email, password)
         //If we get a user back, setCurrentUser in mainNavigator.
         .then(async (userCognitoData:any) => {
-          console.log("USER LOGGED IN: ", userCognitoData.attributes);
           // Use the UserID from Cognito to look up the User in our DB
           let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
           if (!user) {

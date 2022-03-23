@@ -32,7 +32,6 @@ export default abstract class CacheStore<T> {
             this._data = partners;
             this.loading = false;
         });
-        console.log(this._data)
     }
 
 }

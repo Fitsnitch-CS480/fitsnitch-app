@@ -19,6 +19,7 @@ import ProfilePartners from './ProfilePartners';
 import PageSection from '../PageSection';
 import ProfileTrainer from './ProfileTrainer';
 import MatButton from '../MatButton';
+import CheatMealSchedule from '../CheatMealSchedule';
 
 const PAGE_SIZE = 5;
 
@@ -39,9 +40,14 @@ const Profile = observer(({profileOwner}:any) => {
   const {currentUser, clientStore, partnerStore, trainerStore} = useContext(globalContext);
 
   const isCurrentUser = profileOwner.userId === currentUser.userId;
-  const isClientOfCurrentUser = isCurrentUser? false : clientStore.isClientOfUser(profileOwner.userId)
-  const isPartnerOfCurrentUser = isCurrentUser? false : partnerStore.isPartnerOfUser(profileOwner.userId)
+  
+  const profilePartnerStore = isCurrentUser? partnerStore : new PartnerStore(profileOwner);
+  const profileClientStore = isCurrentUser? clientStore : new ClientStore(profileOwner);
+  const profileTrainerStore = isCurrentUser? trainerStore : new TrainerStore(profileOwner);
 
+  const isClientOfCurrentUser = isCurrentUser? false : clientStore.isClientOfUser(profileOwner.userId);
+  const isPartnerOfCurrentUser = isCurrentUser? false : partnerStore.isPartnerOfUser(profileOwner.userId);
+  
   const pCtx = {
     refresh() {
       setRefreshSCnt(refreshCnt+1)
@@ -50,9 +56,9 @@ const Profile = observer(({profileOwner}:any) => {
     isCurrentUser,
     isClientOfCurrentUser,
     isPartnerOfCurrentUser,
-    profilePartnerStore: isCurrentUser? partnerStore : new PartnerStore(profileOwner),
-    profileClientStore: isCurrentUser? clientStore : new ClientStore(profileOwner),
-    profileTrainerStore: isCurrentUser? trainerStore : new TrainerStore(profileOwner)
+    profilePartnerStore,
+    profileClientStore,
+    profileTrainerStore,
   }
   profileContext = createContext(pCtx)
 
@@ -100,6 +106,11 @@ const Profile = observer(({profileOwner}:any) => {
             {currentUser === profileOwner || isClientOfCurrentUser || isPartnerOfCurrentUser ?
           
               <PageSection title="Cheat Meals">
+                {isClientOfCurrentUser || (isCurrentUser && !trainerStore.data) &&
+                  <View style={{paddingBottom: 5}}>
+                    <CheatMealSchedule profileOwner={profileOwner} />
+                  </View>
+                }
                 <PaginatedList
                     loadNextPage={loadNextCheatMealPage}
                     itemKey={(meal:CheatMealEvent)=>meal.created+meal.userId}
@@ -169,7 +180,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     lineHeight: 28,
     fontWeight: 'bold',
-    textAlign: 'center',
     color: '#333'
   },
   profileDetails: {
