@@ -178,7 +178,8 @@ export default observer(function UseLocationTracking({onLog}: any) {
         if (currLocation == null) { 
             log("No previous location - checking for restaurant...")
             let success = await _checkLocationForRestaurant(newCoords)
-            setLocation(locationToMeasure);
+            if (!success) setLocation(undefined) // make sure we try checking this location again next time
+            else setLocation(locationToMeasure);
         }
         else { //measure a distance 
             let deltaLat = Math.abs(currLocation.coords.latitude - newCoords.lat);
@@ -190,7 +191,6 @@ export default observer(function UseLocationTracking({onLog}: any) {
                 if (!wasMoving) {
                     setWasMoving(true);
                     log("Significant Change, is now moving");
-                    setLocation(locationToMeasure);
                 }
                 else {
                     log("Still moving...")
