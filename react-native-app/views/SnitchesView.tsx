@@ -62,26 +62,12 @@ const SnitchesView: React.FC = () => {
   })();
 
 
-  function demoSnitch() {
-    navigation.navigate('GetSnitchedOn', { 
-      restaurant: {
-        name: "Domino's"
-      },
-      coords: new LatLonPair(-41,-111)
-    })
-  }
-
-
   return (
   <ScrollView style={{height: '100%'}}>
     <View style={styles.container}>
       <PageSection title='Snitch-Free Streak'>
         <SnitchFreeStreak lastSnitch={lastSnitch} size={100} />
       </PageSection>      
-
-      <View>
-        <Button title="Demo Snitch" onPress={demoSnitch}></Button>
-      </View>
 
       <PageSection title="Recent Snitches">
         <PaginatedList
