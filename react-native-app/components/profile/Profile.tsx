@@ -20,6 +20,7 @@ import PageSection from '../PageSection';
 import ProfileTrainer from './ProfileTrainer';
 import MatButton from '../MatButton';
 import CheatMealSchedule from '../CheatMealSchedule';
+import SnitchFreeStreak from '../SnitchFreeStreak';
 
 const PAGE_SIZE = 5;
 
@@ -36,7 +37,7 @@ export var profileContext: React.Context<{
 
 const Profile = observer(({profileOwner}:any) => {
   const [refreshCnt, setRefreshSCnt] = useState(0);
-  
+
   const {currentUser, clientStore, partnerStore, trainerStore} = useContext(globalContext);
 
   const isCurrentUser = profileOwner.userId === currentUser.userId;
@@ -70,13 +71,38 @@ const Profile = observer(({profileOwner}:any) => {
     return response;
   }
 
+  
+const SnitchFeed = () => {
+  const [lastSnitch, setLastSnitch] = useState<SnitchEvent|undefined>(undefined);
+
   async function loadNextSnitchPage(prevPage?: UserSnitchesResponse) {
     let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:PAGE_SIZE}
     let response = await new SnitchService().getUserSnitchFeedPage([profileOwner.userId],page)
     response.records.sort((a,b)=>a.created<b.created?1:-1)
-
+    if (!prevPage) {
+      // The process of loading the feed also gets all feed user data, so let's save that
+      // rather than askig for it again later
+      setLastSnitch(response.records[0])
+    }
     return response;
   }
+
+
+  return (
+    <PageSection title="Snitches" headerRight={<SnitchFreeStreak lastSnitch={lastSnitch} size={35} />}>
+      <PaginatedList
+            loadNextPage={loadNextSnitchPage}
+            itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
+            renderItem={(snitch=>(
+            <View>
+              <SnitchEventCard onSwitch={()=>setRefreshSCnt(refreshCnt+1)}
+                snitch={snitch} user={profileOwner} />
+            </View>
+          ))}
+        />
+    </PageSection>
+  )
+}
 
   return (
     <profileContext.Provider value={pCtx}>
@@ -103,40 +129,29 @@ const Profile = observer(({profileOwner}:any) => {
             <ProfilePartners />
           </View>
 
-            {currentUser === profileOwner || isClientOfCurrentUser || isPartnerOfCurrentUser ?
-          
-              <PageSection title="Cheat Meals">
-                {(isClientOfCurrentUser || isCurrentUser) &&
-                  <View style={{marginBottom: 10}}>
-                    <CheatMealSchedule profileOwner={profileOwner} canEdit={isClientOfCurrentUser || !trainerStore.data} />
+          {currentUser === profileOwner || isClientOfCurrentUser || isPartnerOfCurrentUser ?
+        
+            <PageSection title="Cheat Meals">
+              {(isClientOfCurrentUser || isCurrentUser) &&
+                <View style={{marginBottom: 10}}>
+                  <CheatMealSchedule profileOwner={profileOwner} canEdit={isClientOfCurrentUser || !trainerStore.data} />
+                </View>
+              }
+              <PaginatedList
+                  loadNextPage={loadNextCheatMealPage}
+                  itemKey={(meal:CheatMealEvent)=>meal.created+meal.userId}
+                  renderItem={(meal=>(
+                  <View>
+                    <CheatMealEventCard meal={meal} user={profileOwner}></CheatMealEventCard>
                   </View>
-                }
-                <PaginatedList
-                    loadNextPage={loadNextCheatMealPage}
-                    itemKey={(meal:CheatMealEvent)=>meal.created+meal.userId}
-                    renderItem={(meal=>(
-                    <View>
-                      <CheatMealEventCard meal={meal} user={profileOwner}></CheatMealEventCard>
-                    </View>
-                  ))}
-                />
-              </PageSection>
-            : null}
+                ))}
+              />
+            </PageSection>
+          : null}
 
           {currentUser === profileOwner || isClientOfCurrentUser || isPartnerOfCurrentUser ?
+            <SnitchFeed />
             
-            <PageSection title="Snitches">
-              <PaginatedList
-                    loadNextPage={loadNextSnitchPage}
-                    itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
-                    renderItem={(snitch=>(
-                    <View>
-                      <SnitchEventCard onSwitch={()=>setRefreshSCnt(refreshCnt+1)}
-                        snitch={snitch} user={profileOwner} />
-                    </View>
-                  ))}
-                />
-            </PageSection>
           :<></>}
 
         </View>
@@ -145,6 +160,7 @@ const Profile = observer(({profileOwner}:any) => {
     </profileContext.Provider>
   );
 });
+
 
 const EMPTY_COLOR = "grey";
 const PROGRESS_COLOR = "green";
