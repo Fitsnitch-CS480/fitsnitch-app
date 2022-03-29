@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { LatLonPair } from '../shared/models/CoordinateModels';
 import { globalContext } from '../navigation/appNavigator';
 import { string } from '@hapi/joi';
+import SnitchFreeStreak from '../components/SnitchFreeStreak';
 
 const PAGE_SIZE = 10
 
@@ -61,36 +62,12 @@ const SnitchesView: React.FC = () => {
   })();
 
 
-  function demoSnitch() {
-    navigation.navigate('GetSnitchedOn', { 
-      restaurant: {
-        name: "Domino's"
-      },
-      coords: new LatLonPair(-41,-111)
-    })
-  }
-
-
   return (
   <ScrollView style={{height: '100%'}}>
     <View style={styles.container}>
       <PageSection title='Snitch-Free Streak'>
-        { streak ? 
-          <View style={styles.streakWrapper}>
-            <View style={[styles.streakChild, styles.streakFire]}><Icon name="whatshot" color="red" size={55} /></View>
-            <Text style={[styles.streakChild, styles.streakQty]}>
-              <Text>{streak.qty}</Text>
-              <Text style={styles.streakUnit}>&nbsp;{streak.unit}{streak.qty === 1 ? '' : 's'}</Text>
-            </Text>
-          </View>
-        :
-          <ActivityIndicator color="#00bbff" size={25} />
-        }
+        <SnitchFreeStreak lastSnitch={lastSnitch} size={100} />
       </PageSection>      
-
-      <View>
-        <Button title="Demo Snitch" onPress={demoSnitch}></Button>
-      </View>
 
       <PageSection title="Recent Snitches">
         <PaginatedList

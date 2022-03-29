@@ -5,8 +5,9 @@ import { Alert, Button, ScrollView, StyleSheet, Switch, Text, View } from 'react
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { globalContext } from '../navigation/appNavigator';
 import { observer } from 'mobx-react-lite';
+import { LatLonPair } from '../shared/models/CoordinateModels';
 
-const SettingsView = observer(() => {
+const SettingsView = observer(({navigation}:any) => {
   //Get user from Context from mainNavigator
   const {authUser, setAuthUser} = useContext(authContext);
   const {logStore} = useContext(globalContext);
@@ -37,12 +38,27 @@ const SettingsView = observer(() => {
     ]);
   }
 
+  
+  function demoSnitch() {
+    navigation.navigate('GetSnitchedOn', { 
+      restaurant: {
+        name: "Domino's"
+      },
+      coords: new LatLonPair(-41,-111)
+    })
+  }
+
+
 
   return (
     <ScrollView>
       <View style={styles.listItem}>
         <Text style={styles.optionTitle}>Show debug logs</Text>
         <Switch value={logStore.visible} onValueChange={()=>logStore.setVisibility(!logStore.visible)} />
+      </View>
+
+      <View style={styles.listItem} onTouchEnd={demoSnitch}>
+        <Text style={styles.optionTitle}>Run Demo Snitch</Text>
       </View>
 
       <View style={styles.listItem} onTouchEnd={promptLogout}>
