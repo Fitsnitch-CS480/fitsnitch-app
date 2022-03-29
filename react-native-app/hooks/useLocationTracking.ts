@@ -178,19 +178,20 @@ export default observer(function UseLocationTracking({onLog}: any) {
         if (currLocation == null) { 
             log("No previous location - checking for restaurant...")
             let success = await _checkLocationForRestaurant(newCoords)
-            setLocation(locationToMeasure);
+            if (!success) setLocation(undefined) // make sure we try checking this location again next time
+            else setLocation(locationToMeasure);
         }
         else { //measure a distance 
             let deltaLat = Math.abs(currLocation.coords.latitude - newCoords.lat);
             let deltaLon = Math.abs(currLocation.coords.longitude - newCoords.lon);
-            let movedSignificantly = deltaLat > distCheckThreshold || deltaLon > distCheckThreshold;
-            log({deltaLat, deltaLon, movedSignificantly})
+            let dist = Math.sqrt(deltaLat ** 2 + deltaLon ** 2)
+            let movedSignificantly = dist > distCheckThreshold;
+            log({deltaLat, deltaLon, dist, movedSignificantly})
 
             if (movedSignificantly) {
                 if (!wasMoving) {
                     setWasMoving(true);
                     log("Significant Change, is now moving");
-                    setLocation(locationToMeasure);
                 }
                 else {
                     log("Still moving...")
@@ -223,6 +224,7 @@ export default observer(function UseLocationTracking({onLog}: any) {
         console.log("looking for restaurant...")
         try {
             let result = await ServerFacade.checkLocation(coords.lat, coords.lon)
+
             if (result?.response?.status == 200) {
                 log("IN RESTARAUNT");
                 log(AppState.currentState);
@@ -240,7 +242,7 @@ export default observer(function UseLocationTracking({onLog}: any) {
                 log(result?.response.status+": likely a reqeuset timeout.")
                 if (retryCount < 3) {
                     log("Trying again...")
-                    return await _checkLocationForRestaurant(coords, retryCount++)
+                    return await _checkLocationForRestaurant(coords, retryCount + 1)
                 }
                 else return false;
             }

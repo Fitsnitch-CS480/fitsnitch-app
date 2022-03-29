@@ -236,7 +236,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
 
 
   static async getUserPartners(userId:string): Promise<User[]> {
-    let res = await executeRequest<User[]>("/partner_get_for_user", asRawString(userId), true);
+    let res = await executeRequest<User[]>("/partner_get_for_user", asRawString(userId));
     if (res.error || !res.data) {
       // give error feedback in UI
       return []
@@ -249,7 +249,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
   }
 
   static async getPartnerRequesters(userId:string): Promise<User[]> {
-    let res = await executeRequest<User[]>("/partner_get_requesters", asRawString(userId), true);
+    let res = await executeRequest<User[]>("/partner_get_requesters", asRawString(userId));
     if (res.error || !res.data) {
       // give error feedback in UI
       return []

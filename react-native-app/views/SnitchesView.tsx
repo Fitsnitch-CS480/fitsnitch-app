@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, Button } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SnitchService from '../backend/services/SnitchService';
 import PageSection from '../components/PageSection';
@@ -12,34 +12,31 @@ import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequ
 import { useNavigation } from '@react-navigation/native';
 import { LatLonPair } from '../shared/models/CoordinateModels';
 import { globalContext } from '../navigation/appNavigator';
+import { string } from '@hapi/joi';
 
 const PAGE_SIZE = 10
 
 const SnitchesView: React.FC = () => {
   const [lastSnitch, setLastSnitch] = useState<SnitchEvent|undefined>(undefined);
-  const [userDict, setUserDict] = useState<Map<string,User>>(new Map());
-  const [feedIds, setFeedIds] = useState<string[]|null>(null);
 
-  const {currentUser} = useContext(globalContext);
+  const {currentUser, trainerStore, partnerStore, clientStore} = useContext(globalContext);
   const navigation = useNavigation<any>()
 
-  useEffect(()=>{
-    getFeedUsers();
-  }, [])
+  const feedUsers: (User | null)[] = [
+    currentUser,
+    trainerStore.data,
+    ...partnerStore.data,
+    ...clientStore.data,
+  ]
 
-  if (!feedIds) return null;
+  const feedIds: string[] = [];
+  const userDict = new Map<string,User>();
 
-  async function getFeedUsers() {
-    let users = await new SnitchService().getFeedUsers(currentUser.userId)
-    let ids:string[] = [];
-    let map = new Map<string, User>();
-    users.forEach(u=>{
-      ids.push(u.userId)
-      map.set(u.userId,u)
-    })
-    setFeedIds(ids)
-    setUserDict(map)
-  }
+  feedUsers.forEach(u => {
+    if (!u) return;
+    feedIds.push(u.userId);
+    userDict.set(u.userId, u);
+  })
 
   async function loadNextPage(prevPage?: UserSnitchesResponse) {
     if (!feedIds) throw new Error("There are no users for the feed!")
@@ -77,8 +74,8 @@ const SnitchesView: React.FC = () => {
   return (
   <ScrollView style={{height: '100%'}}>
     <View style={styles.container}>
-      { streak ? 
-        <PageSection title='Snitch-Free Streak'>
+      <PageSection title='Snitch-Free Streak'>
+        { streak ? 
           <View style={styles.streakWrapper}>
             <View style={[styles.streakChild, styles.streakFire]}><Icon name="whatshot" color="red" size={55} /></View>
             <Text style={[styles.streakChild, styles.streakQty]}>
@@ -86,10 +83,10 @@ const SnitchesView: React.FC = () => {
               <Text style={styles.streakUnit}>&nbsp;{streak.unit}{streak.qty === 1 ? '' : 's'}</Text>
             </Text>
           </View>
-        </PageSection>      
-      :
-        null
-      }
+        :
+          <ActivityIndicator color="#00bbff" size={25} />
+        }
+      </PageSection>      
 
       <View>
         <Button title="Demo Snitch" onPress={demoSnitch}></Button>
@@ -147,7 +144,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white',
     width: '100%',
   },
   snitchContainer: {

@@ -52,7 +52,6 @@ const MainNavigator : React.FC = () => {
     const componentDidMount = async() => {
         // await loadApp();
 
-        console.log("Component mounted")
         try {
           const authentication = await EncryptedStorage.getItem("user_auth");
           // console.log("authentication JSON:", authentication)
@@ -92,7 +91,7 @@ const MainNavigator : React.FC = () => {
             resizeMode="contain"
             style={styles.image}
           ></Image>
-          <ActivityIndicator color="0000ff" size={30} />
+          <ActivityIndicator color="#00bbff" size={30} />
         </View>
       )
     }

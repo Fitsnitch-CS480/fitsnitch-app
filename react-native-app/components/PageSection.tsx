@@ -12,16 +12,20 @@ interface Props{
 const PageSection: React.FC<Props> = ({title,headerRight,footer,children}) => {
   return (
     <View
-      style={styles.sectionWrapper}
+      style={styles.container}
     >
-      <View style={[styles.headerWrapper, styles.section]}>
-        <Text style={styles.headerText}>{title}</Text>
-        {headerRight}
+      <View
+        style={styles.sectionWrapper}
+      >
+        <View style={[styles.headerWrapper, styles.section]}>
+          <Text style={styles.headerText}>{title}</Text>
+          {headerRight}
+        </View>
+        <View style={[styles.bodyWrapper, styles.section]}>
+          {children}
+        </View>
+        { footer && <View style={[styles.footerWrapper, styles.section]}>{footer}</View> }
       </View>
-      <View style={[styles.bodyWrapper, styles.section]}>
-        {children}
-      </View>
-      <View style={[styles.footerWrapper, styles.section]}>{footer}</View>
     </View>
   );
 }
@@ -29,15 +33,20 @@ const PageSection: React.FC<Props> = ({title,headerRight,footer,children}) => {
 const spacing = 20
 
 const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 5,
+    paddingVertical: 3,
+    width: '100%',
+  },
   sectionWrapper: {
     backgroundColor: '#fff',
-    borderColor: '#ddd',
+    borderColor: '#aaa',
     borderRadius: 3,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     paddingLeft: spacing,
     paddingRight: spacing,
     paddingTop: spacing,
-    width: '100%' 
+    width: '100%',
   },
   section: {
     paddingBottom: spacing

@@ -12,10 +12,11 @@ import PopupMenu from './SnitchOptionsDropdown';
 export type Props = {
   snitch: SnitchEvent;
   user?: User;
+  onSwitch?: ()=>void
 };
 
 const SnitchEventCard: React.FC<Props> = ({
-  snitch, user, 
+  snitch, user, onSwitch
 }) => {
   const [snitchOwner, setSnitchOwner] = useState<User|undefined>(undefined);
   const [error, setError] = useState<string>("");
@@ -36,6 +37,7 @@ const SnitchEventCard: React.FC<Props> = ({
     if (event !== 'itemSelected') return
     if (index === 0){
         new SnitchService().switchToCheatmeal(snitch);
+        if (onSwitch) onSwitch();
         // this.location.reload(false);
         // Alert.alert("This was turned into a cheatmeal!");
     }
@@ -67,13 +69,13 @@ const SnitchEventCard: React.FC<Props> = ({
           <View style={styles.detailRowIcon}><Icon name="event" color="#888" size={18}></Icon></View>
             <Text>{getRelativeTime(snitch.created)}</Text>
           </View>
-            <View style={styles.snitchToCheatmeal}>
-  
-            <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
-            <View>
-              <PopupMenu actions={['Switch To Cheatmeal']} onPress={onPopupEvent} />
-            </View>
-          </View>
+        </View>
+      </View>
+      
+      <View style={styles.menuWrapper}>
+        <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
+        <View>
+          <PopupMenu actions={['Switch To Cheatmeal']} onPress={onPopupEvent} />
         </View>
       </View>
     </View>
@@ -114,12 +116,12 @@ const styles = StyleSheet.create({
   },
   shareButton: {
   },
-  snitchToCheatmeal: {
+  menuWrapper: {
     display: 'flex',
     flexDirection: 'row',
     position: 'absolute',
-    right: 10,
-    top: -30, 
+    right: 0,
+    top: 10, 
   },
 });
 

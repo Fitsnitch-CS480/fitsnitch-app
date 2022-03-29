@@ -13,12 +13,10 @@ const Confirmation : React.FC = ({route}) => {
     const navigation = useNavigation<any>();
     const [authCode, setAuthCode] = useState('');
     const [error, setError] = useState(' ');
-    console.log('confirmation navigation: ', navigation);
     const email = route.params;
 
     const confirmSignUp = async () => {
       if (authCode.length > 0) {
-        console.log(email.email)
         await Auth.confirmSignUp(email.email, authCode)
           .then(() => {
             navigation.navigate('login');

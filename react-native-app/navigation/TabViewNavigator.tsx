@@ -51,7 +51,7 @@ const TabViewNavigator : React.FC = () => {
         <Tab.Screen name="Snitches" component={SnitchesView}  options={{headerShown: false}} />
         <Tab.Screen name="Profile" component={CurrentUserProfile}  options={{headerShown: false}} />
         <Tab.Screen name="People" component={PeopleView}  options={{headerShown: false}} />
-        <Tab.Screen name="Settings" component={SettingsView}  options={{headerShown: false}} />
+        <Tab.Screen name="Settings" component={SettingsView} />
       </Tab.Navigator>
     //</Navigator>
 

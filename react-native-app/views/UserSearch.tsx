@@ -37,14 +37,12 @@ const UserSearch: React.FC = () => {
 
   async function loadNewResults() {
     Keyboard.dismiss();
-    console.log("loading new results")
     if (!state.query) {
       updateState({results:[]})
       return;
     }
     updateState({loading:true})
     let page = await loadUntilResultsOrEnd(state.query, state.lastPageBreakKey)
-    console.log(page.records.length)
     updateState({
       loading:false,
       results: page.records,
@@ -55,7 +53,6 @@ const UserSearch: React.FC = () => {
 
   async function loadMoreResults() {
     if (!state.query) return;
-    console.log("loading next page")
     updateState({loading:true})
     let page = await loadUntilResultsOrEnd(state.query, state.lastPageBreakKey)
     updateState({
