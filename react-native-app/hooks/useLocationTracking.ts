@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { useState, useEffect } from 'react';
-import { NativeModules, NativeEventEmitter, Platform, AppState } from "react-native";
+import { NativeModules, NativeEventEmitter, Platform, AppState, PermissionsAndroid } from "react-native";
 import * as Location from 'expo-location';
 import {request, check, PERMISSIONS, RESULTS, requestLocationAccuracy} from 'react-native-permissions';
 //import * as Permissions from 'expo-permissions'; DEPRECATED
@@ -20,7 +20,7 @@ const locationCheckFrequencyMS = 5000;
 export default observer(function UseLocationTracking({onLog}: any) {
 // export function useLocationTracking(onLog?:any) {
     var locationBgManager = NativeModules.MyLocationDataManager;
-
+    var locationBgManagerAndroid = NativeModules.LocationManager;
     const [currLocation, setLocation] = useState<Location.LocationObject>();
     const [wasMoving, setWasMoving] = useState(false);
 
@@ -37,33 +37,81 @@ export default observer(function UseLocationTracking({onLog}: any) {
     }
 
     useEffect(() => {
-      //const interval = setInterval(() => _getLocationAsync(), 5000);
-      _startBgTracking();
+        //const interval = setInterval(() => _getLocationAsync(), 5000);
+        _startBgTracking();
       
-    //   TODO: suppport Android Background
-      const eventEmitter = new NativeEventEmitter(NativeModules.MyLocationDataManager);
+        
+        const androidEventEmitter = new NativeEventEmitter(NativeModules.LocationManager);
+        const eventEmitter = new NativeEventEmitter(NativeModules.MyLocationDataManager);
+        let sub;
 
-      const sub = eventEmitter?
-        eventEmitter.addListener('significantLocationChange', onSignificantBackgroundLocationChange)
-        : null;
+        if(Platform.OS == "ios") {
+            sub = eventEmitter?
+            eventEmitter.addListener('significantLocationChange', onSignificantBackgroundLocationChange)
+            : null;
+        }
+        else{
+            console.log("help fil out");
+            sub = androidEventEmitter?
+            androidEventEmitter.addListener(NativeModules.LocationManager.JS_LOCATION_EVENT_NAME, onSignificantBackgroundLocationChange)
+            : null;
+        }
+        
+        //https://developer.apple.com/documentation/corelocation/getting_the_user_s_location/using_the_significant-change_location_service
+        
 
-      return () => {
+        return () => {
         log("Unmounting hook...");
         //clearInterval(interval);
         if (sub) sub.remove();
         setDoCheck(false);
 
-      }
+        }
     }, [])
     
+    const requestLocationPermission = async () => {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            {
+              title: 'Fitsnitch Permission',
+              message:
+                'Fitsnitch needs to access your location in order to work',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
+            },
+          );
+        
+          return granted;
+
+        } catch (err) {
+          console.warn(err);
+          return false;
+        }
+      };
+
     const onSignificantBackgroundLocationChange = (lastLocation : any) => {
         log("CLOSEDAPPLOCATIONRETRIEVAL");
         log(lastLocation);
+        console.log("CLOSEDAPPLOCATIONRETRIEVAL");
+        console.log(lastLocation);
     }
 
     const _startBgTracking = async () => {
-        if (!locationBgManager) return;
-        const result = await locationBgManager.requestPermissions('');
+        let result;
+        if(Platform.OS == "ios"){
+            if (!locationBgManager) return;
+            result = await locationBgManager.requestPermissions('');
+        }
+        else{
+            if (!locationBgManagerAndroid) return;
+            result = await requestLocationPermission();
+            console.log("background tracking: ", result)
+            if(result == RESULTS.GRANTED)
+            {
+                locationBgManagerAndroid.startBackgroundLocation();
+            }
+        }
   
         log("Request Permissions: " + result);
     }
