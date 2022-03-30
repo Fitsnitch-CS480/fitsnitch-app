@@ -7,7 +7,6 @@ import RelationshipStatus from "../../../react-native-app/shared/constants/Relat
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
     return await LambaUtils.handleEventWithBody<PartnerAssociationPair>(event, async (pair,res)=>{
-      console.log("partner get status pair: ", pair)
         let status:PartnerStatusResponse = await new PartnerAssociationService().getRelationshipStatus(pair);
         res.setBodyToData(status);
         res.setCode(200);

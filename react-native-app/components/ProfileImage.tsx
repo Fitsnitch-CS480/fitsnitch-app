@@ -1,20 +1,24 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import User from '../shared/models/User';
 
 export type Props = {
-  user: User;
-  size: number
+  user: User,
+  size: number,
 };
 const ProfileImage: React.FC<Props> = ({
   user, size
 }) => {
+  const nav = useNavigation();
 
   const initials = (user.firstname && user.lastname)? `${user.firstname[0]+user.lastname[0]}` : undefined;
 
   return (
-    <View style={[styles.imageWrapper, {width: size, height:size}]}>
+    <View style={[styles.imageWrapper, {width: size, height:size}]}
+      onTouchEnd={()=>nav.navigate('OtherUserProfile', {profileOwner: user})}
+    >
       {/* TODO: support user profile images!!! */}
       { initials?
           <Text style={[styles.initials, {fontSize:size*.4}]}>{initials}</Text>
@@ -33,6 +37,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 1000,
     borderWidth: 1,
+    borderColor: '#222',
     overflow: 'hidden',
     backgroundColor: "#555"
   },
@@ -40,7 +45,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textTransform: 'uppercase',
     color: "white"
-  }
+  },
 })
 
 export default ProfileImage;

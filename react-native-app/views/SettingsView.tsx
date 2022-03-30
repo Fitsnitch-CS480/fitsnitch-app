@@ -1,23 +1,16 @@
 import React, {useContext} from 'react';
 import {authContext} from '../navigation/mainNavigator';
 import {Auth} from '@aws-amplify/auth';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Alert, Button, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { globalContext } from '../navigation/appNavigator';
+import { observer } from 'mobx-react-lite';
+import { LatLonPair } from '../shared/models/CoordinateModels';
 
-export type Props = {
-  name: string;
-  baseEnthusiasmLevel?: number;
-};
-
-const SettingsView: React.FC<Props> = ({
-  name,
-  baseEnthusiasmLevel = 0
-}) => {
-
-
+const SettingsView = observer(({navigation}:any) => {
   //Get user from Context from mainNavigator
   const {authUser, setAuthUser} = useContext(authContext);
-
+  const {logStore} = useContext(globalContext);
 
   let logout = async () => {
     await Auth.signOut()
@@ -38,33 +31,56 @@ const SettingsView: React.FC<Props> = ({
     });
   }
 
+  const promptLogout = () => {
+    Alert.alert("Log out of this account?", undefined, [
+      { text: "Cancel" },
+      { text: "Logout", onPress: logout },
+    ]);
+  }
+
+  
+  function demoSnitch() {
+    navigation.navigate('GetSnitchedOn', { 
+      restaurant: {
+        name: "Domino's"
+      },
+      coords: new LatLonPair(-41,-111)
+    })
+  }
+
+
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.greeting}>
-        Settings
-      </Text>
-      <Button
-        title="Logout"
-        accessibilityLabel="logout"
-        onPress={logout} 
-        color="black"
-      />
+    <ScrollView>
+      <View style={styles.listItem}>
+        <Text style={styles.optionTitle}>Show debug logs</Text>
+        <Switch value={logStore.visible} onValueChange={()=>logStore.setVisibility(!logStore.visible)} />
+      </View>
 
-    </View>
+      <View style={styles.listItem} onTouchEnd={demoSnitch}>
+        <Text style={styles.optionTitle}>Run Demo Snitch</Text>
+      </View>
+
+      <View style={styles.listItem} onTouchEnd={promptLogout}>
+        <Text style={styles.optionTitle}>Logout</Text>
+      </View>
+
+    </ScrollView>
   );
-};
+});
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+  listItem: {
+    padding: 15,
+    borderTopWidth: 1,
+    borderColor: '#ddd',
+    backgroundColor: '#fff',
+    flexDirection: 'row',
+    alignItems: 'center'
   },
-  greeting: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    margin: 16
+  optionTitle: {
+    fontSize: 16,
+    flexGrow: 1
   }
 });
 

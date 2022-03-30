@@ -10,7 +10,7 @@ const LogUI = observer(()=>{
     const scrollViewRef:any = React.useRef();
 
     const [sticky, setSticky] = useState(true);
-    const [showLog, setShowLog] = useState(false);
+    const [expand, setExpand] = useState(true);
 
     function onScrollEnd(event:any){
         let scrollY = event.nativeEvent.contentOffset.y
@@ -47,16 +47,17 @@ const LogUI = observer(()=>{
         )
     }
 
+    if (!logStore.visible) return null;
 
     return (
         <View style={styles.container} >
 
-        { showLog ?
+        { expand ?
 
             <>
             <View style={styles.toolBar} >
-                <ToolBarButton title={"Hide Logs"}
-                    onPress={()=>setShowLog(false)}
+                <ToolBarButton title={"Collapse"}
+                    onPress={()=>setExpand(false)}
                 />
                 
                 <ToggleButton title="Sticky"
@@ -94,8 +95,8 @@ const LogUI = observer(()=>{
         :
 
         <View style={styles.toolBar} >
-            <ToolBarButton title={"Show Logs"}
-                onPress={()=>setShowLog(true)}
+            <ToolBarButton title={"Expand"}
+                onPress={()=>setExpand(true)}
             />
         </View>            
         }

@@ -1,11 +1,12 @@
 import { observer } from 'mobx-react-lite';
 import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Alert } from 'react-native';
 import PartnerAssociationService from '../backend/services/PartnerAssociationService';
 import { globalContext } from '../navigation/appNavigator';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import PartnerStatusResponse from '../shared/models/requests/PartnerStatusResponse';
 import User from '../shared/models/User';
+import MatButton from './MatButton';
 
 type state = {
   processing: boolean,
@@ -14,11 +15,12 @@ type state = {
 
 export type Props = {
   profileOwner: User;
+  relationship?: PartnerStatusResponse
 };
-const PartnerAssociationRequestButton = observer(({profileOwner}:Props) => {
+const PartnerAssociationRequestButton = observer(({profileOwner, relationship}:Props) => {
   const [state, setState] = useState<state>({
     processing:false,
-    relationship: undefined,
+    relationship: relationship,
   });
 
   let flexibleState: state = {...state};
@@ -31,12 +33,6 @@ const PartnerAssociationRequestButton = observer(({profileOwner}:Props) => {
 
   if (!state.relationship) {
     loadRelationships(currentUser, profileOwner);
-    if (!state.processing) return <></>
-    else return <Button title="Processing..." onPress={()=>{}}></Button>
-  }
-
-  if (state.processing) {
-    return <Button title="Processing..." onPress={()=>{}}></Button>
   }
 
   // This component still needs to use the relationship endpoint
@@ -44,7 +40,6 @@ const PartnerAssociationRequestButton = observer(({profileOwner}:Props) => {
   // a request sent by the current user. In other cases, the data
   // in the stores.
   async function loadRelationships(currentUser:User,profileOwner:User) {
-    console.log("hit loadrelationship");
     let partnership = await new PartnerAssociationService().getPartnerStatus(currentUser,profileOwner);
 
     updateState({
@@ -55,9 +50,7 @@ const PartnerAssociationRequestButton = observer(({profileOwner}:Props) => {
 
   async function requestPartner(requester:User,requestee:User) {
     updateState({processing:true})
-    console.log("hit before")
     await new PartnerAssociationService().requestPartnerForUser(requester,requestee)
-    console.log("hit after")
     updateState({relationship:undefined})
   }
 
@@ -72,12 +65,20 @@ const PartnerAssociationRequestButton = observer(({profileOwner}:Props) => {
     }
     updateState({relationship:undefined})
   }
-  
+
   async function approveUser(requester:User,requestee:User) {
     updateState({processing:true})
     await new PartnerAssociationService().approveRequest(requester,requestee)
     partnerStore.fetch();
+    partnerRequestsForUser.fetch()
     updateState({relationship:undefined})
+  }
+
+  function promptEndRelationship(partner:User,user:User) {
+    Alert.alert("Remove partner?", "Are you sure you want to end this partnership?", [
+      {text: 'Cancel', style: 'cancel'},
+      {text: 'Remove', style: 'destructive', onPress: ()=>endRelationship(partner,user) }
+    ]);
   }
 
   async function endRelationship(partner:User,user:User) {
@@ -88,71 +89,69 @@ const PartnerAssociationRequestButton = observer(({profileOwner}:Props) => {
   }
 
   return (
-    <>
-
-    {state.relationship.status == RelationshipStatus.APPROVED?
+    <View style={styles.container}>
+    {state.processing || !state.relationship ?
+      <MatButton loading secondary />
+    :
+    state.relationship.status == RelationshipStatus.APPROVED?
       <View>
-        <Text>{profileOwner.firstname} is your partner</Text>
-        <Button title="End Partnership" onPress={()=>endRelationship(profileOwner,currentUser)}></Button>
+        <MatButton title="End Partnership"
+                  icon="person-remove"
+                  secondary
+                  onPress={()=>promptEndRelationship(profileOwner, currentUser)} />
       </View>
     :
-      <></>
-    }
-
-    {state.relationship.status == RelationshipStatus.PENDING && currentUser.userId == state.relationship.request?.requester?
+    state.relationship.status == RelationshipStatus.PENDING && currentUser.userId == state.relationship.request?.requester?
       <View>
-        <Text>You've requested {profileOwner.firstname} to be your partner</Text>
-        <Button title="Cancel Request" onPress={()=>cancelRequest(currentUser,profileOwner)}></Button>
+        <MatButton title="Cancel Request"
+                  icon="delete"
+                  secondary
+                  onPress={()=>cancelRequest(currentUser, profileOwner)} />
       </View>
     :
-      <></>
-    }
-
-    {state.relationship.status == RelationshipStatus.PENDING && currentUser.userId == state.relationship.request?.requestee?
-      <View>
-        <Text>{profileOwner.firstname} wants you to be their partner!</Text>
-        <View style={[styles.buttonContainer, styles.buttonContainerSideBySide]}>
-          <View style={styles.mainButton}>
-            <Button title={"Accept"} onPress={()=>approveUser(profileOwner,currentUser)}></Button>
-          </View>
-          <View style={styles.secondButton}>
-            <Button title={"Deny"} color="red" onPress={()=>cancelRequest(profileOwner,currentUser)}></Button>
-          </View>
+    state.relationship.status == RelationshipStatus.PENDING && currentUser.userId == state.relationship.request?.requestee?
+      <View style={styles.buttonContainerSideBySide}>
+        <View style={styles.mainButton}>
+          <MatButton title="Accept"
+                      icon="check"
+                      onPress={()=>approveUser(profileOwner, currentUser)} />
+        </View>
+        <View style={[styles.secondButton]}>
+          <MatButton icon="delete"
+                      color="#0000"
+                      textColor="#444"
+                      shadow={false}
+                      onPress={()=>cancelRequest(profileOwner, currentUser)} />
         </View>
       </View>
     :
-      <></>
-    }
-
-    {state.relationship.status == RelationshipStatus.NONEXISTENT?
+    state.relationship.status == RelationshipStatus.NONEXISTENT?
       <View>
-        <Button title={"Partner up with "+ profileOwner.firstname} onPress={()=>requestPartner(currentUser, profileOwner)}></Button>
+        <MatButton title="Partner Up"
+                   icon="person-add"
+                   onPress={()=>requestPartner(currentUser, profileOwner)} />
       </View>
     :
-      <></>
-    }
+    <></>}
 
-    </>
+    </View>
   );
 });
 
 const styles = StyleSheet.create({
+  container: {
+    minWidth: 150
+  },
   buttonContainerSideBySide: {
     display: 'flex',
     flexDirection: 'row',
   },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
   mainButton: {
-    flexGrow: 2,
-    width: '50%'
+    flexGrow: 1,
   },
   secondButton: {
     flexGrow: 1,
-    width: '50%'
+    maxWidth: 60
   }
 })
 

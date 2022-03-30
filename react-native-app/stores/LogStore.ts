@@ -9,6 +9,7 @@ export default class LogStore {
 
     @observable logs:LogEntry[] = [];
     @observable recordLogs:boolean = true;
+    @observable visible:boolean = false;
     
     @action log(...items:any[]) {
         if (this.recordLogs) {
@@ -24,6 +25,10 @@ export default class LogStore {
 
     @action clear() {
         this.logs = [];
+    }
+
+    @action setVisibility(value) {
+        this.visible = value
     }
 
 }

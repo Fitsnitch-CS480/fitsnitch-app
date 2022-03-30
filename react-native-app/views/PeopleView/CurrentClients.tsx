@@ -20,7 +20,7 @@ const CurrentClients = observer(() => {
   if (clientStore.loading) {
     return (
     <PageSection title={TITLE}>
-      <ActivityIndicator color="0000ff" size={30} />
+      <ActivityIndicator color="#00bbff" size={30} />
     </PageSection>
     )
   }

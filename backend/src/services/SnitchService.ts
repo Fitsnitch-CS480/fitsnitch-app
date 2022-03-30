@@ -40,7 +40,6 @@ export default class SnitchService {
 
     // TODO - change data to a Request model instead of string[].
     async pushSnitchNotification(data: string[]){
-        console.log("Entering SnitchService and pushSnitchNotification method...");
             
         // TODO - Make DAO Factory call for this 
         let response = await APNSService.sendMessageTo(data);

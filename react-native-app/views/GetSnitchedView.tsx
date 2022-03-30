@@ -34,10 +34,11 @@ const sounds = soundFiles.map(file => {
   if (sound.getDuration() > longestDuration) {
     longestDuration = sound.getDuration();
   }
+  sound.setVolume(1);
   return sound;
 });
 
-const soundWaitTime = 5000 + longestDuration * 1000
+const soundWaitTime = 5100 + (longestDuration * 1000)
 
 export default observer(function GetSnitchedView({ navigation, route }: any) {
     const {currentUser, locationStore} = useContext(globalContext);
@@ -49,9 +50,10 @@ export default observer(function GetSnitchedView({ navigation, route }: any) {
 
 
     function playNextSound() {
+      if (didSnitch) return;
       sounds[nextSoundIdx].play((success)=>{
         if (!success) {
-          console.log("Could not play sounds[0]!")
+          console.log("Could not play sound!")
         }
       })
       setNextSoundIdx((nextSoundIdx+1)%sounds.length)
@@ -75,7 +77,6 @@ export default observer(function GetSnitchedView({ navigation, route }: any) {
         }
         setButtonPopup(false);
         setDidSnitch(true)
-        // Alert.alert("You've Been Snitched On!", "Open FitSnitch to request a change or use a cheat meal");
         locationStore.onSnitchOrCheat(coords)
 
         //Send snitch
@@ -93,7 +94,6 @@ export default observer(function GetSnitchedView({ navigation, route }: any) {
         locationStore.onSnitchOrCheat(coords)
         setButtonPopup(false);
         Alert.alert("Checking if you have cheats available. Otherwise you will be snitched on!");
-        // TODO actually use cheat meal
         let cheat = new CheatMealEvent(currentUser.userId, new Date().toISOString(), coords, restaurant)
         await ServerFacade.createCheatMeal(cheat)
         navigation.goBack(null)

@@ -4,7 +4,7 @@ import User from "../shared/models/User";
 import CacheStore from "./CacheStore";
 
 export class PartnerStore extends CacheStore<User[]> {
-    currentUser: User;
+    private currentUser: User;
 
     constructor(user:User) {
         super([])
@@ -23,7 +23,7 @@ export class PartnerStore extends CacheStore<User[]> {
 
 
 export class ClientStore extends CacheStore<User[]> {
-    currentUser: User;
+    private currentUser: User;
 
     constructor(user:User) {
         super([])
@@ -42,7 +42,7 @@ export class ClientStore extends CacheStore<User[]> {
 
 
 export class TrainerStore extends CacheStore<User|null> {
-    currentUser: User;
+    private currentUser: User;
 
     constructor(user:User) {
         super(null)
