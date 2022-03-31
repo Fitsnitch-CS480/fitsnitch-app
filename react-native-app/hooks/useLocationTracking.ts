@@ -31,7 +31,7 @@ export default observer(function UseLocationTracking({onLog}: any) {
     const navigator = useNavigation<any>();
     var routes = useNavigationState(state => state?.routes);
     var index = useNavigationState(state => state?.index);
-
+    let testcounter = 1;
     function log(...logs:any[]) {
         logStore.log(...logs);
     }
@@ -80,6 +80,14 @@ export default observer(function UseLocationTracking({onLog}: any) {
               buttonNegative: 'Cancel',
               buttonPositive: 'OK',
             },
+            PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+            {
+              title: 'Fitsnitch Permission',
+              message:
+                'Fitsnitch needs to access your location in order to work',
+              buttonNegative: 'Cancel',
+              buttonPositive: 'OK',
+            },
           );
         
           return granted;
@@ -93,8 +101,9 @@ export default observer(function UseLocationTracking({onLog}: any) {
     const onSignificantBackgroundLocationChange = (lastLocation : any) => {
         log("CLOSEDAPPLOCATIONRETRIEVAL");
         log(lastLocation);
-        console.log("CLOSEDAPPLOCATIONRETRIEVAL");
+        console.log("Background location testing working: ", testcounter);
         console.log(lastLocation);
+        testcounter++;
     }
 
     const _startBgTracking = async () => {
@@ -125,6 +134,7 @@ export default observer(function UseLocationTracking({onLog}: any) {
                 category: "UHOH",
             });
         }
+        console.log("This is trying to send a notification in the background:", testcounter);
         //TODO: add in android local notification logic
     }
 
