@@ -5,6 +5,7 @@ import {GetSnitchRequest} from "../../../react-native-app/shared/models/requests
 import {CreateSnitchRequest} from "../../../react-native-app/shared/models/requests/CreateSnitchRequest";
 import DaoFactory from "../db/DaoFactory";
 import { APNSService } from "./APNSService";
+import User, { DeviceTokenType } from '../../../react-native-app/shared/models/User';
 
 export default class SnitchService {
     /**
@@ -39,12 +40,33 @@ export default class SnitchService {
     }
 
     // TODO - change data to a Request model instead of string[].
-    async pushSnitchNotification(data: string[]){
-            
-        // TODO - Make DAO Factory call for this 
-        let response = await APNSService.sendMessageTo(data);
-        console.log("Response is %s", response);
+    async pushSnitchNotification(users: User[]){
+        let pushResults:string[] = []
+        users.forEach(user => {
+            if (user.associatedDeviceTokens) {
+                if (user.associatedDeviceTokens[DeviceTokenType.APNS].length > 0) {
+                    user.associatedDeviceTokens[DeviceTokenType.APNS].forEach(async deviceId => {
+                        let resp = await APNSService.sendMessageTo(deviceId);
+                        if (resp == "SUCCESSFUL") {
+                            pushResults.push("Pushed APNS notification successfully to " + user.userId + " @ " + deviceId);
+                        } else {
+                            pushResults.push("Failed APNS notification to " + user.userId + " @ " + deviceId);
+                        }
+                    })
+                }
 
-        return response;
+                if (user.associatedDeviceTokens[DeviceTokenType.Google].length > 0) {
+                    //TODO- ANDROID LOGIC HERE, CREATE GOOGLENOTISERVICE
+                }
+            }
+        })
+
+        return pushResults;
+            
+        // // TODO - Make DAO Factory call for this 
+        // let response = await APNSService.sendMessageTo(data);
+        // console.log("Response is %s", response);
+
+        // return response;
     }
 }

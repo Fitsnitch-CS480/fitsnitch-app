@@ -98,7 +98,7 @@ export class APNSService {
         console.dir(data, { depth: null });
     }
 
-    static async sendMessageTo(data){
+    static async sendMessageTo(endpoint){
         console.log("Entering APNSService...");
         
         // The AWS Region that you want to use to send the message. For a list of
@@ -111,9 +111,9 @@ export class APNSService {
         // you choose.
         const applicationId = 'fc0bfb43c77d4b53b6afc6f8a3c91699';
 
-        console.log("Data is ", data);
+        console.log("Endpoint is ", endpoint);
         
-        let messageRequest = this.createMessageRequest(data);
+        let messageRequest = this.createMessageRequest(endpoint);
         
         console.log("messageRequest is ", messageRequest);
 
@@ -138,7 +138,7 @@ export class APNSService {
 
         
         // Try to send the message.
-        let result : any = await pinpoint.sendMessages(params).promise();
+        let result = await pinpoint.sendMessages(params).promise();
 
         // console.log("Result is %s", result);
         // console.log("MessageResponse is %s", result.MessageResponse);
@@ -147,9 +147,11 @@ export class APNSService {
         // return result; https://awscli.amazonaws.com/v2/documentation/api/latest/reference/pinpoint/send-messages.html
         
         
-        // TODO - make a For loop to go over all elements of data array and save it as ID - Success/Failed Map. Return map
-        // Right now it's only returning value 0 of the array, which is hardcoded
-        return result.MessageResponse.EndpointResult[data[0]].DeliveryStatus;
+        if (result.MessageResponse.EndpointResult) {
+            return result.MessageResponse.EndpointResult[endpoint[0]].DeliveryStatus;
+        } else {
+            return "UNSUCCESSFUL";
+        }
     }
 
 }
