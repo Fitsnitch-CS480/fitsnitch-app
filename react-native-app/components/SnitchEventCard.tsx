@@ -8,6 +8,7 @@ import ProfileImage from './ProfileImage';
 import moment from 'moment';
 import SnitchService from '../backend/services/SnitchService';
 import PopupMenu from './SnitchOptionsDropdown';
+import CheatMealService from '../backend/services/CheatMealService';
 
 export type Props = {
   snitch: SnitchEvent;
@@ -20,10 +21,27 @@ const SnitchEventCard: React.FC<Props> = ({
 }) => {
   const [snitchOwner, setSnitchOwner] = useState<User|undefined>(undefined);
   const [error, setError] = useState<string>("");
+  const {useCheats, setUseCheats} = useState<boolean>(true);
 
+  async function getCheatMealData() {
+    if (user.cheatmealSchedule) {
+      let cheatsAllotted = user.cheatmealSchedule.split("_")[1];
+      let cheatMeals = await new CheatMealService().getCheatMeals(user);
+      let cheatsUsed;
+      let remaining;
+      if (cheatMeals) {
+          cheatsUsed = cheatMeals.length;
+          remaining = cheatsAllotted - cheatsUsed;
+          if (remaining > 0) {
+            setUseCheats(false);
+          }
+      }
+    }
+}
   useEffect(()=>{
     if (user) setSnitchOwner(user);
     else loadSnitchOwner();
+    getCheatMealData();
   }, [])
 
   async function loadSnitchOwner() {
@@ -75,7 +93,10 @@ const SnitchEventCard: React.FC<Props> = ({
       <View style={styles.menuWrapper}>
         <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
         <View>
-          <PopupMenu actions={['Switch To Cheatmeal']} onPress={onPopupEvent} />
+          { useCheats ? 
+            <PopupMenu actions={['Switch To Cheatmeal']} onPress={onPopupEvent} />
+            : <></>
+          }
         </View>
       </View>
     </View>

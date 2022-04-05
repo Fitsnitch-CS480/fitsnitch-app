@@ -20,6 +20,10 @@ export default class CheatMealService {
         return await DaoFactory.getCheatMealDao().getCheatMeal(request);
     }
 
+    async getCheatMeals(request: GetCheatMealRequest): Promise<CheatMealEvent[]|null> {
+        return await DaoFactory.getCheatMealDao().getCheatMeals(request);
+    }
+
     async getUserCheatMeals(request: UserCheatMealRequest): Promise<UserCheatMealResponse> {
         return await DaoFactory.getCheatMealDao().getUserCheatMeals(request);
     }

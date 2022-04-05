@@ -6,6 +6,7 @@ import { UserCheatMealRequest, UserCheatMealResponse } from "../../../react-nati
 export default interface CheatMealDao {
     createCheatMeal(data: CheatMealEvent)
     getCheatMeal(request: GetCheatMealRequest): Promise<CheatMealEvent|null>
+    getCheatMeals(request: GetCheatMealRequest): Promise<CheatMealEvent[]|null>
     getUserCheatMeals(request: UserCheatMealRequest): Promise<UserCheatMealResponse>
     updateCheatMeal(data: CheatMealEvent)
     deleteCheatMeal(data: CheatMealEvent)
