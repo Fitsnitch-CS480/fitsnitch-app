@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavigationContainer } from '@react-navigation/native';
 import { Button, Settings, StyleSheet, Text, View } from 'react-native';
 import SnitchesView from '../views/SnitchesView';
@@ -7,8 +7,17 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import PeopleView from '../views/PeopleView/PeopleView';
 import SettingsView from '../views/SettingsView';
 import CurrentUserProfile from "../views/CurrentUserProfile";
+import { globalContext } from "./appNavigator";
 
 const TabViewNavigator : React.FC = () => {
+
+    const ctx = useContext(globalContext);
+
+    if (!ctx.currentUser.associatedDeviceTokens || 
+      (ctx.currentUser.associatedDeviceTokens[0].length == 0 && ctx.currentUser.associatedDeviceTokens[1].length == 0)) {
+        ctx.logStore.log("ERROR: User has no ass. device tokens")
+        ctx.logStore.log("Curr Device Token: " + ctx.deviceToken);
+    }
 
     const Tab = createBottomTabNavigator();
 

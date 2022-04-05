@@ -3,14 +3,15 @@ import LoginNavigator from "./loginNavigator";
 import AppNavigator from "./appNavigator";
 import { NavigationContainer } from "@react-navigation/native";
 import Auth from '@aws-amplify/auth';
-import User from "../shared/models/User";
+import User, { DeviceTokenType } from "../shared/models/User";
 import EncryptedStorage from 'react-native-encrypted-storage';
 import ServerFacade from '../backend/ServerFacade';
-import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, View, Platform } from "react-native";
 import { GetSnitchRequest } from "../shared/models/requests/GetSnitchRequest";
 import { CreateSnitchRequest } from "../shared/models/requests/CreateSnitchRequest";
 import { LatLonPair } from "../shared/models/CoordinateModels";
 import RestaurantData from "../shared/models/RestaurantData";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
 // console.log(ActivityIndicator)
 
@@ -20,6 +21,7 @@ const MainNavigator : React.FC = () => {
     
   const [loading, setLoading] = useState<boolean>(true);
   const [authUser, setAuthUser] = useState<User|null>(null);
+  const [deviceToken, setDeviceToken] = useState<string|null>(null);
 
     // This method uses Amplify to succesfully resurrect a user session without making
     // them log in again. However, Filipe says he read that it is somehow insecure
@@ -47,10 +49,55 @@ const MainNavigator : React.FC = () => {
     //   }
     // }
 
+    const listenForAPNSToken = () => {
+      PushNotificationIOS.requestPermissions();
+  
+      PushNotificationIOS.checkPermissions(function () {
+          console.log("Permissions granted...");
+          PushNotificationIOS.addEventListener('register', (token) => {
+            setDeviceToken(token);
+          })
+      });
+
+      PushNotificationIOS.addEventListener('registrationError', (error) => {
+        console.log("registrationError...", error)
+      });
+    }
+
+    const listenForGoogleToken = () => {
+      //add in Google logic here
+
+      //setDeviceToken when received
+    }
+
+    const addDeviceTokenToUser = (user:User|null, deviceToken:string) => {
+      if (user) {
+        if (Platform.OS === 'ios') {
+          let newDict: {[key: number]: string[]} = {
+            0: [deviceToken],
+            1: []
+          }
+          user.associatedDeviceTokens = newDict;
+        } else if (Platform.OS === 'android') {
+          let newDict: {[key: number]: string[]} = {
+            0: [],
+            1: [deviceToken]
+          }
+          user.associatedDeviceTokens = newDict;
+        } else {
+          throw new Error("Something went wrong adding a user's device token");
+        }
+
+        ServerFacade.updateUser(user);
+      }
+    }
 
     
     const componentDidMount = async() => {
         // await loadApp();
+
+        listenForAPNSToken();
+        listenForGoogleToken();
 
         try {
           const authentication = await EncryptedStorage.getItem("user_auth");
@@ -61,6 +108,14 @@ const MainNavigator : React.FC = () => {
             // Use the UserID from Cognito to look up the User in our DB
             let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);   
             if (!user) throw new Error("Could not load user!")
+
+            if (user.associatedDeviceTokens && 
+              user.associatedDeviceTokens[DeviceTokenType.APNS].length == 0 && 
+              user.associatedDeviceTokens[DeviceTokenType.Google].length == 0 && deviceToken) { //no device tokens ass. with user
+                addDeviceTokenToUser(authUser, deviceToken);
+            } else if (!user.associatedDeviceTokens && deviceToken) { //update user with device token
+              addDeviceTokenToUser(authUser, deviceToken);
+            }
             // Setting the user will trigger a navigation to the rest of the app
             setAuthUser(user);
             setLoading(false)
@@ -76,10 +131,15 @@ const MainNavigator : React.FC = () => {
         finally {
           setLoading(false)
         }
-      }
+  }
 
     useEffect(() => {
         componentDidMount();
+        
+        return () => {  
+          PushNotificationIOS.removeEventListener('register');
+          PushNotificationIOS.removeEventListener('registrationError');
+        }
     }, [])
 
     if (loading) {
@@ -101,7 +161,7 @@ const MainNavigator : React.FC = () => {
     return(
         <authContext.Provider value={{authUser, setAuthUser}}>
         <NavigationContainer>
-            {authUser !== null ? <AppNavigator authUser={authUser} /> : <LoginNavigator />}
+            {authUser !== null ? <AppNavigator authUser={authUser} deviceToken={deviceToken} /> : <LoginNavigator deviceToken={deviceToken}/>}
         </NavigationContainer>
         </authContext.Provider>
     )

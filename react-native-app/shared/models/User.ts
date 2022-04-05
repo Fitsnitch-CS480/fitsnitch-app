@@ -7,6 +7,12 @@ export default class User {
         public image?: string,
         public phone?: string,
         public cheatmealSchedule?: string,
+        public associatedDeviceTokens?: { [deviceType: number]: string[]}
     ) {}
+}
+
+export enum DeviceTokenType {
+    APNS,
+    Google
 }
 

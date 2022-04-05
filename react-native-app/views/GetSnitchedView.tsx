@@ -25,12 +25,14 @@ const soundFiles = [
 let longestDuration = 0;
 
 const sounds = soundFiles.map(file => {
-  let sound = new Sound(file, Sound.MAIN_BUNDLE, (error) =>{
-    if(error) {
-      console.log("failed to load sound", error);
-      return;
+
+  const callback = (error, sound) => {
+    if (error) {
+      console.log("Error: " + error);
     }
-  })
+  }
+
+  let sound = new Sound(file, error => callback(error, sound));
   if (sound.getDuration() > longestDuration) {
     longestDuration = sound.getDuration();
   }

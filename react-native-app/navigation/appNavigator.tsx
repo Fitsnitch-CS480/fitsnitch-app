@@ -15,7 +15,8 @@ import {ClientStore, PartnerStore, TrainerStore} from "../stores/PeopleStores";
 import { PartnerRequestForUserStore, TrainerRequestForUserStore } from "../stores/RequestStores";
 
 type props = {
-  authUser: User
+  authUser: User,
+  deviceToken: string|null
 }
 
 export var globalContext: React.Context<{
@@ -27,9 +28,10 @@ export var globalContext: React.Context<{
   trainerStore: TrainerStore,
   trainerRequestsForUser: TrainerRequestForUserStore,
   partnerRequestsForUser: PartnerRequestForUserStore,
+  deviceToken: string|null
 }>;
 
-const AppNavigator : React.FC<props> = ({authUser}) => {
+const AppNavigator : React.FC<props> = ({authUser, deviceToken}) => {
   if (!authUser) return null;
     
     const Stack = createNativeStackNavigator();
@@ -42,7 +44,8 @@ const AppNavigator : React.FC<props> = ({authUser}) => {
       clientStore: new ClientStore(authUser),
       trainerStore: new TrainerStore(authUser),
       trainerRequestsForUser: new TrainerRequestForUserStore(authUser),
-      partnerRequestsForUser: new PartnerRequestForUserStore(authUser)
+      partnerRequestsForUser: new PartnerRequestForUserStore(authUser),
+      deviceToken: deviceToken
     }
 
     globalContext = createContext(gCtx)

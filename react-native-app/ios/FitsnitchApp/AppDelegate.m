@@ -6,6 +6,9 @@
 
 #import <AWSCore/AWSNSCodingUtilities.h>
 
+#import <UserNotifications/UserNotifications.h>
+#import <RNCPushNotificationIOS.h>
+
 @import UserNotifications;
 @import AWSCore;
 
@@ -50,6 +53,9 @@ static AWSPinpoint* pinpoint = nil;
 }
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+  //required for the register event
+  [RNCPushNotificationIOS didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
+  
   NSLog(@"Registerd for remote notis w device token...");
   NSString *strData = [[NSString alloc]initWithData:deviceToken encoding:NSASCIIStringEncoding];
   NSLog(@"%@",strData);
@@ -63,6 +69,8 @@ static AWSPinpoint* pinpoint = nil;
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
+  [RNCPushNotificationIOS didFailToRegisterForRemoteNotificationsWithError:error];
+  
   NSLog(@"Failed to register: %@", error);
 }
 
@@ -160,6 +168,8 @@ static AWSPinpoint* pinpoint = nil;
 }
 
 - (void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+  [RNCPushNotificationIOS didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
+  
   if (application.applicationState == UIApplicationStateActive) {
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Notification Received" message:userInfo.description preferredStyle:UIAlertControllerStyleAlert];
     [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:nil]];
@@ -187,6 +197,8 @@ static AWSPinpoint* pinpoint = nil;
 }
 
 -(void) userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
+  [RNCPushNotificationIOS didReceiveNotificationResponse:response];
+  
   if ([response.actionIdentifier isEqualToString:@"CALL_USER"]) {
     NSString* phoneNumber = [@"tel:" stringByAppendingString:@"14356591485"];
     NSURL* phoneNumberUrl = [NSURL URLWithString:phoneNumber];

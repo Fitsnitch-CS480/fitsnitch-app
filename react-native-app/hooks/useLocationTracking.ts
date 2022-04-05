@@ -24,7 +24,7 @@ export default observer(function UseLocationTracking({onLog}: any) {
     const [currLocation, setLocation] = useState<Location.LocationObject>();
     const [wasMoving, setWasMoving] = useState(false);
 
-    const {locationStore, logStore} = useContext(globalContext);
+    const {currentUser, locationStore, logStore} = useContext(globalContext);
 
     const [doCheck, setDoCheck] = useState(true);
 
@@ -47,12 +47,13 @@ export default observer(function UseLocationTracking({onLog}: any) {
         eventEmitter.addListener('significantLocationChange', onSignificantBackgroundLocationChange)
         : null;
 
+
+
       return () => {
         log("Unmounting hook...");
         //clearInterval(interval);
         if (sub) sub.remove();
         setDoCheck(false);
-
       }
     }, [])
     

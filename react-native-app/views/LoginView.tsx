@@ -6,8 +6,9 @@ import {authContext} from '../navigation/mainNavigator';
 import {check, checkNotifications, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Popup from '../components/Popup';
 import ServerFacade from '../backend/ServerFacade';
-import User from '../shared/models/User';
+import User, { DeviceTokenType } from '../shared/models/User';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { tokenContext } from '../navigation/loginNavigator';
 
 export default function LoginView() {
 
@@ -15,6 +16,7 @@ export default function LoginView() {
   const [email, onChangeEmail] = useState('');
   const [password, onChangePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const deviceToken = useContext(tokenContext);
 
   const [notiAuthPopupShow, setNotiAuthPopupShow] = useState(false);
   //const [rejectNotis, setRejectNotis] = useState(false);
@@ -37,6 +39,30 @@ export default function LoginView() {
     }
   });
 
+  const platformDependantDict = (deviceToken:string|null) => {
+    if (deviceToken) {
+      if (Platform.OS === 'ios') {
+        let newDict: {[key: number]: string[]} = {
+          0: [deviceToken],
+          1: []
+        }
+        return newDict
+      } else if (Platform.OS === 'android') {
+        let newDict: {[key: number]: string[]} = {
+          0: [],
+          1: [deviceToken]
+        }
+        return newDict
+      } else {
+        throw new Error("Something went wrong adding a user's device token");
+      }
+    } else {
+      throw new Error("Something went wrong adding a user's device token");
+    }
+  }
+
+
+
   const signInFunction = async () => {
     if (loading) return;
     setLoading(true);
@@ -50,8 +76,28 @@ export default function LoginView() {
           let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
           if (!user) {
             // If the user doesn't exist this is probably the first time they are logging in, so create them.
-            user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined)
+            if (!deviceToken) {
+              user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined, undefined, undefined, undefined)
+            } else {
+              let devTokenDict = platformDependantDict(deviceToken)
+              user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined, undefined, undefined, devTokenDict)
+            }
             await ServerFacade.createUser(user);
+          } else {
+            let devTokens = user.associatedDeviceTokens;
+            if (devTokens && deviceToken) {
+              if (Platform.OS == 'ios') {
+                if (!devTokens[DeviceTokenType.APNS].includes(deviceToken)) {
+                  devTokens[DeviceTokenType.APNS].push(deviceToken);
+                }
+              } else if (Platform.OS == 'android') {
+                if (!devTokens[DeviceTokenType.Google].includes(deviceToken)) {
+                  devTokens[DeviceTokenType.Google].push(deviceToken);
+                }
+              } else {
+                throw new Error("Something went wrong adding a user's device token");
+              }
+            }
           }
 
           try {

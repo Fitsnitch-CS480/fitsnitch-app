@@ -1,16 +1,29 @@
 import React, {useContext} from 'react';
 import {authContext} from '../navigation/mainNavigator';
 import {Auth} from '@aws-amplify/auth';
-import { Alert, Button, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Button, Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { globalContext } from '../navigation/appNavigator';
 import { observer } from 'mobx-react-lite';
 import { LatLonPair } from '../shared/models/CoordinateModels';
+import { DeviceTokenType } from '../shared/models/User';
+import ServerFacade from '../backend/ServerFacade';
 
 const SettingsView = observer(({navigation}:any) => {
   //Get user from Context from mainNavigator
   const {authUser, setAuthUser} = useContext(authContext);
-  const {logStore} = useContext(globalContext);
+  const {logStore, deviceToken} = useContext(globalContext);
+
+  const removeDevTokenOnPlatform = (platform:DeviceTokenType) => {
+    let userUpdated = authUser;
+    if (userUpdated?.associatedDeviceTokens && deviceToken) {
+      let index = userUpdated.associatedDeviceTokens[platform].indexOf(deviceToken);
+      if (index > -1) {
+        userUpdated.associatedDeviceTokens[platform].splice(index, 1);
+        ServerFacade.updateUser(userUpdated);
+      }
+    }
+  }
 
   let logout = async () => {
     await Auth.signOut()
@@ -18,7 +31,13 @@ const SettingsView = observer(({navigation}:any) => {
       setAuthUser(null);
       try {
         await EncryptedStorage.removeItem("user_auth");
-        
+        if (Platform.OS == 'ios') {
+          removeDevTokenOnPlatform(DeviceTokenType.APNS);
+        } else if (Platform.OS == 'android') {
+          removeDevTokenOnPlatform(DeviceTokenType.Google);
+        } else {
+          throw new Error("Something went wrong removing a user's device token");
+        }
       } catch (error) {
         console.log(':',error);
       }
