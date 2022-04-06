@@ -135,7 +135,7 @@ const SnitchFeed = () => {
             <PageSection title="Cheat Meals">
               {(isClientOfCurrentUser || isCurrentUser) &&
                 <View style={{marginBottom: 10}}>
-                  <CheatMealRemaining profileOwner={profileOwner} />
+                  <CheatMealRemaining />
                   <CheatMealSchedule profileOwner={profileOwner} canEdit={isClientOfCurrentUser || !trainerStore.data} />
                 </View>
               }

@@ -21,7 +21,7 @@ const SnitchEventCard: React.FC<Props> = ({
 }) => {
   const [snitchOwner, setSnitchOwner] = useState<User|undefined>(undefined);
   const [error, setError] = useState<string>("");
-  const {useCheats, setUseCheats} = useState<boolean>(true);
+  const [useCheats, setUseCheats] = useState<boolean>(false);
 
   async function getCheatMealData() {
     if (user.cheatmealSchedule) {
@@ -33,11 +33,12 @@ const SnitchEventCard: React.FC<Props> = ({
           cheatsUsed = cheatMeals.length;
           remaining = cheatsAllotted - cheatsUsed;
           if (remaining > 0) {
-            setUseCheats(false);
+            setUseCheats(true);
           }
       }
     }
-}
+  }
+
   useEffect(()=>{
     if (user) setSnitchOwner(user);
     else loadSnitchOwner();

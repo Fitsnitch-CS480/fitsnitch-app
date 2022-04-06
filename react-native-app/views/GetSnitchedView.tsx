@@ -48,7 +48,7 @@ export default observer(function GetSnitchedView({ navigation, route }: any) {
     const [didSnitch, setDidSnitch] = useState(false);
     const [nextSoundIdx, setNextSoundIdx] = useState(0);
     const {restaurant, coords} = route.params;
-    const {useCheats, setUseCheats} = useState<boolean>(true);
+    const [useCheats, setUseCheats] = useState<boolean>(false);
 
     async function getCheatMealData() {
       if (currentUser.cheatmealSchedule) {
@@ -60,7 +60,7 @@ export default observer(function GetSnitchedView({ navigation, route }: any) {
             cheatsUsed = cheatMeals.length;
             remaining = cheatsAllotted - cheatsUsed;
             if (remaining > 0) {
-              setUseCheats(false);
+              setUseCheats(true);
             }
         }
       }
