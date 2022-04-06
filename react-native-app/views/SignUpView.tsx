@@ -35,27 +35,27 @@ const SignUpView : React.FC = () => {
     };
   }, []);
 
-  const platformDependantDict = (deviceToken:string|null) => {
-    if (deviceToken) {
-      if (Platform.OS === 'ios') {
-        let newDict: {[key: number]: string[]} = {
-          0: [deviceToken],
-          1: []
-        }
-        return newDict
-      } else if (Platform.OS === 'android') {
-        let newDict: {[key: number]: string[]} = {
-          0: [],
-          1: [deviceToken]
-        }
-        return newDict
-      } else {
-        throw new Error("Something went wrong adding a user's device token");
-      }
-    } else {
-      throw new Error("Something went wrong adding a user's device token");
-    }
-  }
+  // const platformDependantDict = (deviceToken:string|null) => {
+  //   if (deviceToken) {
+  //     if (Platform.OS === 'ios') {
+  //       let newDict: {[key: number]: string[]} = {
+  //         0: [deviceToken],
+  //         1: []
+  //       }
+  //       return newDict
+  //     } else if (Platform.OS === 'android') {
+  //       let newDict: {[key: number]: string[]} = {
+  //         0: [],
+  //         1: [deviceToken]
+  //       }
+  //       return newDict
+  //     } else {
+  //       throw new Error("Something went wrong adding a user's device token");
+  //     }
+  //   } else {
+  //     throw new Error("Something went wrong adding a user's device token");
+  //   }
+  // }
 
   const signUpFunction = async () => {
         
@@ -81,13 +81,13 @@ const SignUpView : React.FC = () => {
           
           // Create User in DynamoDB too
 
-          var user:User;
-          if (!deviceToken) {
-            user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber, undefined, undefined)
-          } else {
-            let devTokenDict = platformDependantDict(deviceToken)
-            user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber, undefined, devTokenDict)
-          }
+          // var user:User;
+          // if (!deviceToken) {
+          let user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber, undefined, undefined)
+          // } else {
+          //   let devTokenDict = platformDependantDict(deviceToken)
+          //   user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber, undefined, devTokenDict)
+          // }
           await ServerFacade.createUser(user);
           
           //Move to confirmation screen, user should get code in email.

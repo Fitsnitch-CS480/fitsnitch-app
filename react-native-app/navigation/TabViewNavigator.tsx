@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { NavigationContainer } from '@react-navigation/native';
-import { Button, Settings, StyleSheet, Text, View } from 'react-native';
+import { Button, Platform, Settings, StyleSheet, Text, View } from 'react-native';
 import SnitchesView from '../views/SnitchesView';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -8,15 +8,50 @@ import PeopleView from '../views/PeopleView/PeopleView';
 import SettingsView from '../views/SettingsView';
 import CurrentUserProfile from "../views/CurrentUserProfile";
 import { globalContext } from "./appNavigator";
+import { DeviceTokenType } from "../shared/models/User";
+import ServerFacade from "../backend/ServerFacade";
+import { authContext } from "./mainNavigator";
 
 const TabViewNavigator : React.FC = () => {
 
     const ctx = useContext(globalContext);
+    const atx = useContext(authContext);
 
-    if (!ctx.currentUser.associatedDeviceTokens || 
-      (ctx.currentUser.associatedDeviceTokens[0].length == 0 && ctx.currentUser.associatedDeviceTokens[1].length == 0)) {
-        ctx.logStore.log("ERROR: User has no ass. device tokens")
-        ctx.logStore.log("Curr Device Token: " + ctx.deviceToken);
+    ctx.logStore.log("Curr Device Token: " + ctx.deviceToken);
+    ctx.logStore.log("Curr User: " + ctx.currentUser.userId);
+    ctx.logStore.log("Auth User: " + atx.authUser?.userId);
+
+    if (!ctx.currentUser.associatedDeviceTokens) {
+        ctx.logStore.log("ERROR: User has no ass. device tokens");
+        if (ctx.deviceToken) {
+          if (Platform.OS == 'ios') {
+            ctx.currentUser.associatedDeviceTokens = {
+              0: [ctx.deviceToken],
+              1: []
+            }
+          } else if (Platform.OS = 'android') {
+            ctx.currentUser.associatedDeviceTokens = {
+              0: [],
+              1: [ctx.deviceToken]
+            }
+          } else {
+            throw new Error("Platform error...tabviewnav");
+          }
+          ServerFacade.updateUser(ctx.currentUser);
+        } 
+    } else {
+      if (ctx.deviceToken) {
+        if (Platform.OS == 'ios') {
+          if (ctx.currentUser.associatedDeviceTokens[DeviceTokenType.APNS].indexOf(ctx.deviceToken) == -1) {
+            ctx.currentUser.associatedDeviceTokens[DeviceTokenType.APNS].push(ctx.deviceToken);
+          }
+        } else if (Platform.OS == 'android') {
+          if (ctx.currentUser.associatedDeviceTokens[DeviceTokenType.Google].indexOf(ctx.deviceToken) == -1) {
+            ctx.currentUser.associatedDeviceTokens[DeviceTokenType.Google].push(ctx.deviceToken);
+          }
+        }
+        ServerFacade.updateUser(ctx.currentUser);
+      }
     }
 
     const Tab = createBottomTabNavigator();

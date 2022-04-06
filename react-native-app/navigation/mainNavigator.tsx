@@ -70,34 +70,37 @@ const MainNavigator : React.FC = () => {
       //setDeviceToken when received
     }
 
-    const addDeviceTokenToUser = (user:User|null, deviceToken:string) => {
-      if (user) {
-        if (Platform.OS === 'ios') {
-          let newDict: {[key: number]: string[]} = {
-            0: [deviceToken],
-            1: []
-          }
-          user.associatedDeviceTokens = newDict;
-        } else if (Platform.OS === 'android') {
-          let newDict: {[key: number]: string[]} = {
-            0: [],
-            1: [deviceToken]
-          }
-          user.associatedDeviceTokens = newDict;
-        } else {
-          throw new Error("Something went wrong adding a user's device token");
-        }
+    // const addDeviceTokenToUser = (user:User|null, deviceToken:string) => {
+    //   if (user) {
+    //     if (Platform.OS === 'ios') {
+    //       let newDict: {[key: number]: string[]} = {
+    //         0: [deviceToken],
+    //         1: []
+    //       }
+    //       user.associatedDeviceTokens = newDict;
+    //     } else if (Platform.OS === 'android') {
+    //       let newDict: {[key: number]: string[]} = {
+    //         0: [],
+    //         1: [deviceToken]
+    //       }
+    //       user.associatedDeviceTokens = newDict;
+    //     } else {
+    //       throw new Error("Something went wrong adding a user's device token");
+    //     }
 
-        ServerFacade.updateUser(user);
-      }
-    }
+    //     ServerFacade.updateUser(user);
+    //   }
+    // }
 
     
     const componentDidMount = async() => {
         // await loadApp();
 
-        listenForAPNSToken();
-        listenForGoogleToken();
+        if (Platform.OS == 'ios') {
+          listenForAPNSToken();
+        } else if (Platform.OS == 'android') {
+          listenForGoogleToken();
+        }
 
         try {
           const authentication = await EncryptedStorage.getItem("user_auth");
@@ -109,13 +112,13 @@ const MainNavigator : React.FC = () => {
             let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);   
             if (!user) throw new Error("Could not load user!")
 
-            if (user.associatedDeviceTokens && 
-              user.associatedDeviceTokens[DeviceTokenType.APNS].length == 0 && 
-              user.associatedDeviceTokens[DeviceTokenType.Google].length == 0 && deviceToken) { //no device tokens ass. with user
-                addDeviceTokenToUser(authUser, deviceToken);
-            } else if (!user.associatedDeviceTokens && deviceToken) { //update user with device token
-              addDeviceTokenToUser(authUser, deviceToken);
-            }
+            // if (user.associatedDeviceTokens && 
+            //   user.associatedDeviceTokens[DeviceTokenType.APNS].length == 0 && 
+            //   user.associatedDeviceTokens[DeviceTokenType.Google].length == 0 && deviceToken) { //no device tokens ass. with user
+            //     addDeviceTokenToUser(authUser, deviceToken);
+            // } else if (!user.associatedDeviceTokens && deviceToken) { //update user with device token
+            //   addDeviceTokenToUser(authUser, deviceToken);
+            // }
             // Setting the user will trigger a navigation to the rest of the app
             setAuthUser(user);
             setLoading(false)

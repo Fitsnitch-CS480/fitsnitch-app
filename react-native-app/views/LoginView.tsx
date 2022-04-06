@@ -39,27 +39,27 @@ export default function LoginView() {
     }
   });
 
-  const platformDependantDict = (deviceToken:string|null) => {
-    if (deviceToken) {
-      if (Platform.OS === 'ios') {
-        let newDict: {[key: number]: string[]} = {
-          0: [deviceToken],
-          1: []
-        }
-        return newDict
-      } else if (Platform.OS === 'android') {
-        let newDict: {[key: number]: string[]} = {
-          0: [],
-          1: [deviceToken]
-        }
-        return newDict
-      } else {
-        throw new Error("Something went wrong adding a user's device token");
-      }
-    } else {
-      throw new Error("Something went wrong adding a user's device token");
-    }
-  }
+  // const platformDependantDict = (deviceToken:string|null) => {
+  //   if (deviceToken) {
+  //     if (Platform.OS === 'ios') {
+  //       let newDict: {[key: number]: string[]} = {
+  //         0: [deviceToken],
+  //         1: []
+  //       }
+  //       return newDict
+  //     } else if (Platform.OS === 'android') {
+  //       let newDict: {[key: number]: string[]} = {
+  //         0: [],
+  //         1: [deviceToken]
+  //       }
+  //       return newDict
+  //     } else {
+  //       throw new Error("Something went wrong adding a user's device token");
+  //     }
+  //   } else {
+  //     throw new Error("Something went wrong adding a user's device token");
+  //   }
+  // }
 
 
 
@@ -76,29 +76,30 @@ export default function LoginView() {
           let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
           if (!user) {
             // If the user doesn't exist this is probably the first time they are logging in, so create them.
-            if (!deviceToken) {
+            // if (!deviceToken) {
               user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined, undefined, undefined, undefined)
-            } else {
-              let devTokenDict = platformDependantDict(deviceToken)
-              user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined, undefined, undefined, devTokenDict)
-            }
+            // } else {
+            //   let devTokenDict = platformDependantDict(deviceToken)
+            //   user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined, undefined, undefined, devTokenDict)
+            // }
             await ServerFacade.createUser(user);
-          } else {
-            let devTokens = user.associatedDeviceTokens;
-            if (devTokens && deviceToken) {
-              if (Platform.OS == 'ios') {
-                if (!devTokens[DeviceTokenType.APNS].includes(deviceToken)) {
-                  devTokens[DeviceTokenType.APNS].push(deviceToken);
-                }
-              } else if (Platform.OS == 'android') {
-                if (!devTokens[DeviceTokenType.Google].includes(deviceToken)) {
-                  devTokens[DeviceTokenType.Google].push(deviceToken);
-                }
-              } else {
-                throw new Error("Something went wrong adding a user's device token");
-              }
-            }
           }
+          // } else {
+          //   let devTokens = user.associatedDeviceTokens;
+          //   if (devTokens && deviceToken) {
+          //     if (Platform.OS == 'ios') {
+          //       if (!devTokens[DeviceTokenType.APNS].includes(deviceToken)) {
+          //         devTokens[DeviceTokenType.APNS].push(deviceToken);
+          //       }
+          //     } else if (Platform.OS == 'android') {
+          //       if (!devTokens[DeviceTokenType.Google].includes(deviceToken)) {
+          //         devTokens[DeviceTokenType.Google].push(deviceToken);
+          //       }
+          //     } else {
+          //       throw new Error("Something went wrong adding a user's device token");
+          //     }
+          //   }
+          // }
 
           try {
             await EncryptedStorage.setItem(
