@@ -1,5 +1,6 @@
 import CheatMealEvent from "../../shared/models/CheatMealEvent";
 import { UserCheatMealRequest, UserCheatMealResponse } from "../../shared/models/requests/UserCheatMealRequest";
+import User from "../../shared/models/User";
 import ServerFacade from "../ServerFacade";
 
 export default class CheatMealService {
@@ -12,6 +13,10 @@ export default class CheatMealService {
 
     public async createNewCheatmeal(cheatmeal: CheatMealEvent){
       return await ServerFacade.createCheatMeal(cheatmeal);
+    }
+
+    public async getCheatMeals(user:User): Promise<CheatMealEvent[]|null> {
+      return await ServerFacade.getCheatMeals(user);
     }
 
     // public async shareMeal(meal:CheatMealEvent, user?:User) {

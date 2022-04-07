@@ -22,6 +22,14 @@ export default class DynamoCheatMealDao implements CheatMealDao {
             return null;
     }
 
+    async getCheatMeals(request: GetCheatMealRequest): Promise<CheatMealEvent[]|null> {
+        let matches = await this.table.query(request.userId, SortOp.MORE_THAN_OR_EQUAL, request.created);
+        if (matches.length >= 1) 
+            return matches;
+        else 
+            return null;
+    }
+
     async getUserCheatMeals(request: UserCheatMealRequest): Promise<UserCheatMealResponse> {
         let page = await this.table.pageQuery(request.userId, undefined, request as PaginationOptions, undefined, { ScanIndexForward: false });
         return new UserCheatMealResponse(page.records, page.pageBreakKey, page.pageSize);
