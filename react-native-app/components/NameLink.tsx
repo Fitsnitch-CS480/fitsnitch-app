@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
+import Colors from '../assets/constants/colors';
 
 const NameLink = ({user}) => {
   const nav = useNavigation();
@@ -16,8 +17,7 @@ const NameLink = ({user}) => {
 
 const styles = StyleSheet.create({
   nameLink: {
-    color: 'black',
-    textDecorationLine: 'underline'
+    color: Colors.lightBlue,
   }
 })
 

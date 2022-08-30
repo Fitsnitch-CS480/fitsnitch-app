@@ -7,6 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import PeopleView from '../views/PeopleView/PeopleView';
 import SettingsView from '../views/SettingsView';
 import CurrentUserProfile from "../views/CurrentUserProfile";
+import Colors from '../assets/constants/colors';
 
 const TabViewNavigator : React.FC = () => {
 
@@ -44,8 +45,10 @@ const TabViewNavigator : React.FC = () => {
 
             return <Icon name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: 'tomato',
-          tabBarInactiveTintColor: 'gray',
+          tabBarActiveTintColor: 'white',
+          tabBarInactiveTintColor: 'black',
+          tabBarActiveBackgroundColor: Colors.darkRed,
+          tabBarInactiveBackgroundColor: Colors.red
         })}
       >
         <Tab.Screen name="Snitches" component={SnitchesView}  options={{headerShown: false}} />

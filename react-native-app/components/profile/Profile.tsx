@@ -183,7 +183,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     alignItems: 'center',
     borderColor: 'black',
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   headerDetails: {
     display: 'flex',
