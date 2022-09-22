@@ -103,11 +103,6 @@ public class LocationLoopService extends IntentService {
         setNextAlarm(ival);
     }
 
-    @Override
-    public int onStartCommand(@Nullable @org.jetbrains.annotations.Nullable Intent intent, int flags, int startId) {
-        return START_NOT_STICKY;
-    }
-
     /**
      * Called when a new intent is received, either to begin
      * or continue the loop.
@@ -264,7 +259,6 @@ public class LocationLoopService extends IntentService {
                 cb.accept(null);
             }
         });
-
     }
 
     /**
@@ -280,6 +274,7 @@ public class LocationLoopService extends IntentService {
         activeSnitch = snitch;
         sendWarningNotification();
         enterLoopState(new ActiveSnitchState());
+        // BUG: Snitch triggers irregularly - sometimes 40 seconds, sometimes 15
     }
 
 
