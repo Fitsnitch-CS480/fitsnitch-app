@@ -75,7 +75,7 @@ export default observer(function GetSnitchedView({ navigation, route, trigger }:
 
   async function getCheatMealData() {
     if (currentUser.cheatmealSchedule) {
-      let cheatsAllotted = currentUser.cheatmealSchedule.split("_")[1];
+      let cheatsAllotted = Number(currentUser.cheatmealSchedule.split("_")[1]);
       let cheatMeals = await new CheatMealService().getCheatMeals(currentUser);
       let cheatsUsed;
       let remaining;
