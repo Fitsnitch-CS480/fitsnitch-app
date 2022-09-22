@@ -13,6 +13,7 @@ import { UserCheatMealRequest, UserCheatMealResponse } from '../shared/models/re
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
 import { LatLonPair } from '../shared/models/CoordinateModels';
+import { GetCheatMealRequest } from '../shared/models/requests/GetCheatMealRequest';
 
 
 /**
@@ -223,6 +224,30 @@ class ExecutionError<T> extends ExecutionResult<T> {
   static async createCheatMeal(cheatmeal: CheatMealEvent){
     let res = await executeRequest("/cheatmeal-create", cheatmeal);
   }
+
+  static async getCheatMeals(user:User){
+    let interval;
+    if (user.cheatmealSchedule) {
+      interval = user.cheatmealSchedule.split("_")[0];
+    } else {
+      return null;
+    }
+
+    let intervalDateTime = new Date();
+    if (interval == "month") {
+      intervalDateTime.setMonth(intervalDateTime.getMonth() - 1);
+    } else {
+      intervalDateTime.setDate(intervalDateTime.getDate() - 7);
+    }
+    let request = new GetCheatMealRequest(user.userId, intervalDateTime.toISOString());
+    
+    let res = await executeRequest<CheatMealEvent[]>("/cheatmeal-get", request, true);
+    if (res.error || !res.data) {
+      // give error feedback in UI
+      return null;
+    }
+    return res.data;
+}
 
 
   // PARTNER / USER RELATIONSHIPS

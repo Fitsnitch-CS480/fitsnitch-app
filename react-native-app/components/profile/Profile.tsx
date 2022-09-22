@@ -21,6 +21,7 @@ import ProfileTrainer from './ProfileTrainer';
 import MatButton from '../MatButton';
 import CheatMealSchedule from '../CheatMealSchedule';
 import SnitchFreeStreak from '../SnitchFreeStreak';
+import CheatMealRemaining from '../CheatMealRemaining';
 
 const PAGE_SIZE = 5;
 
@@ -134,6 +135,7 @@ const SnitchFeed = () => {
             <PageSection title="Cheat Meals">
               {(isClientOfCurrentUser || isCurrentUser) &&
                 <View style={{marginBottom: 10}}>
+                  <CheatMealRemaining />
                   <CheatMealSchedule profileOwner={profileOwner} canEdit={isClientOfCurrentUser || !trainerStore.data} />
                 </View>
               }

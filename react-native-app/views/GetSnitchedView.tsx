@@ -9,6 +9,7 @@ import {observer} from 'mobx-react-lite'
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 import Sound from 'react-native-sound';
 import useInterval from '../hooks/useInterval';
+import CheatMealService from '../backend/services/CheatMealService';
 
 const soundFiles = [
   require('../assets/chefRushSoundBytes/sound1.m4a'),
@@ -47,7 +48,23 @@ export default observer(function GetSnitchedView({ navigation, route }: any) {
     const [didSnitch, setDidSnitch] = useState(false);
     const [nextSoundIdx, setNextSoundIdx] = useState(0);
     const {restaurant, coords} = route.params;
+    const [useCheats, setUseCheats] = useState<boolean>(false);
 
+    async function getCheatMealData() {
+      if (currentUser.cheatmealSchedule) {
+        let cheatsAllotted = currentUser.cheatmealSchedule.split("_")[1];
+        let cheatMeals = await new CheatMealService().getCheatMeals(currentUser);
+        let cheatsUsed;
+        let remaining;
+        if (cheatMeals) {
+            cheatsUsed = cheatMeals.length;
+            remaining = cheatsAllotted - cheatsUsed;
+            if (remaining > 0) {
+              setUseCheats(true);
+            }
+        }
+      }
+  }
 
     function playNextSound() {
       if (didSnitch) return;
@@ -60,7 +77,8 @@ export default observer(function GetSnitchedView({ navigation, route }: any) {
     }
 
     useEffect(()=>{
-      playNextSound()
+      playNextSound();
+      getCheatMealData();
     }, [])
 
     useInterval(playNextSound,soundWaitTime)
@@ -124,7 +142,10 @@ export default observer(function GetSnitchedView({ navigation, route }: any) {
           <View style={styles.buttonContainer}>
             <Button title="I'll Leave" color='black' onPress={commitToLeave}>Snitch</Button>
             <Text>   </Text>
+            { useCheats ?
             <Button title="Use A Cheat" color='black' onPress={useCheat}>Cheat Meal</Button>
+            : <></>
+            }
           </View>
         
         </>}

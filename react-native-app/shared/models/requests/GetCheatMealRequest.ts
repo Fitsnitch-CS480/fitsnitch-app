@@ -8,7 +8,7 @@
          */
         public userId:string,
         /**
-         * Datetie of the CheatMeal, used as a unique identifier
+         * Datetime of the CheatMeal, used as a unique identifier
          */
         public created:string) {
     }
