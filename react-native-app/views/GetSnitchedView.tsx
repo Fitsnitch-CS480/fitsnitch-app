@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View, Alert, AppState } from 'react-native';
-import Timer from '../models/Timer';
+import Timer from '../components/Timer';
 import ServerFacade from '../backend/ServerFacade';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
@@ -10,6 +10,11 @@ import CheatMealEvent from '../shared/models/CheatMealEvent';
 import Sound from 'react-native-sound';
 import useInterval from '../hooks/useInterval';
 import CheatMealService from '../backend/services/CheatMealService';
+import SnitchEvent from '../shared/models/SnitchEvent';
+import { LatLonPair } from '../shared/models/CoordinateModels';
+import NativeModuleService from '../backend/services/NativeModuleService';
+import SnitchTrigger from '../shared/models/SnitchTrigger';
+import { useFocusEffect } from '@react-navigation/native';
 
 const soundFiles = [
   require('../assets/chefRushSoundBytes/sound1.m4a'),
@@ -41,119 +46,187 @@ const sounds = soundFiles.map(file => {
 
 const soundWaitTime = 5100 + (longestDuration * 1000)
 
-export default observer(function GetSnitchedView({ navigation, route }: any) {
-    const {currentUser, locationStore} = useContext(globalContext);
+type Props = {
+  navigation: any,
+  route: any,
+  trigger: number,
+}
 
-    const [buttonPopup, setButtonPopup] = useState(false);
-    const [didSnitch, setDidSnitch] = useState(false);
-    const [nextSoundIdx, setNextSoundIdx] = useState(0);
-    const {restaurant, coords} = route.params;
-    const [useCheats, setUseCheats] = useState<boolean>(false);
+export default observer(function GetSnitchedView({ navigation, route, trigger }: Props) {
+  const {currentUser, /*locationStore*/} = useContext(globalContext);
 
-    async function getCheatMealData() {
-      if (currentUser.cheatmealSchedule) {
-        let cheatsAllotted = currentUser.cheatmealSchedule.split("_")[1];
-        let cheatMeals = await new CheatMealService().getCheatMeals(currentUser);
-        let cheatsUsed;
-        let remaining;
-        if (cheatMeals) {
-            cheatsUsed = cheatMeals.length;
-            remaining = cheatsAllotted - cheatsUsed;
-            if (remaining > 0) {
-              setUseCheats(true);
-            }
-        }
+  const [snitch, setSnitch] = useState<SnitchTrigger|null>(null);
+  const [buttonPopup, setButtonPopup] = useState(false);
+  const [timePassed, setTimePassed] = useState(false);
+  const [nextSoundIdx, setNextSoundIdx] = useState(0);
+  const [useCheats, setUseCheats] = useState<boolean>(false);
+
+  const [isVisible, setIsVisible] = useState(false)
+
+  useFocusEffect(
+    useCallback(() => {
+      setIsVisible(true)
+
+      return () => {
+        setIsVisible(false)
       }
-  }
+    }, [])
+  );
 
-    function playNextSound() {
-      if (didSnitch) return;
+  async function getCheatMealData() {
+    if (currentUser.cheatmealSchedule) {
+      let cheatsAllotted = currentUser.cheatmealSchedule.split("_")[1];
+      let cheatMeals = await new CheatMealService().getCheatMeals(currentUser);
+      let cheatsUsed;
+      let remaining;
+      if (cheatMeals) {
+          cheatsUsed = cheatMeals.length;
+          remaining = cheatsAllotted - cheatsUsed;
+          if (remaining > 0) {
+            setUseCheats(true);
+          }
+      }
+    }
+  };
+
+  function playNextSound() {
+    if (timePassed) return;
+    if (isVisible) {
       sounds[nextSoundIdx].play((success)=>{
         if (!success) {
           console.log("Could not play sound!")
         }
       })
-      setNextSoundIdx((nextSoundIdx+1)%sounds.length)
     }
+    setNextSoundIdx((nextSoundIdx+1)%sounds.length)
+  }
 
-    useEffect(()=>{
-      playNextSound();
+  useEffect(()=>{
+    playNextSound();
       getCheatMealData();
-    }, [])
+  }, [])
 
-    useInterval(playNextSound,soundWaitTime)
+  useInterval(playNextSound,soundWaitTime)
 
-    let onTimesUp = async () => {
-      // TODO notify Android
-        if (AppState.currentState == "background") {  //alert by notification
-            let localNotification = PushNotificationIOS.addNotificationRequest({
-                id: "1",
-                body: "You didn't leave the restaurant in time! You've been snitched on!",
-                title: "Get Snitched On!",
-                category: "UHOH",
-            });
-        }
-        setButtonPopup(false);
-        setDidSnitch(true)
-        locationStore.onSnitchOrCheat(coords)
 
-        //Send snitch
-        ServerFacade.snitchOnUser(new CreateSnitchRequest(currentUser.userId, restaurant, coords));
-      }
+  // Receive trigger either through props or route and refresh component
+  if (route?.params?.trigger) {
+    trigger = route.params.trigger;
+  }
 
-      let commitToLeave = async () => {
-        setButtonPopup(false);
-        Alert.alert("Great Decision! Remember your goals!");
-        locationStore.onCommittedToLeave()
-        navigation.goBack(null)
-      }
+  useEffect(()=>{
+    console.log("NEW NEW SNITCH", trigger)
     
-      let useCheat = async () => {
-        locationStore.onSnitchOrCheat(coords)
-        setButtonPopup(false);
-        Alert.alert("Checking if you have cheats available. Otherwise you will be snitched on!");
-        let cheat = new CheatMealEvent(currentUser.userId, new Date().toISOString(), coords, restaurant)
-        await ServerFacade.createCheatMeal(cheat)
-        navigation.goBack(null)
+    NativeModuleService.getActiveSnitch(lastSnitch => {
+      if (lastSnitch && (!snitch || lastSnitch.created !== snitch.created)) {
+        let endTime = new Date(Number(lastSnitch.created)).getTime() + 30000;
+        console.log(endTime <= Date.now())
+        setTimePassed(endTime <= Date.now());
+        setSnitch(lastSnitch);
+        setIsVisible(true);
       }
+    });   
+  }, [trigger])
+
+
+
+  let close = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack(null);
+    }
+    else navigation.navigate("Tabs");
+  }
+
+  if (!snitch) return <>
+    <Text>This snitch is no longer available.</Text>
+    <Button title='Go Back' onPress={close} ></Button>
+  </>;
+
+
+  const restaurant = snitch.restaurantData;
+  const endTime = new Date(Number(snitch.created)).getTime() + 30000;
+
+
+  let onTimesUp = async () => {
+    console.log("CALLED TIMES UP")
+    // TODO notify Android
+    if (AppState.currentState == "background") {  //alert by notification
+        let localNotification = PushNotificationIOS.addNotificationRequest({
+            id: "1",
+            body: "You didn't leave the restaurant in time! You've been snitched on!",
+            title: "Get Snitched On!",
+            category: "UHOH",
+        });
+    }
+    setButtonPopup(false);
+    setTimePassed(true)
+    // locationStore.onSnitchOrCheat(new LatLonPair(0,0))
+  }
+
+
+  let commitToLeave = async () => {
+    setButtonPopup(false);
+    Alert.alert("Great Decision! Remember your goals!");
+    // locationStore.onCommittedToLeave();
+    // NativeModuleService.getModule().setWillLeave();
+    close();
+  }
+
+  let useCheat = async () => {
+    // locationStore.onSnitchOrCheat(new LatLonPair(0,0))
+    NativeModuleService.getModule().setUsedCheat();
+    setButtonPopup(false);
+    // Alert.alert("Checking if you have cheats available. Otherwise you will be snitched on!");
+    let cheat = new CheatMealEvent(currentUser.userId, new Date().toISOString(), new LatLonPair(0,0), restaurant)
+    await ServerFacade.createCheatMeal(cheat)
+    navigation.goBack(null);
+    close();
+  }
+
+  
+
+  if (!isVisible) {
+    return null;
+  }
+
+  return (
+    <View style={styles.container}>
+
+    { timePassed?
+    
+    <>
+      <Text style={styles.text1}>You've been snitched on!</Text>
+      <Text style={styles.text2}>Now all of your partners know you were at {restaurant?.name}.</Text>
+    </>
+
+    :
+
+    <>
+      <Text style={styles.text1}>Are you at {restaurant?.name}?</Text>
+      <Text></Text>
       
-      return (
-       <View style={styles.container}>
+      <Timer onTimesUp={onTimesUp} endTime={endTime}/>
+    
+      <Text></Text>
+      <Text style={styles.text2}>Select an option below to stop us from snitching on you! </Text>
+      <Text></Text>
 
-        { didSnitch?
-        
-        <>
-          <Text style={styles.text1}>You've been snitched on!</Text>
-          <Text style={styles.text2}>Now all of your partners know you were at {restaurant.name}.</Text>
-        </>
-
-        :
-
-        <>
-          <Text style={styles.text1}>Are you at {restaurant.name}?</Text>
-          <Text></Text>
-          
-          <Timer onTimesUp={onTimesUp} duration={30}/>
-        
-          <Text></Text>
-          <Text style={styles.text2}>Select an option below to stop us from snitching on you! </Text>
-          <Text></Text>
-
-          <View style={styles.buttonContainer}>
-            <Button title="I'll Leave" color='black' onPress={commitToLeave}>Snitch</Button>
-            <Text>   </Text>
+      <View style={styles.buttonContainer}>
+        <Button title="I'll Leave" color='black' onPress={commitToLeave}>Snitch</Button>
+        <Text>   </Text>
             { useCheats ?
-            <Button title="Use A Cheat" color='black' onPress={useCheat}>Cheat Meal</Button>
+        <Button title="Use A Cheat" color='black' onPress={useCheat}>Cheat Meal</Button>
             : <></>
             }
-          </View>
-        
-        </>}
+      </View>
+    
+    </>
+    }
 
-        <Text style={styles.errorText}>Report an error</Text>
+    <Text style={styles.errorText}>Report an error</Text>
 
-       </View>
-     );
+    </View>
+  );
 
 })
 
@@ -189,51 +262,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 });
-
-      
-      // The code belows is a resource for reimplementing the Chef soundclips
-      // let checkLocation = async () => {
-        //navigate.push("GetSnitchedOn")
-        // const response = await ServerFacade.checkLocation(-1,-1);
-        // console.log(response);
-        // if(response.status == 200){
-        //   voice1.play(success => {
-        //     if(success){
-        //       voice2.play(success => {
-        //         if(success){
-        //           voice3.play(success => {
-        //             if(success){
-        //               voice4.play(success => {
-        //                 if(success){
-        //                   voice5.play(success => {
-        //                     if(success){
-        //                       voice6.play();
-        //                     }
-        //                     else{
-        //                       console.log("failed to play 6");
-        //                     }
-        //                   });
-        //                 }
-        //                 else{
-        //                   console.log("failed to play 5");
-        //                 }
-        //               });
-        //             }
-        //             else{
-        //               console.log("failed to play 4");
-        //             }
-        //           });
-        //         }
-        //         else{
-        //           console.log("failed to play 2");
-        //         }
-        //       });
-        //     }
-        //     else{
-        //       console.log("failed to play 1");
-        //     }
-        //   }
-        //   );
-        //   setButtonPopup(true);
-        // }
-      // }

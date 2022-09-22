@@ -1,11 +1,12 @@
 import React, {useContext} from 'react';
 import {authContext} from '../navigation/mainNavigator';
 import {Auth} from '@aws-amplify/auth';
-import { Alert, Button, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Button, NativeModules, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { globalContext } from '../navigation/appNavigator';
 import { observer } from 'mobx-react-lite';
 import { LatLonPair } from '../shared/models/CoordinateModels';
+import NativeModuleService from '../backend/services/NativeModuleService';
 
 const SettingsView = observer(({navigation}:any) => {
   //Get user from Context from mainNavigator
@@ -18,7 +19,7 @@ const SettingsView = observer(({navigation}:any) => {
       setAuthUser(null);
       try {
         await EncryptedStorage.removeItem("user_auth");
-        
+        NativeModuleService.getModule().stopBackgroundLocation();
       } catch (error) {
         console.log(':',error);
       }
@@ -57,9 +58,9 @@ const SettingsView = observer(({navigation}:any) => {
         <Switch value={logStore.visible} onValueChange={()=>logStore.setVisibility(!logStore.visible)} />
       </View>
 
-      <View style={styles.listItem} onTouchEnd={demoSnitch}>
+      {/* <View style={styles.listItem} onTouchEnd={demoSnitch}>
         <Text style={styles.optionTitle}>Run Demo Snitch</Text>
-      </View>
+      </View> */}
 
       <View style={styles.listItem} onTouchEnd={promptLogout}>
         <Text style={styles.optionTitle}>Logout</Text>

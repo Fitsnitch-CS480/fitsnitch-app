@@ -82,7 +82,7 @@ const SnitchEventCard: React.FC<Props> = ({
         <View style={styles.details}>
           <View style={styles.detailRow}>
             <View style={styles.detailRowIcon}><Icon name="place" color="#888" size={20}></Icon></View>
-            <Text>{snitch.restaurantData.name}</Text>
+            <Text>{snitch.restaurantData?.name}</Text>
           </View>
           <View style={styles.detailRow}>
           <View style={styles.detailRowIcon}><Icon name="event" color="#888" size={18}></Icon></View>

@@ -8,6 +8,7 @@ import Popup from '../components/Popup';
 import ServerFacade from '../backend/ServerFacade';
 import User from '../shared/models/User';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import NativeModuleService from '../backend/services/NativeModuleService';
 
 export default function LoginView() {
 
@@ -58,10 +59,11 @@ export default function LoginView() {
             await EncryptedStorage.setItem(
               "user_auth", 
               JSON.stringify({
-              email : email,
-              password : password  
+                email,
+                password 
               })
-            )
+            );
+            NativeModuleService.getModule().saveUserId(user.userId);
           } catch (error) {
             console.log('Failed to save login: ', error);
           }
