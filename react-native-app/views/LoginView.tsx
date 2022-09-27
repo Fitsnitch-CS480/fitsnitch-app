@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Platform, ActivityIndicator} from 'react-native';
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Platform, ActivityIndicator, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
 import {authContext} from '../navigation/mainNavigator';
@@ -94,7 +94,19 @@ export default function LoginView() {
   };
 
   return (
+    <ScrollView>
     <View style={styles.container}>
+      <Image
+        source={require("../assets/images/image_bnui..png")}
+        resizeMode="contain"
+        style={styles.image}
+      />
+      
+      <View style={styles.materialUnderlineTextboxStack}>
+        <TextInput placeholder="Email" onChangeText={onChangeEmail}></TextInput>
+        <TextInput placeholder="Password" secureTextEntry onChangeText={onChangePassword}></TextInput>
+      </View>
+
       <View style={styles.materialButtonPrimary}>
         { loading ? 
             <ActivityIndicator color="#00bbff" size={30} />
@@ -103,120 +115,32 @@ export default function LoginView() {
         }
       </View>
 
-      {/* <Popup popupShow={notiAuthPopupShow} hidePopup={closePopUp} handleButton={handleButton}>
-        
-      </Popup> */}
-      
       <Text style={styles.or2}>--------------- OR ---------------</Text>
-      <Text style={styles.loremIpsum} onPress={() => navigation.navigate('signup')}>Don&#39;t have an account? Sign up</Text> 
-      <View style={styles.image2Row}>
-        <Image
-          source={require("../assets/images/image_ia6Y..png")}
-          resizeMode="contain"
-          style={styles.image2}
-        ></Image>
-        <Text style={styles.logInWithGoogle}>Log in with Google</Text>
-      </View>
-      <View style={styles.image3Row}>
-        <Image
-          source={require("../assets/images/image_S68k..png")}
-          resizeMode="contain"
-          style={styles.image3}
-        ></Image>
-        <Text style={styles.logInWithFacebook}>Log in with Facebook</Text>
-      </View>
-      <View style={styles.image4Row}>
-        <Image
-          source={require("../assets/images/image_nFko..png")}
-          resizeMode="contain"
-          style={styles.image4}
-        ></Image>
-        <Text style={styles.logInWithTwitter}>Log in with Twitter</Text>
-      </View>
-      <View style={styles.materialUnderlineTextboxStack}>
-        <TextInput placeholder="Username" onChangeText={onChangeEmail}></TextInput>
-        <TextInput placeholder="Password" secureTextEntry onChangeText={onChangePassword}></TextInput>
-      </View>
-      <Image
-        source={require("../assets/images/image_bnui..png")}
-        resizeMode="contain"
-        style={styles.image}
-      ></Image>
+      <Text style={styles.loremIpsum} onPress={() => navigation.navigate('signup')}>Don&#39;t have an account? Sign up</Text>      
     </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   materialButtonPrimary: {
     height: 36,
     width: 289,
-    marginTop: 388,
-    marginLeft: 52
   },
   or2: {
     fontFamily: "roboto-regular",
     color: "#121212",
-    marginTop: 43,
-    marginLeft: 126
+    marginVertical: 20
   },
   loremIpsum: {
     fontFamily: "roboto-regular",
     color: "#121212",
-    marginTop: 201,
-    marginLeft: 91
-  },
-  image2: {
-    height: 33,
-    width: 33
-  },
-  logInWithGoogle: {
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    marginLeft: 6,
-    marginTop: 8
-  },
-  image2Row: {
-    height: 33,
-    flexDirection: "row",
-    marginTop: -170,
-    marginLeft: 91,
-    marginRight: 130
-  },
-  image3: {
-    height: 27,
-    width: 27
-  },
-  logInWithFacebook: {
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    marginLeft: 9,
-    marginTop: 5
-  },
-  image3Row: {
-    height: 27,
-    flexDirection: "row",
-    marginTop: 1,
-    marginLeft: 94,
-    marginRight: 113
-  },
-  image4: {
-    height: 30,
-    width: 30
-  },
-  logInWithTwitter: {
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    marginLeft: 7,
-    marginTop: 6
-  },
-  image4Row: {
-    height: 30,
-    flexDirection: "row",
-    marginLeft: 93,
-    marginRight: 132
   },
   materialUnderlineTextbox: {
     height: 43,
@@ -224,24 +148,18 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     top: 0,
-    
   },
   materialUnderlineTextboxStack: {
     width: 289,
-    height: 43,
-    marginTop: -359,
-    marginLeft: 52
+    marginVertical: 20
   },
   image: {
     height: 200,
     width: 200,
-    marginTop: -243,
-    marginLeft: 79
+    marginTop: 50
   },
   materialUnderlineTextbox1: {
     height: 43,
     width: 289,
-    marginTop: 57,
-    marginLeft: 52
   }
 });
