@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
 // import KeyboardAvoidingView from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
@@ -66,15 +66,8 @@ const SignUpView : React.FC = () => {
           });
         })
         .catch((err) => {
-          console.log(':',err);
-          if (!err.message) {
-            console.log('1 Error when signing up: ', err);
-            Alert.alert('Error when signing up: ', err);
-          } else {
-            if (err.message) {
-              setErrorMessage(err.message);
-            }
-          }
+          console.log('Error when signing up: ', err);
+          Alert.alert("Please Try Again", err.message || err);
         });
     } else {
       setErrorMessage('Provide a valid email and password');
@@ -83,27 +76,24 @@ const SignUpView : React.FC = () => {
   };
 
   return (
-      
-
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <ScrollView>
       <View style={styles.container}>
-      
-      
-
-      
 
       <View style={styles.image}>
         <Image
-        source={require("../assets/images/image_bnui..png")}
-        resizeMode="contain"
-        style={styles.image}
-        ></Image>
+          source={require("../assets/images/image_bnui..png")}
+          resizeMode="contain"
+          style={styles.image}
+        />
       </View>
       
 
-      {/* onFocus={() => setHideView(false)} onBlur={() => setHideView(true)} LEAVE THIS AS A COMMENT IN CASE I NEED TO GET BACK TO THIS SOLUTION */}
+      {/* TODO add validation and requirements for all fields!
+          Phone number field accepts '2082' which it should not
+          First and Last name need to be required
+      */}
       <View style={styles.materialUnderlineTextboxStack}>
-        <TextInput placeholder="Username" onChangeText={onChangeEmail} ></TextInput>
+        <TextInput placeholder="Email" onChangeText={onChangeEmail} ></TextInput>
         <TextInput placeholder="Password" secureTextEntry onChangeText={onChangePassword}></TextInput>
         <TextInput placeholder="Phone Number"  keyboardType='numeric' onChangeText={onChangePhoneNumber}></TextInput>
         <TextInput placeholder="First Name"  onChangeText={onChangeFirstName}></TextInput>
@@ -114,44 +104,12 @@ const SignUpView : React.FC = () => {
         <Button title="Sign Up" onPress={signUpFunction}></Button>
       </View>
       
-      {hideView && <Text style={styles.defaultText}>--------------- OR ---------------</Text>}
-
-      {hideView && <View style={styles.signUpRows}>
-        <Image
-          source={require("../assets/images/image_ia6Y..png")}
-          resizeMode="contain"
-          style={styles.googleIcon}
-        ></Image>
-        <Text style={styles.signUpOAuthText}>Sign up with Google</Text>
-        {/* <Text style={styles.logInWithGoogle}>Sign up with Google</Text> */}
         
-      </View>}
-
-      {hideView && <View style={styles.signUpRows}>
-        <Image
-          source={require("../assets/images/image_S68k..png")}
-          resizeMode="contain"
-          style={styles.facebookIcon}
-        ></Image>
-        {/* <Text style={styles.logInWithFacebook}>Sign up with Facebook</Text> */}
-        <Text style={styles.signUpOAuthText}>Sign up with Facebook</Text>
-      </View>}
-
-      {hideView && <View style={styles.signUpRows}>
-        <Image
-          source={require("../assets/images/image_nFko..png")}
-          resizeMode="contain"
-          style={styles.twitterIcon}
-        ></Image>
-        <Text style={styles.signUpOAuthText}>Sign up with Twitter</Text>
-        {/* <Text style={styles.logInWithTwitter}>Sign up with Twitter</Text> */}
-      </View>}
-      
-      {hideView && <Text style={styles.defaultText} onPress={() => navigation.navigate('login')}>Already have an account? Log In</Text>} 
+      {<Text style={styles.defaultText} onPress={() => navigation.navigate('login')}>Already have an account? Log In</Text>} 
       
       
     </View>
-    </TouchableWithoutFeedback>
+    </ScrollView>
   );
 };
 
@@ -164,7 +122,8 @@ const styles = StyleSheet.create({
   materialButtonPrimary: {
     width: 289,
     paddingTop: 10,
-    flex: 1
+    flex: 1,
+    marginVertical: 20
   },
   defaultText: {
     fontFamily: "roboto-regular",
@@ -178,24 +137,6 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     flex: 1
   },
-  googleIcon: {
-    height: 33,
-    width: 33
-  },
-  signUpRows: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: 180
-  },
-  facebookIcon: {
-    height: 30,
-    width: 30
-  },
-  twitterIcon: {
-    height: 30,
-    width: 30
-  },
   materialUnderlineTextboxStack: {
     width: 289,
     flex: 5
@@ -204,6 +145,7 @@ const styles = StyleSheet.create({
     height: 200,
     width: 200,
     flex: 5,
+    marginTop: 20
   }
 });
 
