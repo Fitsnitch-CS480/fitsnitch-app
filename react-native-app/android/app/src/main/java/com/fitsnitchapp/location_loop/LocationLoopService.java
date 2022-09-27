@@ -61,8 +61,8 @@ public class LocationLoopService extends IntentService {
 
     private static long nextLocationAlarmTime;
     public static final long IVAL_WARNING = 30000; // 30 seconds
-    public static final long IVAL_LOOP_SHORT = 10000;
-    public static final long IVAL_LOOP_LONG = 30000;
+    public static final long IVAL_LOOP_SHORT = 60000; // 1 minute
+    // public static final long IVAL_LOOP_LONG = 30000;
     public static final long IVAL_WILL_LEAVE = 30000;
     public static final long IVAL_WILL_STAY = 60000 * 10; // 10 minutes
 
