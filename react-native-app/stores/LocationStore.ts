@@ -3,7 +3,18 @@ import { observable, action, computed, makeObservable } from "mobx";
 import { LatLonPair } from "../shared/models/CoordinateModels";
 
 
-const leavingGraceTime = 30000;
+/**
+ * ****NOTE:
+ * 
+ * Most of the logic here has been replaced in the Native Android
+ * LocationModule and will also need to be replaced for iOS.
+ * 
+ * This file is kept fot reference but will be removed once it is fully
+ * replaced.
+ */
+
+
+let leavingGraceTime = 30000;
 const snitchOrCheatRadius = 0.0001
 
 

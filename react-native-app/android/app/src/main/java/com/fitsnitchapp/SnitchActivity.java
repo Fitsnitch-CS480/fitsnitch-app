@@ -1,4 +1,5 @@
 package com.fitsnitchapp;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,12 +7,10 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import expo.modules.ReactActivityDelegateWrapper;
+import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 
-import com.facebook.react.ReactActivity;
-
-public class MainActivity extends ReactActivity {
+public class SnitchActivity extends ReactActivity {
 
   private static LocationModule locationModule;
 
@@ -21,7 +20,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "FitsnitchApp";
+    return "SnitchActivity";
   }
 
   @Override
@@ -49,9 +48,20 @@ public class MainActivity extends ReactActivity {
       Log.i("***FIT", "ON CREATE!!!!");
       mInitialProps = mActivity.getIntent().getExtras();
       if (mInitialProps != null) {
-        Log.i("***FIT", "Intent Action: "+mInitialProps.getString("ACTION"));
+        Log.i("***FIT", "Intent Action: "+mInitialProps.getString("META_DATA"));
       }
       super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public boolean onNewIntent(Intent intent) {
+      Log.i("***FIT", "NEW INTENT!");
+      mInitialProps = mActivity.getIntent().getExtras();
+      if (mInitialProps != null) {
+        Log.i("***FIT", "Intent Action: "+mInitialProps.getString("META_DATA"));
+        LocationModule.sendEventToJS("NEW_PROPS", mInitialProps);
+      }
+      return super.onNewIntent(intent);
     }
 
     @Override

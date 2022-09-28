@@ -11,12 +11,13 @@ import { GetSnitchRequest } from "../shared/models/requests/GetSnitchRequest";
 import { CreateSnitchRequest } from "../shared/models/requests/CreateSnitchRequest";
 import { LatLonPair } from "../shared/models/CoordinateModels";
 import RestaurantData from "../shared/models/RestaurantData";
+import { NativeInput } from "../models/NativeInput";
 
 // console.log(ActivityIndicator)
 
 export const authContext = createContext<{setAuthUser:(user:User|null)=>void,authUser:User|null}>({authUser:null,setAuthUser:()=>{}});
 
-const MainNavigator : React.FC = () => {
+const MainNavigator : React.FC<{input?: NativeInput}> = ({input}) => {
     
   const [loading, setLoading] = useState<boolean>(true);
   const [authUser, setAuthUser] = useState<User|null>(null);
@@ -101,7 +102,7 @@ const MainNavigator : React.FC = () => {
     return(
         <authContext.Provider value={{authUser, setAuthUser}}>
         <NavigationContainer>
-            {authUser !== null ? <AppNavigator authUser={authUser} /> : <LoginNavigator />}
+            {authUser !== null ? <AppNavigator input={input} authUser={authUser} /> : <LoginNavigator />}
         </NavigationContainer>
         </authContext.Provider>
     )
