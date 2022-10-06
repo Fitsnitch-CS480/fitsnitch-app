@@ -1,5 +1,6 @@
 import React, { Component, ReactNode } from "react";
 import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
+import Colors from '../assets/constants/colors';
 
 
 interface Props{
@@ -59,7 +60,8 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: Colors.red
   },
   bodyWrapper: {
   },

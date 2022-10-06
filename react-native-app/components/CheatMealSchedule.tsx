@@ -5,6 +5,7 @@ import InputSpinner from "react-native-input-spinner";
 import {Picker} from '@react-native-picker/picker';
 import UserDataService from '../backend/services/UserDataService';
 import MatButton from './MatButton';
+import Colors from '../assets/constants/colors';
 
 export type Props = {
   profileOwner: User,
@@ -54,7 +55,7 @@ const CheatMealSchedule: React.FC<Props> = ({
             style={styles.spinner}
             min={0}
             value={quantity}
-            color={'lightcoral'} // change when we make the app look pretty :)
+            color={Colors.red}
             onChange={(num: number) => {
               updateSchedule(period, num);
             }}
@@ -90,6 +91,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: Colors.charcoal,
   },
   container: {
     display: 'flex',
