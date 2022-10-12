@@ -24,7 +24,10 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme">
 
-        <receiver android:name=".AutoStart">
+        <receiver 
+            android:name=".AutoStart"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
@@ -61,13 +64,18 @@
         <service
             android:name=".LaunchService"
             android:enabled="true"
+            android:exported="true"
             />
 
         <service
             android:name=".LocationForegroundService"
             android:enabled="true"
+            android:exported="true"
             />
 
-        <service android:name=".location_loop.LocationLoopService" />
+        <service 
+            android:name=".location_loop.LocationLoopService"
+            android:exported="true"
+            />
     </application>
 </manifest>
