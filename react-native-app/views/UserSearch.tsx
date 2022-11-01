@@ -2,6 +2,8 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { Button, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Colors from '../assets/constants/colors';
+import T from '../assets/constants/text';
 import UserDataService from '../backend/services/UserDataService';
 import ProfileImage from '../components/ProfileImage';
 import { globalContext } from '../navigation/appNavigator';
@@ -12,7 +14,7 @@ type state = {
   results: User[],
   lastPageBreakKey?: string,
   loading: boolean,
-  query?:string
+  query?: string
 }
 
 const PAGE_SIZE = 20;
@@ -49,7 +51,6 @@ const UserSearch: React.FC = () => {
       lastPageBreakKey: page.pageBreakKey
     })
   }
-
 
   async function loadMoreResults() {
     if (!state.query) return;
@@ -89,47 +90,65 @@ const UserSearch: React.FC = () => {
 
   return (
     <>
-    <View style={styles.searchBarWrapper}>
-      <TextInput placeholder="Type a user's name" style={styles.searchInput}
-        onChangeText={(text)=>updateQuery(text)}></TextInput>
-      <TouchableHighlight style={styles.searchIconButton} onPress={loadNewResults} underlayColor="#ccc"><Icon name="search" size={30} /></TouchableHighlight>
-    </View>
+      <View style={styles.searchBarWrapper}>
+        <TextInput placeholder={T.people.search.prompt} 
+          placeholderTextColor={Colors.white}
+          style={styles.searchInput}
+          onChangeText={(text)=>updateQuery(text)}></TextInput>
+        <TouchableHighlight style={styles.searchIconButton} 
+          onPress={loadNewResults} 
+          underlayColor="#ccc">
+            <Icon name="search" style={styles.icon} size={30}/>
+        </TouchableHighlight>
+      </View>
 
-    <ScrollView>
-      { state.results.map(user =>(
-        <View style={styles.resultRow} key={user.userId} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: user})}}>
-          <ProfileImage user={user} size={30}></ProfileImage>
-          <Text style={{marginLeft:10, fontSize: 15}}>{user.firstname} {user.lastname}</Text>
-        </View>
-      ))}
+      <ScrollView style={styles.screen}>
+        { state.results.map(user =>(
+          <View style={styles.resultRow} key={user.userId} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: user})}}>
+            <ProfileImage user={user} size={30}></ProfileImage>
+            <Text style={styles.text}>{user.firstname} {user.lastname}</Text>
+          </View>
+        ))}
 
-      { state.lastPageBreakKey && state.results.length > 0 ?
-        <Button title="Load More" onPress={loadMoreResults}></Button>
-      :
-        <></>
-      }
-    </ScrollView>
+        { state.lastPageBreakKey && state.results.length > 0 ?
+          <Button title="Load More" onPress={loadMoreResults} color={Colors.darkBlue}></Button>
+        :
+          <></>
+        }
+      </ScrollView>
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    backgroundColor: Colors.lightBackground
+  },
   searchBarWrapper: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd'
+    borderBottomColor: '#ddd',
+    backgroundColor: Colors.lightBackground,
   },
   searchInput: {
     flexGrow: 1,
-    padding: 10,
-    fontSize: 15
+    paddingLeft: 10,
+    fontSize: 15,
+    color: Colors.white,
   },
   searchIconButton: {
     padding: 10
   },
-
+  text: {
+    marginLeft: 10, 
+    fontSize: 15,
+    color: Colors.white
+  },
+  icon: {
+    color: Colors.white
+  },
   resultRow: {
     backgroundColor: "white",
     padding: 10,

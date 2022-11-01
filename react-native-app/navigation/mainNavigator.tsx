@@ -7,13 +7,8 @@ import User from "../shared/models/User";
 import EncryptedStorage from 'react-native-encrypted-storage';
 import ServerFacade from '../backend/ServerFacade';
 import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
-import { GetSnitchRequest } from "../shared/models/requests/GetSnitchRequest";
-import { CreateSnitchRequest } from "../shared/models/requests/CreateSnitchRequest";
-import { LatLonPair } from "../shared/models/CoordinateModels";
-import RestaurantData from "../shared/models/RestaurantData";
 import { NativeInput } from "../models/NativeInput";
-
-// console.log(ActivityIndicator)
+import Colors from "../assets/constants/colors";
 
 export const authContext = createContext<{setAuthUser:(user:User|null)=>void,authUser:User|null}>({authUser:null,setAuthUser:()=>{}});
 
@@ -88,11 +83,11 @@ const MainNavigator : React.FC<{input?: NativeInput}> = ({input}) => {
         <View style={styles.loadingScreen}>
           
           <Image
-            source={require("../assets/images/image_bnui..png")}
+            source={require("../assets/images/main_logo.png")}
             resizeMode="contain"
             style={styles.image}
           ></Image>
-          <ActivityIndicator color="#00bbff" size={30} />
+          <ActivityIndicator color={Colors.red} size={30} />
         </View>
       )
     }
@@ -100,11 +95,11 @@ const MainNavigator : React.FC<{input?: NativeInput}> = ({input}) => {
 
     //If user is logged in, go to normal app screens. If not, go to the login screens. 
     return(
-        <authContext.Provider value={{authUser, setAuthUser}}>
+      <authContext.Provider value={{authUser, setAuthUser}}>
         <NavigationContainer>
             {authUser !== null ? <AppNavigator input={input} authUser={authUser} /> : <LoginNavigator />}
         </NavigationContainer>
-        </authContext.Provider>
+      </authContext.Provider>
     )
 }
 
@@ -112,7 +107,8 @@ const styles = StyleSheet.create({
   loadingScreen: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: "center"
+    justifyContent: "center",
+    backgroundColor: Colors.background,
   },
   image: {
     height: 200,

@@ -19,6 +19,37 @@ const T = {
         provideValidEmailPassword: "Provide a valid email and password",
         tryAgain: "Please Try Again",
     },
+    settings: {
+        logout: "Logout",
+        cancel: "Cancel",
+        logoutPrompt: "Log out of this account?",
+        debug: "Show debug logs"
+    },
+    people: {
+        title: "People",
+        trainer: {
+            noTrainer: "You don't have a trainer yet!",
+            pending: "Your trainer request is pending",
+        },
+        client: {
+            noClient: "You have no clients yet!",
+        },
+        partner: {
+            noPartner: "You have no partners yet!",
+            partnerOf: "Partner of ",
+        },
+        search: {
+            prompt: "Type a user's name",
+        },
+    },
+    cheatmeal: {
+        schedule: "Cheat Meal Schedule",
+        every: "every",
+    },
+    list: {
+        empty: "Nothing here",
+    },
+    loading: "Loading...",
 }
 
 export default T;

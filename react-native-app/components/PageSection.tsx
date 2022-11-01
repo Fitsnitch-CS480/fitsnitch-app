@@ -1,7 +1,6 @@
-import React, { Component, ReactNode } from "react";
-import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
+import React, { ReactNode } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import Colors from '../assets/constants/colors';
-
 
 interface Props{
   title: string,
@@ -12,17 +11,13 @@ interface Props{
 
 const PageSection: React.FC<Props> = ({title,headerRight,footer,children}) => {
   return (
-    <View
-      style={styles.container}
-    >
-      <View
-        style={styles.sectionWrapper}
-      >
+    <View style={styles.container}>
+      <View style={styles.wrap}>
         <View style={[styles.headerWrapper, styles.section]}>
           <Text style={styles.headerText}>{title}</Text>
           {headerRight}
         </View>
-        <View style={[styles.bodyWrapper, styles.section]}>
+        <View style={[styles.bodyWrapper, styles.section, styles.sectionWrapper]}>
           {children}
         </View>
         { footer && <View style={[styles.footerWrapper, styles.section]}>{footer}</View> }
@@ -40,14 +35,14 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   sectionWrapper: {
-    backgroundColor: '#fff',
-    borderColor: '#aaa',
-    borderRadius: 3,
-    borderWidth: StyleSheet.hairlineWidth,
     paddingLeft: spacing,
     paddingRight: spacing,
     paddingTop: spacing,
     width: '100%',
+  },
+  wrap: {
+    backgroundColor: Colors.lightBackground,
+    borderRadius: 20,
   },
   section: {
     paddingBottom: spacing
@@ -56,12 +51,16 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: Colors.darkRed,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
   },
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: Colors.red
+    color: Colors.white
   },
   bodyWrapper: {
   },

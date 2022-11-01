@@ -16,6 +16,7 @@ import { PartnerRequestForUserStore, TrainerRequestForUserStore } from "../store
 import { getMetaData, NativeInput } from "../models/NativeInput";
 import SnitchEvent from "../shared/models/SnitchEvent";
 import { LatLonPair } from "../shared/models/CoordinateModels";
+import Colors from "../assets/constants/colors";
 
 type props = {
   authUser: User,
@@ -78,8 +79,19 @@ const AppNavigator : React.FC<props> = ({authUser, input}) => {
     <globalContext.Provider value={gCtx}>
     
     <Stack.Navigator initialRouteName={START_SCREEN}>
-      <Stack.Screen name="Tabs" component={TabViewNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="Search" component={UserSearch} />
+      <Stack.Screen name="Tabs" component={TabViewNavigator} 
+        options={{ headerShown: false }} />
+      <Stack.Screen name="Search" component={UserSearch} 
+        options={{ 
+          headerShown: true,
+          headerStyle: { 
+            backgroundColor: Colors.background,
+          },
+          headerTitleStyle: {
+            color: Colors.red
+          },
+          headerTintColor: Colors.white
+        }} />
       <Stack.Screen name="OtherUserProfile"
         component={OtherUserProfile}
         options={({ route }) => {
