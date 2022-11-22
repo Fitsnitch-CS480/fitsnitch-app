@@ -1,6 +1,6 @@
-import RelationshipStatus from "../../shared/constants/RelationshipStatus";
-import User from "../../shared/models/User";
-import ServerFacade from "../ServerFacade";
+import RelationshipStatus from "../shared/constants/RelationshipStatus";
+import User from "../shared/models/User";
+import ServerFacade from "./ServerFacade";
 
 export default class ClientTrainerService {
     public async getTrainerStatus(trainer:User,user:User): Promise<RelationshipStatus> {

@@ -1,54 +1,50 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
-import PartnerAssociationService from '../../backend/services/PartnerAssociationService';
-import Card from '../../components/Card';
-import ProfileImage from '../../components/ProfileImage';
-import { globalContext } from '../../navigation/appNavigator';
-import User from '../../shared/models/User';
+import React, { useContext } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import Card from '../../reusable-components/Card';
+import ProfileImage from '../../reusable-components/ProfileImage';
+import { globalContext } from '../../views/appNavigator';
 
-const TITLE = "Your Partners"
+const TITLE = "Your Clients"
 
-const CurrentPartners = observer(() => {
+const CurrentClients = observer(() => {
   const navigation = useNavigation<any>();
+  const {clientStore} = useContext(globalContext);
 
-  const {currentUser, partnerStore} = useContext(globalContext);
+  const clients = clientStore.data;
 
-  const partners = partnerStore.data;
-
-  if (partnerStore.loading) {
+  if (clientStore.loading) {
+    return (
+    <Card title={TITLE}>
+      <ActivityIndicator color="#00bbff" size={30} />
+    </Card>
+    )
+  }
+  
+  if (clients.length === 0) {
     return (
       <Card title={TITLE}>
-        <ActivityIndicator color="#00bbff" size={30} />
+        <Text>You have no clients yet!</Text>
       </Card>
     )
   }
 
-  if (partners.length === 0) {
-    return (
-      <Card title={TITLE}>
-        <Text>You have no partners yet!</Text>
-      </Card>
-    )
-  }
 
   return (
     <Card title={TITLE}>
-      { partners.map((client,i)=>(
+      { clients.map((client,i)=>(
         <View key={client.userId}>
           <View style={styles.resultRow} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: client})}}>
             <ProfileImage user={client} size={30}></ProfileImage>
             <Text style={{marginLeft:10, fontSize: 15}}>{client.firstname} {client.lastname}</Text>  
           </View>
-          { (i < partners.length - 1) ? <View style={styles.divider} /> : null}
+          { (i < clients.length - 1) ? <View style={styles.divider} /> : null}
         </View>
       ))}
     </Card>
   );
 });
-export default CurrentPartners;
-
 
 const styles = StyleSheet.create({
   resultRow: {
@@ -67,3 +63,5 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   }
 });
+
+export default CurrentClients;

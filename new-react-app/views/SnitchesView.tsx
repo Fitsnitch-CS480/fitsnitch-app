@@ -1,19 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import SnitchService from '../backend/services/SnitchService';
-import Card from '../components/Card';
-import SnitchEventCard from '../components/SnitchEventCard';
-import moment from 'moment';
+import SnitchService from '../services/SnitchService';
+import Card from '../reusable-components/Card';
+import SnitchEventCard from '../reusable-components/SnitchEventCard';
+import dayjs from 'dayjs';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
-import PaginatedList from '../components/PaginatedList';
+import PaginatedList from '../reusable-components/PaginatedList';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import { useNavigation } from '@react-navigation/native';
-import { LatLonPair } from '../shared/models/CoordinateModels';
-import { globalContext } from '../navigation/appNavigator';
-import { string } from '@hapi/joi';
-import SnitchFreeStreak from '../components/SnitchFreeStreak';
+import SnitchFreeStreak from '../reusable-components/SnitchFreeStreak';
+import { globalContext } from './appNavigator';
 
 const PAGE_SIZE = 10
 
@@ -56,7 +53,7 @@ const SnitchesView: React.FC = () => {
   let streak = (() => {
     if (!lastSnitch) return null;
     return {
-      qty: moment().diff(moment(lastSnitch.created), 'd'),
+      qty: dayjs().diff(dayjs(lastSnitch.created), 'd'),
       unit: 'day'
     }
   })();

@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ClientTrainerService from '../../backend/services/ClientTrainerService';
-import PageSection from '../../components/PageSection';
+import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
 import { globalContext } from '../../navigation/appNavigator';
 import User from '../../shared/models/User';
@@ -19,23 +19,23 @@ const CurrentClients = observer(() => {
 
   if (clientStore.loading) {
     return (
-    <PageSection title={TITLE}>
+    <Card title={TITLE}>
       <ActivityIndicator color="#00bbff" size={30} />
-    </PageSection>
+    </Card>
     )
   }
   
   if (clients.length === 0) {
     return (
-      <PageSection title={TITLE}>
+      <Card title={TITLE}>
         <Text>You have no clients yet!</Text>
-      </PageSection>
+      </Card>
     )
   }
 
 
   return (
-    <PageSection title={TITLE}>
+    <Card title={TITLE}>
       { clients.map((client,i)=>(
         <View key={client.userId}>
           <View style={styles.resultRow} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: client})}}>
@@ -45,7 +45,7 @@ const CurrentClients = observer(() => {
           { (i < clients.length - 1) ? <View style={styles.divider} /> : null}
         </View>
       ))}
-    </PageSection>
+    </Card>
   );
 });
 

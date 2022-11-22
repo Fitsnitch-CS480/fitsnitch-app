@@ -4,8 +4,8 @@ import {View, StyleSheet, Text} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 //Change these to something default, just use these for now for testing
-import Button from '../../components/Button';
-import Input from '../../components/Input';
+import Button from '../../reusable-components/Button';
+import Input from '../../reusable-components/Input';
 
 
 const Confirmation : React.FC = ({route}) => {

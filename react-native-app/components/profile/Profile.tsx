@@ -16,7 +16,7 @@ import { globalContext } from '../../navigation/appNavigator';
 import { observer } from 'mobx-react-lite';
 import { ClientStore, PartnerStore, TrainerStore } from '../../stores/PeopleStores';
 import ProfilePartners from './ProfilePartners';
-import PageSection from '../PageSection';
+import Card from '../Card';
 import ProfileTrainer from './ProfileTrainer';
 import MatButton from '../MatButton';
 import CheatMealSchedule from '../CheatMealSchedule';
@@ -90,7 +90,7 @@ const SnitchFeed = () => {
 
 
   return (
-    <PageSection title="Snitches" headerRight={<SnitchFreeStreak lastSnitch={lastSnitch} size={35} />}>
+    <Card title="Snitches" headerRight={<SnitchFreeStreak lastSnitch={lastSnitch} size={35} />}>
       <PaginatedList
             loadNextPage={loadNextSnitchPage}
             itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
@@ -101,7 +101,7 @@ const SnitchFeed = () => {
             </View>
           ))}
         />
-    </PageSection>
+    </Card>
   )
 }
 
@@ -132,7 +132,7 @@ const SnitchFeed = () => {
 
           {currentUser === profileOwner || isClientOfCurrentUser || isPartnerOfCurrentUser ?
         
-            <PageSection title="Cheat Meals">
+            <Card title="Cheat Meals">
               {(isClientOfCurrentUser || isCurrentUser) &&
                 <View style={{marginBottom: 10}}>
                   <CheatMealRemaining />
@@ -148,7 +148,7 @@ const SnitchFeed = () => {
                   </View>
                 ))}
               />
-            </PageSection>
+            </Card>
           : null}
 
           {currentUser === profileOwner || isClientOfCurrentUser || isPartnerOfCurrentUser ?

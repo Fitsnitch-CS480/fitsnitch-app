@@ -1,7 +1,7 @@
-import CheatMealEvent from "../../shared/models/CheatMealEvent";
-import { UserCheatMealRequest, UserCheatMealResponse } from "../../shared/models/requests/UserCheatMealRequest";
-import User from "../../shared/models/User";
-import ServerFacade from "../ServerFacade";
+import CheatMealEvent from "../shared/models/CheatMealEvent";
+import { UserCheatMealRequest, UserCheatMealResponse } from "../shared/models/requests/UserCheatMealRequest";
+import User from "../shared/models/User";
+import ServerFacade from "./ServerFacade";
 
 export default class CheatMealService {
 

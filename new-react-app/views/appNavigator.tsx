@@ -4,15 +4,14 @@ import { Button, StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import User from "../shared/models/User";
 // import LocationStore from "../stores/LocationStore";
-// import UseLocationTracking from "../hooks/useLocationTracking";
-// import LogStore from "../stores/LogStore";
-// import {ClientStore, PartnerStore, TrainerStore} from "../stores/PeopleStores";
-// import { PartnerRequestForUserStore, TrainerRequestForUserStore } from "../stores/RequestStores";
+import LogStore from "../stores/LogStore";
+import {ClientStore, PartnerStore, TrainerStore} from "../stores/PeopleStores";
+import { PartnerRequestForUserStore, TrainerRequestForUserStore } from "../stores/RequestStores";
 import { getMetaData, NativeInput } from "../models/NativeInput";
 import SnitchEvent from "../shared/models/SnitchEvent";
 import { LatLonPair } from "../shared/models/CoordinateModels";
 import LogUI from "./LogUI";
-import TabViewNavigator from "./TabViewNavigator";
+import TabViewNavigator from "./homeNavigator";
 import UserSearch from "./UserSearch";
 import NativeModuleService from "../services/NativeModuleService";
 
@@ -24,12 +23,12 @@ type props = {
 export var globalContext: React.Context<{
   currentUser: User,
   // locationStore: LocationStore
-//   logStore: LogStore,
-//   partnerStore: PartnerStore,
-//   clientStore: ClientStore,
-//   trainerStore: TrainerStore,
-//   trainerRequestsForUser: TrainerRequestForUserStore,
-//   partnerRequestsForUser: PartnerRequestForUserStore,
+  logStore: LogStore,
+  partnerStore: PartnerStore,
+  clientStore: ClientStore,
+  trainerStore: TrainerStore,
+  trainerRequestsForUser: TrainerRequestForUserStore,
+  partnerRequestsForUser: PartnerRequestForUserStore,
 }>;
 
 const AppNavigator : React.FC<props> = ({authUser, input}) => {
@@ -41,7 +40,7 @@ const AppNavigator : React.FC<props> = ({authUser, input}) => {
   if (input?.ACTION === 'START_SNITCH') {
     console.log("GOT SNITCH INPUT!!!")
     START_SCREEN = 'GetSnitchedOn';
-    // let newSnitch = getMetaData(input);
+    let newSnitch = getMetaData(input);
 
     snitchProps = {
       trigger: Date.now(),
@@ -59,12 +58,12 @@ const AppNavigator : React.FC<props> = ({authUser, input}) => {
   const gCtx = {
     currentUser: authUser,
     // locationStore: new LocationStore(),
-    // logStore: new LogStore(),
-    // partnerStore: new PartnerStore(authUser),
-    // clientStore: new ClientStore(authUser),
-    // trainerStore: new TrainerStore(authUser),
-    // trainerRequestsForUser: new TrainerRequestForUserStore(authUser),
-    // partnerRequestsForUser: new PartnerRequestForUserStore(authUser)
+    logStore: new LogStore(),
+    partnerStore: new PartnerStore(authUser),
+    clientStore: new ClientStore(authUser),
+    trainerStore: new TrainerStore(authUser),
+    trainerRequestsForUser: new TrainerRequestForUserStore(authUser),
+    partnerRequestsForUser: new PartnerRequestForUserStore(authUser)
   }
 
   globalContext = createContext(gCtx)

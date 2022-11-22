@@ -1,12 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
-import PartnerAssociationService from '../../backend/services/PartnerAssociationService';
-import Card from '../../components/Card';
-import ProfileImage from '../../components/ProfileImage';
-import { globalContext } from '../../navigation/appNavigator';
-import User from '../../shared/models/User';
+import React, { useContext } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import Card from '../../reusable-components/Card';
+import ProfileImage from '../../reusable-components/ProfileImage';
+import { globalContext } from '../../views/appNavigator';
 
 const TITLE = "Your Partners"
 

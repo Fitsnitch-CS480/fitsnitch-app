@@ -2,14 +2,14 @@ import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { profileContext } from './Profile';
-import NameLink from '../NameLink';
-import MatIcon from '../MatIcon';
-import { globalContext } from '../../navigation/appNavigator';
-import ClientTrainerService from '../../backend/services/ClientTrainerService';
+import NameLink from '../../reusable-components/NameLink';
+import MatIcon from '../../reusable-components/MatIcon';
+import { globalContext } from '../../views/appNavigator';
+import ClientTrainerService from '../../services/ClientTrainerService';
 import RelationshipStatus from '../../shared/constants/RelationshipStatus';
 import User from '../../shared/models/User';
-import { MatIconName } from '../MatIconName';
-import MatButton from '../MatButton';
+import { MatIconName } from '../../reusable-components/MatIconName';
+import MatButton from '../../reusable-components/MatButton';
 
 
 type state = {

@@ -1,10 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { Button, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
-// import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import UserDataService from '../services/UserDataService';
+import ProfileImage from '../reusable-components/ProfileImage';
+import { globalContext } from '../views/appNavigator';
 import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import User from '../shared/models/User';
-import { globalContext } from './appNavigator';
 
 type state = {
   results: User[],
@@ -33,49 +35,49 @@ const UserSearch: React.FC = () => {
     setState({...flexibleState})
   }
 
-//   async function loadNewResults() {
-//     Keyboard.dismiss();
-//     if (!state.query) {
-//       updateState({results:[]})
-//       return;
-//     }
-//     updateState({loading:true})
-//     let page = await loadUntilResultsOrEnd(state.query, state.lastPageBreakKey)
-//     updateState({
-//       loading:false,
-//       results: page.records,
-//       lastPageBreakKey: page.pageBreakKey
-//     })
-//   }
+  async function loadNewResults() {
+    Keyboard.dismiss();
+    if (!state.query) {
+      updateState({results:[]})
+      return;
+    }
+    updateState({loading:true})
+    let page = await loadUntilResultsOrEnd(state.query, state.lastPageBreakKey)
+    updateState({
+      loading:false,
+      results: page.records,
+      lastPageBreakKey: page.pageBreakKey
+    })
+  }
 
 
-//   async function loadMoreResults() {
-//     if (!state.query) return;
-//     updateState({loading:true})
-//     let page = await loadUntilResultsOrEnd(state.query, state.lastPageBreakKey)
-//     updateState({
-//       loading:false,
-//       results: state.results.concat(page.records),
-//       lastPageBreakKey: page.pageBreakKey
-//     })
-//   }
+  async function loadMoreResults() {
+    if (!state.query) return;
+    updateState({loading:true})
+    let page = await loadUntilResultsOrEnd(state.query, state.lastPageBreakKey)
+    updateState({
+      loading:false,
+      results: state.results.concat(page.records),
+      lastPageBreakKey: page.pageBreakKey
+    })
+  }
 
   /**
    * Sometimes a page returns 0 results but hasn't looked at all records yet.
    * This should probably be solved on the backend, but for now this method
    * will keep requesting until it has no more pages or finds some results.
    */
-//   async function loadUntilResultsOrEnd(query:string, lastPageBreakKey:any): Promise<UserSearchResponse> {
-//     let page = await new UserDataService().userSearch(new UserSearchRequest(
-//       query, lastPageBreakKey, PAGE_SIZE))
+  async function loadUntilResultsOrEnd(query:string, lastPageBreakKey:any): Promise<UserSearchResponse> {
+    let page = await new UserDataService().userSearch(new UserSearchRequest(
+      query, lastPageBreakKey, PAGE_SIZE))
 
-//     while (page.pageBreakKey && page.records.length === 0) {
-//       page = await new UserDataService().userSearch(new UserSearchRequest(
-//       query, page.pageBreakKey, PAGE_SIZE))
-//     }
+    while (page.pageBreakKey && page.records.length === 0) {
+      page = await new UserDataService().userSearch(new UserSearchRequest(
+      query, page.pageBreakKey, PAGE_SIZE))
+    }
 
-//     return page;
-//   }
+    return page;
+  }
 
   function updateQuery(text:string) {
     updateState({
@@ -87,8 +89,7 @@ const UserSearch: React.FC = () => {
 
   return (
     <>
-	<Text>Search</Text>
-    {/* <View style={styles.searchBarWrapper}>
+    <View style={styles.searchBarWrapper}>
       <TextInput placeholder="Type a user's name" style={styles.searchInput}
         onChangeText={(text)=>updateQuery(text)}></TextInput>
       <TouchableHighlight style={styles.searchIconButton} onPress={loadNewResults} underlayColor="#ccc"><Icon name="search" size={30} /></TouchableHighlight>
@@ -107,7 +108,7 @@ const UserSearch: React.FC = () => {
       :
         <></>
       }
-    </ScrollView> */}
+    </ScrollView>
     </>
   );
 };

@@ -1,6 +1,6 @@
-import PartnerStatusResponse from './../../shared/models/requests/PartnerStatusResponse';
-import User from "../../shared/models/User";
-import ServerFacade from "../ServerFacade";
+import User from "../shared/models/User";
+import ServerFacade from "./ServerFacade";
+import PartnerStatusResponse from "../shared/models/requests/PartnerStatusResponse";
 
 export default class PartnerAssociationService {
     public async getPartnerStatus(partner:User,user:User): Promise<PartnerStatusResponse> {
