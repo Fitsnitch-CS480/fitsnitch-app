@@ -14,6 +14,7 @@ import LogUI from "./LogUI";
 import TabViewNavigator from "./homeNavigator";
 import UserSearch from "./UserSearch";
 import NativeModuleService from "../services/NativeModuleService";
+import GetSnitchedView from "./GetSnitchedView";
 
 type props = {
   authUser: User,
@@ -40,7 +41,6 @@ const AppNavigator : React.FC<props> = ({authUser, input}) => {
   if (input?.ACTION === 'START_SNITCH') {
     console.log("GOT SNITCH INPUT!!!")
     START_SCREEN = 'GetSnitchedOn';
-    let newSnitch = getMetaData(input);
 
     snitchProps = {
       trigger: Date.now(),
@@ -69,8 +69,7 @@ const AppNavigator : React.FC<props> = ({authUser, input}) => {
   globalContext = createContext(gCtx)
 
   const SnitchView : React.FC<any> = (props)=> {
-    // return <GetSnitchedView {...snitchProps} {...props} />
-	return <Text>GetSnitchedView</Text>
+    return <GetSnitchedView {...snitchProps} {...props} />
   }
 
   NativeModuleService.init();
