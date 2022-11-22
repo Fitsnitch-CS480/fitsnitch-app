@@ -1,21 +1,20 @@
 import React, { createContext, useState } from "react";
-// import OtherUserProfile from '../views/OtherUserProfile';
-// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import TabViewNavigator from "./TabViewNavigator";
-// import UserSearch from "../views/UserSearch";
+import OtherUserProfile from './profile/OtherUserProfile';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-// import GetSnitchedView from "../views/GetSnitchedView";
 import User from "../shared/models/User";
 // import LocationStore from "../stores/LocationStore";
 // import UseLocationTracking from "../hooks/useLocationTracking";
-// import LogUI from "../components/LogUI";
 // import LogStore from "../stores/LogStore";
 // import {ClientStore, PartnerStore, TrainerStore} from "../stores/PeopleStores";
 // import { PartnerRequestForUserStore, TrainerRequestForUserStore } from "../stores/RequestStores";
 import { getMetaData, NativeInput } from "../models/NativeInput";
 import SnitchEvent from "../shared/models/SnitchEvent";
 import { LatLonPair } from "../shared/models/CoordinateModels";
+import LogUI from "./LogUI";
+import TabViewNavigator from "./TabViewNavigator";
+import UserSearch from "./UserSearch";
+import NativeModuleService from "../services/NativeModuleService";
 
 type props = {
   authUser: User,
@@ -75,26 +74,29 @@ const AppNavigator : React.FC<props> = ({authUser, input}) => {
 	return <Text>GetSnitchedView</Text>
   }
 
+  NativeModuleService.init();
+
   return (<>
     <globalContext.Provider value={gCtx}>
     
-    {/* <Stack.Navigator initialRouteName={START_SCREEN}>
-      <Stack.Screen name="OtherUserProfile"
-        component={OtherUserProfile}
-        options={({ route }) => {
-          let { profileOwner } = route.params as any;
-          return {
-            headerTitle: `${profileOwner?.firstname}'s Profile` || "Profile"
-          };
-        } } />
-      <Stack.Screen
-        name="GetSnitchedOn"
-        options={{title:"Snitch Warning"}}
-        component={SnitchView} />
+    <Stack.Navigator initialRouteName={START_SCREEN}>
+		<Stack.Screen name="Tabs" component={TabViewNavigator} options={{ headerShown: false }} />
+      	<Stack.Screen name="Search" component={UserSearch} />
+      	<Stack.Screen name="OtherUserProfile"
+        	component={OtherUserProfile}
+			options={({ route }) => {
+			let { profileOwner } = route.params as any;
+			return {
+				headerTitle: `${profileOwner?.firstname}'s Profile` || "Profile"
+			};
+			} } />
+      	<Stack.Screen
+			name="GetSnitchedOn"
+			options={{title:"Snitch Warning"}}
+			component={SnitchView} />
     </Stack.Navigator>
     
-    <UseLocationTracking />
-    <LogUI /> */}
+    <LogUI />
     
     </globalContext.Provider>
   </>);

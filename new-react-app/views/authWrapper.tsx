@@ -1,20 +1,17 @@
 import React, {createContext, useEffect, useState} from "react";
 import AppNavigator from "./appNavigator";
 import { NavigationContainer } from "@react-navigation/native";
-// import Auth from '@aws-amplify/auth';
+import Auth from '@aws-amplify/auth';
 import User from "../shared/models/User";
-// import EncryptedStorage from 'react-native-encrypted-storage';
-// import ServerFacade from '../backend/ServerFacade';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 import { GetSnitchRequest } from "../shared/models/requests/GetSnitchRequest";
 import { CreateSnitchRequest } from "../shared/models/requests/CreateSnitchRequest";
 import { LatLonPair } from "../shared/models/CoordinateModels";
 import RestaurantData from "../shared/models/RestaurantData";
 import { NativeInput } from "../models/NativeInput";
-import NativeModuleService from "../services/NativeModuleService";
 import LoginNavigator from "./auth/loginNavigator";
-
-// console.log(ActivityIndicator)
+import ServerFacade from "../services/ServerFacade";
 
 export const authContext = createContext<{setAuthUser:(user:User|null)=>void,authUser:User|null}>({authUser:null,setAuthUser:()=>{}});
 
@@ -52,32 +49,29 @@ const AuthWrapper : React.FC<{input?: NativeInput}> = ({input}) => {
 
     
     const componentDidMount = async() => {
-        // await loadApp();
-
         try {
-        //   const authentication = await EncryptedStorage.getItem("user_auth");
-        //   // console.log("authentication JSON:", authentication)
-        //   if (authentication){
-        //     let userCognitoData = await Auth.signIn(JSON.parse(authentication).email, JSON.parse(authentication).password)
-        //     //If we get a user back, setCurrentUser in mainNavigator.
-        //     // Use the UserID from Cognito to look up the User in our DB
-        //     let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);   
-        //     if (!user) throw new Error("Could not load user!")
-        //     // Setting the user will trigger a navigation to the rest of the app
-        //     setAuthUser(user);
-        //     setLoading(false)
-        //     console.log("Logged in with previous user:", user)
-        //   }
-        //   else {
-        //     console.log("Could not get previous authentication.")
-        //   }
+          const authentication = await EncryptedStorage.getItem("user_auth");
+          // console.log("authentication JSON:", authentication)
+          if (authentication){
+            let userCognitoData = await Auth.signIn(JSON.parse(authentication).email, JSON.parse(authentication).password)
+            //If we get a user back, setCurrentUser in mainNavigator.
+            // Use the UserID from Cognito to look up the User in our DB
+            let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);   
+            if (!user) throw new Error("Could not load user!")
+            // Setting the user will trigger a navigation to the rest of the app
+            setAuthUser(user);
+            setLoading(false)
+            console.log("Logged in with previous user:", user)
+          }
+          else {
+            console.log("Could not get previous authentication.")
+          }
         }
         catch (error) {
           console.log('Failed persistent login: ', error);
         }
         finally {
           setLoading(false)
-		  NativeModuleService.init();
         }
       }
 
