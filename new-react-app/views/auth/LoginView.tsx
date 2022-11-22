@@ -1,14 +1,14 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Platform, ActivityIndicator, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// import {Auth} from '@aws-amplify/auth';
+import {Auth} from '@aws-amplify/auth';
 import {authContext} from '../authWrapper';
+import ServerFacade from '../../services/ServerFacade';
 // import {check, checkNotifications, PERMISSIONS, RESULTS} from 'react-native-permissions';
 // import Popup from '../components/Popup';
-// import ServerFacade from '../backend/ServerFacade';
-// import User from '../shared/models/User';
-// import EncryptedStorage from 'react-native-encrypted-storage';
-// import NativeModuleService from '../backend/services/NativeModuleService';
+import User from '../../shared/models/User';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import NativeModuleService from '../../services/NativeModuleService';
 
 export default function LoginView() {
 
@@ -17,26 +17,9 @@ export default function LoginView() {
   const [password, onChangePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const [notiAuthPopupShow, setNotiAuthPopupShow] = useState(false);
-  //const [rejectNotis, setRejectNotis] = useState(false);
-  const closePopUp = () => {
-    setNotiAuthPopupShow(false);
-  }
-  
   //Get user from Context from mainNavigator
   const {authUser, setAuthUser} = useContext(authContext);
   const [loading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    // if (Platform.OS == "ios") {
-    //   checkNotifications().then(({status, settings}) => {
-    //     if (status == RESULTS.BLOCKED) {  //user has rejected notifications
-    //       setNotiAuthPopupShow(true);
-    //       //setRejectNotis(true);
-    //     }
-    //   });
-    // }
-  });
 
   const signInFunction = async () => {
     if (loading) return;
@@ -44,48 +27,48 @@ export default function LoginView() {
     
     //If email and password are good, attempt login. Read errors and respond acordingly.
     if (email.length > 4 && password.length > 2) {
-    //   await Auth.signIn(email, password)
-    //     //If we get a user back, setCurrentUser in mainNavigator.
-    //     .then(async (userCognitoData:any) => {
-    //       // Use the UserID from Cognito to look up the User in our DB
-    //       let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
-    //       if (!user) {
-    //         // If the user doesn't exist this is probably the first time they are logging in, so create them.
-    //         user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined)
-    //         await ServerFacade.createUser(user);
-    //       }
+      await Auth.signIn(email, password)
+        //If we get a user back, setCurrentUser in mainNavigator.
+        .then(async (userCognitoData:any) => {
+          // Use the UserID from Cognito to look up the User in our DB
+          let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
+          if (!user) {
+            // If the user doesn't exist this is probably the first time they are logging in, so create them.
+            user = new User(userCognitoData.attributes.sub,userCognitoData.attributes.email,undefined,undefined,undefined)
+            await ServerFacade.createUser(user);
+          }
 
-    //       try {
-    //         await EncryptedStorage.setItem(
-    //           "user_auth", 
-    //           JSON.stringify({
-    //             email,
-    //             password 
-    //           })
-    //         );
-    //         NativeModuleService.getModule().saveUserId(user.userId);
-    //       } catch (error) {
-    //         console.log('Failed to save login: ', error);
-    //       }
+          try {
+            await EncryptedStorage.setItem(
+              "user_auth", 
+              JSON.stringify({
+                email,
+                password 
+              })
+            );
+            NativeModuleService.getModule().saveUserId(user.userId);
+          } catch (error) {
+            console.log('Failed to save login: ', error);
+          }
 
-    //       // Setting the user will trigger a navigation to the rest of the app
-    //       setLoading(false)
-    //       setAuthUser(user);
-    //     })
-    //     //Handle the multiple errors
-    //     .catch((err:any) => {
-    //       if (err.code === 'UserNotConfirmedException') {
-    //         console.log('User not confirmed');
-    //         navigation.navigate('confirmation', {
-    //           email,
-    //         });
-    //       }
-    //       else {
-    //         console.log('Could not log in',err);
-    //         Alert.alert("Could not log in", err.message);
-    //       }
-    //       setLoading(false)
-    //     });
+          // Setting the user will trigger a navigation to the rest of the app
+          setLoading(false)
+          setAuthUser(user);
+        })
+        //Handle the multiple errors
+        .catch((err:any) => {
+          if (err.code === 'UserNotConfirmedException') {
+            console.log('User not confirmed');
+            navigation.navigate('confirmation', {
+              email,
+            });
+          }
+          else {
+            console.log('Could not log in',err);
+            Alert.alert("Could not log in", err.message);
+          }
+          setLoading(false)
+        });
     }
     else {
       Alert.alert("", 'Provide an email and password');

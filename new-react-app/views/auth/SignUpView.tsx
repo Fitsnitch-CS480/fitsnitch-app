@@ -1,10 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import { Button, StyleSheet, Text, View, Image, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
-// import KeyboardAvoidingView from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-// import {Auth} from '@aws-amplify/auth';
+import {Auth} from '@aws-amplify/auth';
 import User from '../../shared/models/User';
-// import ServerFacade from '../backend/ServerFacade';
+import ServerFacade from '../../services/ServerFacade';
 
 
 const SignUpView : React.FC = () => {
@@ -45,30 +44,30 @@ const SignUpView : React.FC = () => {
         newphoneNumber = "+1".concat(phoneNumber)
       }
       
-    //   await Auth.signUp({
-    //     username : email,
-    //     password : password,
-    //     attributes: {
-    //       email : email,
-    //       phone_number : newphoneNumber,
-    //     }
-    //   })
-    //     .then(async (cognitoSignUp) => {
-    //       console.log('Return from signUp information: ', cognitoSignUp);
+      await Auth.signUp({
+        username : email,
+        password : password,
+        attributes: {
+          email : email,
+          phone_number : newphoneNumber,
+        }
+      })
+        .then(async (cognitoSignUp) => {
+          console.log('Return from signUp information: ', cognitoSignUp);
           
-    //       // Create User in DynamoDB too
-    //       let user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber)
-    //       await ServerFacade.createUser(user);
+          // Create User in DynamoDB too
+          let user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber)
+          await ServerFacade.createUser(user);
           
-    //       //Move to confirmation screen, user should get code in email.
-    //       navigation.navigate('confirmation', {
-    //         email
-    //       });
-    //     })
-    //     .catch((err) => {
-    //       console.log('Error when signing up: ', err);
-    //       Alert.alert("Please Try Again", err.message || err);
-    //     });
+          //Move to confirmation screen, user should get code in email.
+          navigation.navigate('confirmation', {
+            email
+          });
+        })
+        .catch((err) => {
+          console.log('Error when signing up: ', err);
+          Alert.alert("Please Try Again", err.message || err);
+        });
     } else {
       setErrorMessage('Provide a valid email and password');
       Alert.alert('Error:', errorMessage);
