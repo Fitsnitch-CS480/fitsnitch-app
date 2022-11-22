@@ -1,10 +1,17 @@
 package com.fitsnitchapp;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
 
 public class MainActivity extends ReactActivity {
+  private static LocationModule locationModule;
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
@@ -26,8 +33,30 @@ public class MainActivity extends ReactActivity {
   }
 
   public static class MainActivityDelegate extends ReactActivityDelegate {
+
+    private Bundle mInitialProps = null;
+    private final
+    @Nullable
+    Activity mActivity;
+
     public MainActivityDelegate(ReactActivity activity, String mainComponentName) {
       super(activity, mainComponentName);
+      this.mActivity = activity;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+      mInitialProps = mActivity.getIntent().getExtras();
+      if (mInitialProps != null) {
+        Log.i("***FIT", "Main Activity: Intent Action: "+mInitialProps.getString("ACTION"));
+      }
+      super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected Bundle getLaunchOptions() {
+      Log.i("***FIT", "Main Activity: LOADING PROPS");
+      return mInitialProps;
     }
 
     @Override
@@ -44,5 +73,26 @@ public class MainActivity extends ReactActivity {
       // More on this on https://reactjs.org/blog/2022/03/29/react-v18.html
       return BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
     }
+  }
+
+
+
+
+  static public void registerLocationModule(LocationModule module) {
+    locationModule = module;
+  }
+
+  static public void deRegisterLocationModule() {
+    locationModule = null;
+  }
+
+  static boolean isOpen() {
+    return locationModule != null;
+  }
+
+  @Override
+  protected void onDestroy() {
+    deRegisterLocationModule();
+    super.onDestroy();
   }
 }

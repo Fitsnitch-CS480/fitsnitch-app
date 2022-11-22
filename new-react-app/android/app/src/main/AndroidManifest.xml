@@ -11,6 +11,7 @@
 
     <!-- Added permissions https://github.com/expo/expo/tree/main/packages/expo-background-fetch -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 	
     <!-- Optional permissions -->
@@ -61,16 +62,16 @@
         </activity> -->
 
 
-        <!-- <service
-            android:name=".LaunchService"
-            android:enabled="true"
-            />
+<!--        <service-->
+<!--            android:name=".LaunchService"-->
+<!--            android:enabled="true"-->
+<!--            />-->
 
         <service
             android:name=".LocationForegroundService"
             android:enabled="true"
             />
 
-        <service android:name=".location_loop.LocationLoopService" /> -->
+        <service android:name=".location_loop.LocationLoopService" />
     </application>
 </manifest>

@@ -15,7 +15,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-// import com.fitsnitchapp.location_loop.LocationLoopService;
+import com.fitsnitchapp.location_loop.LocationLoopService;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -41,33 +41,33 @@ public class LocationModule extends ReactContextBaseJavaModule {
         super(reactContext);
         rContext = reactContext;
         gson = new Gson();
-        // mForegroundServiceIntent = new Intent(rContext, LocationForegroundService.class);
-        Log.i("******FIT", "STARTED LOCATION MODULE");
+        mForegroundServiceIntent = new Intent(rContext, LocationForegroundService.class);
     }
 
 
     @Override
     public void initialize() {
         Log.i("******FIT", "STARTED LOCATION MODULE");
-        // MainActivity.registerLocationModule(this);
+        MainActivity.registerLocationModule(this);
         super.initialize();
     }
 
     // JS Interface Methods
     @ReactMethod
     public void startBackgroundLocation() {
-        // ContextCompat.startForegroundService(rContext, mForegroundServiceIntent);
+        Log.i("******FIT", "startBackgroundLocation");
+        rContext.startForegroundService(mForegroundServiceIntent);
     }
 
     @ReactMethod
     public void stopBackgroundLocation() {
-        // rContext.stopService(mForegroundServiceIntent);
+         rContext.stopService(mForegroundServiceIntent);
     }
 
 
     @ReactMethod
     public void getActiveSnitch(Callback cb) {
-        // cb.invoke(gson.toJson(LocationLoopService.getActiveSnitch()));
+         cb.invoke(gson.toJson(LocationLoopService.getActiveSnitch()));
     };
 
 //    @ReactMethod
@@ -77,13 +77,13 @@ public class LocationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setUsedCheat() {
-        // LocationLoopService.onUsedCheat();
+         LocationLoopService.onUsedCheat();
     };
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @ReactMethod
     public void saveUserId(String id) {
-        // new SettingsManager(rContext).saveItem(SettingsManager.USER_ID, id);
+         new SettingsManager(rContext).saveItem(SettingsManager.USER_ID, id);
     };
 
 
@@ -95,10 +95,10 @@ public class LocationModule extends ReactContextBaseJavaModule {
     @Override
     public Map<String, Object> getConstants() {
         final Map<String, Object> constants = new HashMap<>();
-        // constants.put(CONST_JS_LOCATION_EVENT_NAME, LocationForegroundService.JS_LOCATION_EVENT_NAME);
-        // constants.put(CONST_JS_LOCATION_LAT, LocationForegroundService.JS_LOCATION_LAT_KEY);
-        // constants.put(CONST_JS_LOCATION_LON, LocationForegroundService.JS_LOCATION_LON_KEY);
-        // constants.put(CONST_JS_LOCATION_TIME, LocationForegroundService.JS_LOCATION_TIME_KEY);
+         constants.put(CONST_JS_LOCATION_EVENT_NAME, LocationForegroundService.JS_LOCATION_EVENT_NAME);
+         constants.put(CONST_JS_LOCATION_LAT, LocationForegroundService.JS_LOCATION_LAT_KEY);
+         constants.put(CONST_JS_LOCATION_LON, LocationForegroundService.JS_LOCATION_LON_KEY);
+         constants.put(CONST_JS_LOCATION_TIME, LocationForegroundService.JS_LOCATION_TIME_KEY);
         return constants;
     }
 

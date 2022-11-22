@@ -286,6 +286,9 @@ dependencies {
     
 	// Retrofit HTTP Library
     implementation 'com.squareup.retrofit:retrofit:1.9.0'
+
+    // Google play services for Location
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
 }
 
 if (isNewArchitectureEnabled()) {
