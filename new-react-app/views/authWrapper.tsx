@@ -1,7 +1,6 @@
 import React, {createContext, useEffect, useState} from "react";
-// import LoginNavigator from "./loginNavigator";
-// import AppNavigator from "./appNavigator";
-// import { NavigationContainer } from "@react-navigation/native";
+import AppNavigator from "./appNavigator";
+import { NavigationContainer } from "@react-navigation/native";
 // import Auth from '@aws-amplify/auth';
 import User from "../shared/models/User";
 // import EncryptedStorage from 'react-native-encrypted-storage';
@@ -13,6 +12,7 @@ import { LatLonPair } from "../shared/models/CoordinateModels";
 import RestaurantData from "../shared/models/RestaurantData";
 import { NativeInput } from "../models/NativeInput";
 import NativeModuleService from "../services/NativeModuleService";
+import LoginNavigator from "./auth/loginNavigator";
 
 // console.log(ActivityIndicator)
 
@@ -103,10 +103,9 @@ const AuthWrapper : React.FC<{input?: NativeInput}> = ({input}) => {
     //If user is logged in, go to normal app screens. If not, go to the login screens. 
     return(
         <authContext.Provider value={{authUser, setAuthUser}}>
-        {/* <NavigationContainer>
-            {authUser !== null ? <AppNavigator input={input} authUser={authUser} /> : <LoginNavigator />}
-        </NavigationContainer> */}
-		<ActivityIndicator />
+			<NavigationContainer>
+				{authUser !== null ? <AppNavigator input={input} authUser={authUser} /> : <LoginNavigator />}
+			</NavigationContainer>
         </authContext.Provider>
     )
 }
