@@ -317,10 +317,15 @@ task copyDownloadableDepsToLibs(type: Copy) {
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 
+// RN Icon Fonts
 project.ext.vectoricons = [
     iconFontNames: [ 'MaterialIcons.ttf' ] // Name of the font files you want to copy
 ]
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+// RN encironment variables
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 
 def isNewArchitectureEnabled() {
     // To opt-in for the New Architecture, you can either:

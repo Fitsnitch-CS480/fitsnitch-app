@@ -14,7 +14,7 @@ import CheatMealEvent from '../shared/models/CheatMealEvent';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
 import { LatLonPair } from '../shared/models/CoordinateModels';
 import { GetCheatMealRequest } from '../shared/models/requests/GetCheatMealRequest';
-
+import Config from "react-native-config";
 
 /**
  * Acts as a Facade to the FitSnitch server. All network requests to the server should go through
@@ -22,10 +22,8 @@ import { GetCheatMealRequest } from '../shared/models/requests/GetCheatMealReque
  * All methods should be async. We should use REST (fetch data)
  */
 
-const DEVMODE = false;
 
-const apiBaseUrl = DEVMODE ? "http://10.0.2.2:4000"
-  : "https://13js1r8gt8.execute-api.us-west-2.amazonaws.com/dev"
+const apiBaseUrl = Config.API_URL;
 
 function asRawString(data:string) {
   return `"${data}"`

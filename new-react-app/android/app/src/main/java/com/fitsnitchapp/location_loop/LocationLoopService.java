@@ -20,6 +20,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.util.Consumer;
 
+import com.fitsnitchapp.BuildConfig;
 import com.fitsnitchapp.LatLonPair;
 import com.fitsnitchapp.LocationForegroundService;
 import com.fitsnitchapp.R;
@@ -64,11 +65,13 @@ public class LocationLoopService extends IntentService {
     private static final int NOTIF_ID_SNITCHED = 1;
 
     private static long nextLocationAlarmTime;
-    public static final long IVAL_WARNING = 30000; // 30 seconds
-    public static final long IVAL_LOOP_SHORT = 60000; // 1 minute
-    // public static final long IVAL_LOOP_LONG = 30000;
-    public static final long IVAL_WILL_LEAVE = 30000;
-    public static final long IVAL_WILL_STAY = 60000 * 10; // 10 minutes
+
+    // Default values for PROD (overwritten for DEV below)
+    public static long IVAL_WARNING = 30000; // 30 seconds
+    public static long IVAL_LOOP_SHORT = 60000; // 1 minute
+    // public static long IVAL_LOOP_LONG = 30000;
+    public static long IVAL_WILL_LEAVE = 30000;
+    public static long IVAL_WILL_STAY = 60000 * 10; // 10 minutes
 
     public static final double SIGNIFICANT_RADIUS = 0.00001f;
 
@@ -80,6 +83,14 @@ public class LocationLoopService extends IntentService {
     public LocationLoopService() {
         super(LocationForegroundService.class.getName());
         mGson = new Gson();
+
+        if (BuildConfig.BUILD_TYPE == "debug") {
+            Log.i("***FIT", "Setting short loop times for debug");
+            IVAL_WARNING = 30000; // 30 seconds
+            IVAL_LOOP_SHORT = 30000; // 30 seconds
+            IVAL_WILL_LEAVE = 30000; // 30 seconds
+            IVAL_WILL_STAY = 60000; // 1 minute
+        }
     }
 
     public static SnitchTrigger getActiveSnitch() {
