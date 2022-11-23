@@ -33,6 +33,7 @@ import com.fitsnitchapp.SnitchTrigger;
 //import com.fitsnitchapp.api.CreateSnitchRequest;
 import com.fitsnitchapp.api.ApiService;
 import com.fitsnitchapp.api.CheckLocationRequest;
+import com.fitsnitchapp.api.CreateSnitchRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -280,19 +281,19 @@ public class LocationLoopService extends IntentService {
     static void publishActiveSnitch() {
         String userId = settingsManager.getItem(SettingsManager.USER_ID);
         Log.i("****FIT", "SENDING SNITCH!! "+userId);
-//        CreateSnitchRequest request = new CreateSnitchRequest(userId, activeSnitch.originCoords, activeSnitch.restaurantData);
-//        ApiService.getClient().publishSnitch(request, new Callback<Object>() {
-//            @Override
-//            public void success(Object obj, Response response) {
-//                Log.i("***FIT", "SUCCESS");
-//            }
-//
-//            @Override
-//            public void failure(RetrofitError error) {
-//                Log.i("***FIT", "ERROR Could not send snitch");
-//                Log.i("***FIT", error.getLocalizedMessage());
-//            }
-//        });
+        CreateSnitchRequest request = new CreateSnitchRequest(userId, activeSnitch.originCoords, activeSnitch.restaurantData);
+        ApiService.getClient().publishSnitch(request, new Callback<Object>() {
+            @Override
+            public void success(Object obj, Response response) {
+                Log.i("***FIT", "SUCCESS");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.i("***FIT", "ERROR Could not send snitch");
+                Log.i("***FIT", error.getLocalizedMessage());
+            }
+        });
 
         notificationManager.cancel(NOTIF_ID_WARNING);
         sendSnitchedNotification();

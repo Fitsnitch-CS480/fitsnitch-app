@@ -149,15 +149,7 @@ export default observer(function GetSnitchedView({ navigation, route, trigger }:
 
   let onTimesUp = async () => {
     console.log("CALLED TIMES UP")
-    // TODO notify Android
-    if (AppState.currentState == "background") {  //alert by notification
-        // let localNotification = PushNotificationIOS.addNotificationRequest({
-        //     id: "1",
-        //     body: "You didn't leave the restaurant in time! You've been snitched on!",
-        //     title: "Get Snitched On!",
-        //     category: "UHOH",
-        // });
-    }
+	// TODO: check with NativeModule to learn whether ot not the snitch was published!
     setButtonPopup(false);
     setTimePassed(true)
     // locationStore.onSnitchOrCheat(new LatLonPair(0,0))
@@ -212,11 +204,11 @@ export default observer(function GetSnitchedView({ navigation, route, trigger }:
       <Text></Text>
 
       <View style={styles.buttonContainer}>
-        <Button title="I'll Leave" color='black' onPress={commitToLeave}>Snitch</Button>
+        <Button title="I'll Leave" color='black' onPress={commitToLeave}></Button>
         <Text>   </Text>
             { useCheats ?
-        <Button title="Use A Cheat" color='black' onPress={useCheat}>Cheat Meal</Button>
-            : <></>
+        		<Button title="Use A Cheat" color='black' onPress={useCheat}></Button>
+          		: <></>
             }
       </View>
     
