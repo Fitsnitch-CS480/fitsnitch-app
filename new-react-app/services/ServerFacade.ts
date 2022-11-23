@@ -23,6 +23,11 @@ import Config from "react-native-config";
  */
 
 
+/**
+ * Env vars provided via `react-native-config`.
+ * https://medium.com/armenotech/configure-environment-variables-with-react-native-config-for-ios-and-android-7079c0842d8b
+ * https://www.npmjs.com/package/react-native-config
+ */
 const apiBaseUrl = Config.API_URL;
 
 function asRawString(data:string) {
