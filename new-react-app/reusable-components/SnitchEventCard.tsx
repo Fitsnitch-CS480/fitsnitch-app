@@ -5,7 +5,7 @@ import ServerFacade from '../services/ServerFacade';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import SnitchService from '../services/SnitchService';
 import PopupMenu from './SnitchOptionsDropdown';
 import CheatMealService from '../services/CheatMealService';
@@ -105,10 +105,10 @@ const SnitchEventCard: React.FC<Props> = ({
 };
 
 function getRelativeTime(time:any) {
-  if (moment().diff(time, 'd') >= 1) {
-    return moment(time).format('MMM D, YYYY')
+  if (dayjs().diff(time, 'd') >= 1) {
+    return dayjs(time).format('MMM D, YYYY')
   }
-  return moment(time).fromNow()
+  return dayjs(time).fromNow()
 }
 
 

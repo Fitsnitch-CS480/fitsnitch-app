@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { globalContext } from '../views/appNavigator';
 import ServerFacade from '../services/ServerFacade';
 
@@ -72,10 +72,10 @@ const CheatMealEventCard: React.FC<Props> = ({
 };
 
 function getRelativeTime(time:any) {
-  if (moment().diff(time, 'd') >= 1) {
-    return moment(time).format('MMM D, YYYY')
+  if (dayjs().diff(time, 'd') >= 1) {
+    return dayjs(time).format('MMM D, YYYY')
   }
-  return moment(time).fromNow()
+  return dayjs(time).fromNow()
 }
 
 

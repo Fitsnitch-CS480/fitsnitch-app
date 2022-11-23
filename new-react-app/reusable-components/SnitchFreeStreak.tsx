@@ -2,7 +2,7 @@ import React, {  } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SnitchEvent from '../shared/models/SnitchEvent';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 export type Props = {
   lastSnitch?: SnitchEvent;
@@ -15,7 +15,7 @@ const SnitchFreeStreak: React.FC<Props> = ({
   
   let streak = (() => {
     if (!lastSnitch) return '--';
-    else return moment().diff(moment(lastSnitch.created), 'd')
+    else return dayjs().diff(dayjs(lastSnitch.created), 'd')
   })();
 
   const fireColor = streak === 0 || streak === '--' ? '#999' : 'red'
