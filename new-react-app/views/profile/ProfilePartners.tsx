@@ -33,7 +33,7 @@ const ProfilePartners = observer(() => {
       </View>
 
       <View style={[styles.textWrapper, textOffset]}>
-          <View style={styles.text}>
+          <Text style={styles.text}><>
             <Text>Partner of&nbsp;</Text>
             { namePartners.length === 1 ?
               <NameLink key="namePartner" user={namePartners[0]} />
@@ -65,7 +65,7 @@ const ProfilePartners = observer(() => {
               </>
             }
           <Text>.</Text>
-		  </View>
+		  </></Text>
       </View>
     </View>
 });
