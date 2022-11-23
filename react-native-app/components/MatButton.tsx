@@ -23,7 +23,7 @@ interface Props {
 const MatButton: React.FC<Props> = (props) => {
   const TEXT_COLOR = props.textColor ||  Colors.white;
   const BORDER_COLOR = props.textColor ||  Colors.darkRed;
-  const BG_COLOR = props.color || (props.secondary ? Colors.darkRed : Colors.lightBackground);
+  const BG_COLOR = props.color || (props.secondary ? Colors.darkRed : Colors.background);
   const SIZE = props.size || 14;
   const SHADOW = props.shadow ?? true;
 

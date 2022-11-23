@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingVertical: 10,
     width: '100%',
-    backgroundColor: Colors.lightBackground
+    backgroundColor: Colors.background
   },
   text: {
     color: Colors.white,

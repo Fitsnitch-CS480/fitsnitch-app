@@ -51,7 +51,7 @@ const CheatMealSchedule: React.FC<Props> = ({
           <MatButton 
             style={{width: 40}} 
             textColor={Colors.white}
-            color={Colors.lightBackground}
+            color={Colors.background}
             secondary 
             loading={working}
             icon={editing? 'check' : 'edit'} 

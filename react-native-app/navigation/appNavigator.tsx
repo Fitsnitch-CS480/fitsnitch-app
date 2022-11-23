@@ -88,7 +88,7 @@ const AppNavigator : React.FC<props> = ({authUser, input}) => {
             backgroundColor: Colors.background,
           },
           headerTitleStyle: {
-            color: Colors.red
+            color: Colors.white
           },
           headerTintColor: Colors.white
         }} />

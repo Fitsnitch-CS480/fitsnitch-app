@@ -13,7 +13,7 @@ const PageSection: React.FC<Props> = ({title,headerRight,footer,children}) => {
   return (
     <View style={styles.container}>
       <View style={styles.wrap}>
-        <View style={[styles.headerWrapper, styles.section]}>
+        <View style={styles.headerWrapper}>
           <Text style={styles.headerText}>{title}</Text>
           {headerRight}
         </View>
@@ -41,8 +41,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   wrap: {
-    backgroundColor: Colors.lightBackground,
-    borderRadius: 20,
+    backgroundColor: Colors.background,
+    borderRadius: 10,
+    borderColor: Colors.border,
+    borderWidth: 2,
   },
   section: {
     paddingBottom: spacing
@@ -52,10 +54,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: Colors.darkRed,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
+    backgroundColor: Colors.lightBackground,
+    borderBottomColor: Colors.border,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomWidth: 2,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   headerText: {
     fontSize: 20,
