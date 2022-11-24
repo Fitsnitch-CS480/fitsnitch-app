@@ -27,7 +27,7 @@ const CurrentClients = observer(() => {
   if (clients.length === 0) {
     return (
       <PageSection title={TITLE}>
-        <Text>{T.people.client.noClient}</Text>
+        <Text style={styles.text}>{T.people.client.noClient}</Text>
       </PageSection>
     )
   }
