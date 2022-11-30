@@ -1,7 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
+import React, { useContext } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import Colors from '../../assets/constants/colors';
+import T from '../../assets/constants/text';
 import PageSection from '../../components/PageSection';
 import ProfileImage from '../../components/ProfileImage';
 import { globalContext } from '../../navigation/appNavigator';
@@ -17,7 +19,7 @@ const CurrentTrainer = observer(() => {
   if (trainerStore.loading) {
     return (
     <PageSection title={TITLE}>
-      <ActivityIndicator color="#00bbff" size={30} />
+      <ActivityIndicator color={Colors.red} size={30} />
     </PageSection>
     )
   }
@@ -27,10 +29,10 @@ const CurrentTrainer = observer(() => {
     { trainer ?
         <View style={styles.resultRow} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: trainer})}}>
           <ProfileImage user={trainer} size={30}></ProfileImage>
-          <Text style={{marginLeft:10, fontSize: 15}}>{trainer.firstname} {trainer.lastname}</Text>
+          <Text style={styles.text}>{trainer.firstname} {trainer.lastname}</Text>
         </View>
         :
-          <Text>You don't have a trainer yet!</Text>
+          <Text style={styles.text}>{T.people.trainer.noTrainer}</Text>
       }
       </PageSection>
   );
@@ -41,6 +43,11 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  text: {
+    marginLeft: 10, 
+    fontSize: 15,
+    color: Colors.white
   }
 });
 

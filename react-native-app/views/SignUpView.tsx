@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
-// import KeyboardAvoidingView from 'react-native'
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Keyboard, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
 import User from '../shared/models/User';
 import ServerFacade from '../backend/ServerFacade';
-
+import Colors from '../assets/constants/colors';
+import T from '../assets/constants/text';
 
 const SignUpView : React.FC = () => {
 
@@ -67,48 +67,47 @@ const SignUpView : React.FC = () => {
         })
         .catch((err) => {
           console.log('Error when signing up: ', err);
-          Alert.alert("Please Try Again", err.message || err);
+          Alert.alert(T.error.tryAgain, err.message || err);
         });
     } else {
-      setErrorMessage('Provide a valid email and password');
+      setErrorMessage(T.error.provideValidEmailPassword);
       Alert.alert('Error:', errorMessage);
     }
   };
 
   return (
-      <ScrollView>
+    <ScrollView style={styles.screen}>
       <View style={styles.container}>
 
-      <View style={styles.image}>
         <Image
-          source={require("../assets/images/image_bnui..png")}
+          source={require("../assets/images/main_logo.png")}
           resizeMode="contain"
           style={styles.image}
         />
-      </View>
-      
-
-      {/* TODO add validation and requirements for all fields!
-          Phone number field accepts '2082' which it should not
-          First and Last name need to be required
-      */}
-      <View style={styles.materialUnderlineTextboxStack}>
-        <TextInput placeholder="Email" onChangeText={onChangeEmail} ></TextInput>
-        <TextInput placeholder="Password" secureTextEntry onChangeText={onChangePassword}></TextInput>
-        <TextInput placeholder="Phone Number"  keyboardType='numeric' onChangeText={onChangePhoneNumber}></TextInput>
-        <TextInput placeholder="First Name"  onChangeText={onChangeFirstName}></TextInput>
-        <TextInput placeholder="Last Name" onChangeText={onChangeLastName}></TextInput>
-      </View>
-
-      <View style={styles.materialButtonPrimary}>
-        <Button title="Sign Up" onPress={signUpFunction}></Button>
-      </View>
-      
         
-      {<Text style={styles.defaultText} onPress={() => navigation.navigate('login')}>Already have an account? Log In</Text>} 
-      
-      
-    </View>
+        {/* TODO add validation and requirements for all fields!
+            Phone number field accepts '2082' which it should not
+            First and Last name need to be required
+        */}
+        <View style={styles.materialUnderlineTextboxStack}>
+          <TextInput placeholder={T.signUp.firstName} onChangeText={onChangeFirstName} style={styles.textBox}></TextInput>
+          <TextInput placeholder={T.signUp.lastName} onChangeText={onChangeLastName} style={styles.textBox}></TextInput>
+          <TextInput placeholder={T.signUp.email} onChangeText={onChangeEmail} style={styles.textBox} ></TextInput>
+          <TextInput placeholder={T.signUp.password} secureTextEntry onChangeText={onChangePassword} style={styles.textBox}></TextInput>
+          <TextInput placeholder={T.signUp.phoneNumber} keyboardType='numeric' onChangeText={onChangePhoneNumber} style={styles.textBox}></TextInput>
+        </View>
+
+        <View style={styles.materialButtonPrimary}>
+          <Button color={Colors.red} title={T.signUp.title} onPress={signUpFunction}></Button>
+        </View>
+        
+        <View style={styles.textContainer}>
+          <Text style={styles.alreadyHaveText}>{T.signUp.alreadyHaveAccount}</Text>
+          <Text style={styles.logInText} onPress={() => navigation.navigate('login')}>{T.logIn.title}</Text>
+        </View>
+        
+        
+      </View>
     </ScrollView>
   );
 };
@@ -117,35 +116,55 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  screen: {
+    backgroundColor: Colors.background
   },
   materialButtonPrimary: {
     width: 289,
-    paddingTop: 10,
     flex: 1,
-    marginVertical: 20
+    marginVertical: 20,
   },
-  defaultText: {
+  textContainer: {
+    flex: 2,
+    flexDirection: 'row'
+  },
+  alreadyHaveText: {
     fontFamily: "roboto-regular",
-    color: "#121212",
-    textAlign: 'center',
-    flex: 1
+    fontSize: 15,
+    color: Colors.white,
+    marginRight: 5,
+  },
+  logInText: {
+    fontFamily: "roboto-regular",
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: Colors.red,
   },
   signUpOAuthText: {
     fontFamily: "roboto-regular",
-    color: "#121212",
-    marginLeft: 6,
-    flex: 1
+    color: Colors.white,
+    marginRight: 6,
   },
   materialUnderlineTextboxStack: {
     width: 289,
-    flex: 5
+    flex: 5,
+  },
+  textBox: {
+    backgroundColor: Colors.white,
+    color: Colors.charcoal,
+    borderRadius: 50,
+    marginVertical: 5,
+    paddingLeft: 20,
+    height: 40
   },
   image: {
     height: 200,
     width: 200,
     flex: 5,
-    marginTop: 20
+    marginTop: 20,
+    marginBottom: 10
   }
 });
 

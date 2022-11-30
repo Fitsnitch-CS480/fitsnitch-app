@@ -1,7 +1,6 @@
-import React, { Component, ReactNode } from "react";
-import { StyleSheet, TouchableOpacity, Text, View } from "react-native";
+import React, { ReactNode } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import Colors from '../assets/constants/colors';
-
 
 interface Props{
   title: string,
@@ -12,17 +11,13 @@ interface Props{
 
 const PageSection: React.FC<Props> = ({title,headerRight,footer,children}) => {
   return (
-    <View
-      style={styles.container}
-    >
-      <View
-        style={styles.sectionWrapper}
-      >
-        <View style={[styles.headerWrapper, styles.section]}>
+    <View style={styles.container}>
+      <View style={styles.wrap}>
+        <View style={styles.headerWrapper}>
           <Text style={styles.headerText}>{title}</Text>
           {headerRight}
         </View>
-        <View style={[styles.bodyWrapper, styles.section]}>
+        <View style={[styles.bodyWrapper, styles.section, styles.sectionWrapper]}>
           {children}
         </View>
         { footer && <View style={[styles.footerWrapper, styles.section]}>{footer}</View> }
@@ -40,14 +35,16 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   sectionWrapper: {
-    backgroundColor: '#fff',
-    borderColor: '#aaa',
-    borderRadius: 3,
-    borderWidth: StyleSheet.hairlineWidth,
     paddingLeft: spacing,
     paddingRight: spacing,
     paddingTop: spacing,
     width: '100%',
+  },
+  wrap: {
+    backgroundColor: Colors.background,
+    borderRadius: 10,
+    borderColor: Colors.border,
+    borderWidth: 2,
   },
   section: {
     paddingBottom: spacing
@@ -56,12 +53,19 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: Colors.lightBackground,
+    borderBottomColor: Colors.border,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomWidth: 2,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
   headerText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: Colors.red
+    color: Colors.white
   },
   bodyWrapper: {
   },

@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import React, { useContext, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import SnitchService from '../backend/services/SnitchService';
 import PageSection from '../components/PageSection';
 import SnitchEventCard from '../components/SnitchEventCard';
@@ -10,10 +9,9 @@ import User from '../shared/models/User';
 import PaginatedList from '../components/PaginatedList';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import { useNavigation } from '@react-navigation/native';
-import { LatLonPair } from '../shared/models/CoordinateModels';
 import { globalContext } from '../navigation/appNavigator';
-import { string } from '@hapi/joi';
 import SnitchFreeStreak from '../components/SnitchFreeStreak';
+import Colors from '../assets/constants/colors';
 
 const PAGE_SIZE = 10
 
@@ -63,7 +61,7 @@ const SnitchesView: React.FC = () => {
 
 
   return (
-  <ScrollView style={{height: '100%'}}>
+  <ScrollView style={styles.screen}>
     <View style={styles.container}>
       <PageSection title='Snitch-Free Streak'>
         <SnitchFreeStreak lastSnitch={lastSnitch} size={100} />
@@ -96,27 +94,9 @@ const SnitchesView: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  streakWrapper: {
-    position: "relative",
-    height: 80,
-  },
-  streakChild: {
-    position: "absolute",
-  },
-  streakFire: {
-    left: 0,
-    bottom: 0
-  },
-  streakQty: {
-    left: 60,
-    fontSize: 100,
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    bottom: -20,
-  },
-  streakUnit: {
-    fontSize: 30,
-    marginLeft: 5
+  screen: {
+    backgroundColor: Colors.background,
+    height: '100%',
   },
   container: {
     flex: 1,

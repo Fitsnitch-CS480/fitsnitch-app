@@ -4,6 +4,8 @@ import ProfileImage from '../ProfileImage';
 import { observer } from 'mobx-react-lite';
 import { profileContext } from './Profile';
 import NameLink from '../NameLink';
+import T from '../../assets/constants/text';
+import Colors from '../../assets/constants/colors';
 
 const NUM_IMAGES = 4;
 const IMAGE_SIZE = 35;
@@ -34,7 +36,7 @@ const ProfilePartners = observer(() => {
 
       <View style={[styles.textWrapper, textOffset]}>
           <Text style={styles.text}>
-            Partner of&nbsp;
+            {T.people.partner.partnerOf}
             { namePartners.length === 1 ?
               <NameLink key="namePartner" user={namePartners[0]} />
 
@@ -100,6 +102,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
+    color: Colors.white,
   },
 });
 
