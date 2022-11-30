@@ -6,6 +6,7 @@ import {Picker} from '@react-native-picker/picker';
 import UserDataService from '../backend/services/UserDataService';
 import MatButton from './MatButton';
 import Colors from '../assets/constants/colors';
+import T from '../assets/constants/text';
 
 export type Props = {
   profileOwner: User,
@@ -45,8 +46,16 @@ const CheatMealSchedule: React.FC<Props> = ({
   return(
     <View>
       <View style={styles.header}>
-        <Text style={styles.title}>Cheat Meal Schedule</Text>
-        {canEdit && <MatButton style={{width: 40}} secondary loading={working} icon={editing? 'check' : 'edit'} onPress={toggleEdit} /> }
+        <Text style={styles.title}>{T.cheatmeal.schedule}</Text>
+        {canEdit && 
+          <MatButton 
+            style={{width: 40}} 
+            textColor={Colors.white}
+            color={Colors.background}
+            secondary 
+            loading={working}
+            icon={editing? 'check' : 'edit'} 
+            onPress={toggleEdit} /> }
       </View>
       <View style={styles.container}>
         { editing ?
@@ -63,7 +72,7 @@ const CheatMealSchedule: React.FC<Props> = ({
             buttonLeftText="—" // A longer version of -
             skin={"modern"}
           />
-          <Text style={styles.label}>every</Text>
+          <Text style={styles.label}>{T.cheatmeal.every}</Text>
           <Picker
             style={styles.picker}
             selectedValue={period}
@@ -76,7 +85,7 @@ const CheatMealSchedule: React.FC<Props> = ({
           </Picker>
           </>
         :
-          <Text style={{fontSize:18}}>{period ? `${quantity} every ${period}` : 'No schedule'}</Text>
+          <Text style={styles.summary}>{period ? `${quantity} every ${period}` : 'No schedule'}</Text>
         }
       </View>
     </View>
@@ -91,7 +100,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.charcoal,
+    color: Colors.white,
   },
   container: {
     display: 'flex',
@@ -102,13 +111,19 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     marginLeft: 10,
-    color: 'black'
+    color: Colors.white
+  },
+  summary: {
+    fontSize: 18,
+    color: Colors.white,
   },
   spinner: {
     flex: 0.5,
   },
   picker: {
-    flex: 0.5
+    flex: 0.5,
+    backgroundColor: Colors.white,
+    marginLeft: 10,
   }
 });
 

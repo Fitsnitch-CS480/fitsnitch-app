@@ -1,12 +1,14 @@
 import React, {useContext} from 'react';
 import {authContext} from '../navigation/mainNavigator';
 import {Auth} from '@aws-amplify/auth';
-import { Alert, Button, NativeModules, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { globalContext } from '../navigation/appNavigator';
 import { observer } from 'mobx-react-lite';
 import { LatLonPair } from '../shared/models/CoordinateModels';
 import NativeModuleService from '../backend/services/NativeModuleService';
+import T from '../assets/constants/text';
+import Colors from '../assets/constants/colors';
 
 const SettingsView = observer(({navigation}:any) => {
   //Get user from Context from mainNavigator
@@ -15,7 +17,7 @@ const SettingsView = observer(({navigation}:any) => {
 
   let logout = async () => {
     await Auth.signOut()
-    .then(async async => {
+    .then(async () => {
       setAuthUser(null);
       try {
         await EncryptedStorage.removeItem("user_auth");
@@ -33,12 +35,11 @@ const SettingsView = observer(({navigation}:any) => {
   }
 
   const promptLogout = () => {
-    Alert.alert("Log out of this account?", undefined, [
-      { text: "Cancel" },
-      { text: "Logout", onPress: logout },
+    Alert.alert(T.settings.logoutPrompt, undefined, [
+      { text: T.settings.cancel },
+      { text: T.settings.logout, onPress: logout },
     ]);
   }
-
   
   function demoSnitch() {
     navigation.navigate('GetSnitchedOn', { 
@@ -49,13 +50,15 @@ const SettingsView = observer(({navigation}:any) => {
     })
   }
 
-
-
   return (
-    <ScrollView>
+    <ScrollView style={styles.screen}>
       <View style={styles.listItem}>
-        <Text style={styles.optionTitle}>Show debug logs</Text>
-        <Switch value={logStore.visible} onValueChange={()=>logStore.setVisibility(!logStore.visible)} />
+        <Text style={styles.optionTitle}>{T.settings.debug}</Text>
+        <Switch 
+          value={logStore.visible} 
+          onValueChange={()=>logStore.setVisibility(!logStore.visible)}
+          thumbColor={Colors.red} 
+          trackColor={{ true: Colors.darkRed, false: Colors.white }} />
       </View>
 
       {/* <View style={styles.listItem} onTouchEnd={demoSnitch}>
@@ -63,7 +66,7 @@ const SettingsView = observer(({navigation}:any) => {
       </View> */}
 
       <View style={styles.listItem} onTouchEnd={promptLogout}>
-        <Text style={styles.optionTitle}>Logout</Text>
+        <Text style={styles.optionTitle}>{T.settings.logout}</Text>
       </View>
 
     </ScrollView>
@@ -71,17 +74,21 @@ const SettingsView = observer(({navigation}:any) => {
 });
 
 const styles = StyleSheet.create({
+  screen: {
+    backgroundColor: Colors.background
+  },
   listItem: {
     padding: 15,
     borderTopWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#fff',
+    borderColor: Colors.background,
+    backgroundColor: Colors.lightBackground,
     flexDirection: 'row',
     alignItems: 'center'
   },
   optionTitle: {
     fontSize: 16,
-    flexGrow: 1
+    flexGrow: 1,
+    color: Colors.white
   }
 });
 

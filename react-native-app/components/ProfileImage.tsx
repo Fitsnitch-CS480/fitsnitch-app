@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Colors from '../assets/constants/colors';
 import User from '../shared/models/User';
 
 export type Props = {
@@ -36,15 +37,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 1000,
-    borderWidth: 1,
-    borderColor: '#222',
     overflow: 'hidden',
-    backgroundColor: "#555"
+    backgroundColor: Colors.white
   },
   initials: {
     fontWeight: 'bold',
     textTransform: 'uppercase',
-    color: "white"
+    color: Colors.charcoal
   },
 })
 

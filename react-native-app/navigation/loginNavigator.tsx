@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginView from "../views/LoginView";
 import SignUpView from "../views/SignUpView";
 import Confirmation from "../views/Confirmation";
-import { NavigationContainer } from '@react-navigation/native';
 
 const stackNavigator = createNativeStackNavigator();
 

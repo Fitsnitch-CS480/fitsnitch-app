@@ -22,6 +22,7 @@ import MatButton from '../MatButton';
 import CheatMealSchedule from '../CheatMealSchedule';
 import SnitchFreeStreak from '../SnitchFreeStreak';
 import CheatMealRemaining from '../CheatMealRemaining';
+import Colors from '../../assets/constants/colors';
 
 const PAGE_SIZE = 5;
 
@@ -115,7 +116,7 @@ const SnitchFeed = () => {
             <Text numberOfLines={1} style={styles.profileName}>{profileOwner.firstname || "Test"} {profileOwner.lastname || ""}</Text>
             <View style={{flexDirection: 'row'}}>
               { isCurrentUser ? (
-                <MatButton secondary title="Edit Profile" /> // TODO implement profile settings
+                <MatButton color={Colors.lightBackground} textColor={Colors.white} title="Edit Profile" /> // TODO implement profile settings
               ) : (
                 <PartnerAssociationRequestButton profileOwner={profileOwner} />
               )}
@@ -171,26 +172,18 @@ const SIZE = 45;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.background
   },
   header: {
     flex: 1,
     maxHeight: 150,
     position: 'relative',
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: Colors.darkRed,
     paddingVertical: 20,
     paddingHorizontal: 15,
     textAlign: 'left',
     alignItems: 'center',
-    borderColor: 'black',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   headerDetails: {
     display: 'flex',
@@ -201,11 +194,11 @@ const styles = StyleSheet.create({
   },
   profileName: {
     flex: 2,
-    backgroundColor:'white',
+    backgroundColor: Colors.darkRed,
     fontSize: 28,
     lineHeight: 28,
     fontWeight: 'bold',
-    color: '#333'
+    color: Colors.white
   },
   profileDetails: {
     padding: 10,
@@ -236,4 +229,3 @@ const styles = StyleSheet.create({
 });
 
 export default Profile;
-
