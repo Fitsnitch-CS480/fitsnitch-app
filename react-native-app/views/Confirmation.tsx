@@ -85,7 +85,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   text: {
-    color: Colors.white
+    color: Colors.white,
+    marginBottom: 5
   }
 });
 
