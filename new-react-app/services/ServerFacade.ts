@@ -116,17 +116,6 @@ class ExecutionError<T> extends ExecutionResult<T> {
     return response;
   }
 
-  // TODO - Remove old methods
-  // static async reportSnitch(){
-  //   const response = await executeRequest("/snitch-on-user", null);
-  // }
-
-  // static async pushSnitchNotification(){
-  //   let listString = ["F3E278BA-9EDA-449B-B5F6-3AC6440ACB6F"];
-  //   let response = await executeRequest("/push-snitch-notification", listString);
-  //   return response;
-  // }
-
   static async snitchOnUser(snitch: CreateSnitchRequest){
     let res = await executeRequest("/snitch-on-user", snitch, true);
   }
