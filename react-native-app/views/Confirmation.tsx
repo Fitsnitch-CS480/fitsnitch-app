@@ -7,6 +7,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Colors from '../assets/constants/colors';
+import SignUpView from './SignUpView';
+import T from '../assets/constants/text';
 
 type TProps = {
   route: any;
@@ -46,7 +48,7 @@ const Confirmation : React.FC<TProps> = ({route}) => {
   return (
     <View style={styles.container}>
       <View style={styles.box}>
-        <Text style={styles.text}>Check your email for the confirmation code.</Text>
+        <Text style={styles.text}>{T.signUp.checkEmail}</Text>
          <Input
             value={authCode}
             placeholder="123456"
@@ -54,8 +56,8 @@ const Confirmation : React.FC<TProps> = ({route}) => {
           />
         <Text style={styles.text}>{error}</Text>
         <View style={styles.buttons}>
-          <Button  onPress={() => resendConfirmationCode()}  backgroundColor={'red'}>Resend Code</Button>
-          <Button onPress={() => confirmSignUp()} backgroundColor={'black'}>Confirm Sign Up</Button>
+          <Button  onPress={() => resendConfirmationCode()}  backgroundColor={Colors.red}>Resend Code</Button>
+          <Button onPress={() => confirmSignUp()} backgroundColor={Colors.background}>{T.signUp.confirm}</Button>
         </View>
       </View>
     </View>

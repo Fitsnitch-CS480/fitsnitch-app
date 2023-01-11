@@ -6,7 +6,7 @@ import User from '../shared/models/User';
 import ServerFacade from '../backend/ServerFacade';
 import Colors from '../assets/constants/colors';
 import T from '../assets/constants/text';
-import { isEmpty } from '@aws-amplify/core';
+import {isEmpty} from 'lodash';
 
 const SignUpView : React.FC = () => {
 
@@ -69,7 +69,7 @@ const SignUpView : React.FC = () => {
     }
 
     if(inputPhoneNumber.length > 0 && inputPhoneNumber.length < 11){
-      setPhoneNumberError('Invalid phone number');
+      setPhoneNumberError(T.error.invalidPhone);
       if(!disableSignUp){
         setDisableSignUp(true);
       }
@@ -165,10 +165,6 @@ const SignUpView : React.FC = () => {
           style={styles.image}
         />
         
-        {/* TODO add validation and requirements for all fields!
-            Phone number field accepts '2082' which it should not
-            First and Last name need to be required
-        */}
         <View style={styles.materialUnderlineTextboxStack}>
           <TextInput placeholder={T.signUp.firstName} onChangeText={onChangeFirstName} style={styles.textBox}></TextInput>
           {!isEmpty(firstNameError) && <Text style={styles.validation}>{firstNameError}</Text>}
@@ -252,10 +248,9 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   validation: {
-    color: 'red', 
+    color: Colors.red, 
     flex: 1,
     fontSize: 12,
-    // marginTop: 7,
   }
 });
 
