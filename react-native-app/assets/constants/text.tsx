@@ -8,6 +8,8 @@ const T = {
         firstName: "First Name",
         lastName: "Last Name",
         alreadyHaveAccount: "Already have an account?",
+        confirm: "Confirm Sign Up",
+        checkEmail: "Check your email for the confirmation code.",
     },
     logIn: {
         title: "Log In",
@@ -18,6 +20,7 @@ const T = {
         provideEmailPassword: "Provide an email and password",
         provideValidEmailPassword: "Provide a valid email and password",
         tryAgain: "Please Try Again",
+        invalidPhone: "Invalid phone number",
     },
     settings: {
         logout: "Logout",

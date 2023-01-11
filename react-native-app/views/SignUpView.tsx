@@ -6,17 +6,24 @@ import User from '../shared/models/User';
 import ServerFacade from '../backend/ServerFacade';
 import Colors from '../assets/constants/colors';
 import T from '../assets/constants/text';
+import {isEmpty} from 'lodash';
 
 const SignUpView : React.FC = () => {
 
   const navigation = useNavigation<any>();
-  const [email, onChangeEmail] = useState('');
-  const [password, onChangePassword] = useState('');
-  const [phoneNumber, onChangePhoneNumber] = useState('');
-  const [firstName, onChangeFirstName] = useState('');
-  const [lastName, onChangeLastName] = useState('');
+  let [email, setEmail] = useState('');
+  let [password, setPassword] = useState('');
+  let [phoneNumber, setPhoneNumber] = useState('');
+  let [firstName, setFirstName] = useState('');
+  let [lastName, setLastName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [hideView, setHideView] = useState(true);
+  const [phoneNumberError, setPhoneNumberError] = useState('');
+  const [firstNameError, setfirstNameError] = useState('');
+  const [lastNameError, setlastNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [disableSignUp, setDisableSignUp] = useState(true);
   
 
 
@@ -34,12 +41,77 @@ const SignUpView : React.FC = () => {
     };
   }, []);
 
+  const onChangeEmail =(inputEmail:string) => {
+    if(isEmpty(inputEmail)){
+      setEmailError('Required');
+      setDisableSignUp(true);
+    }else{
+      setEmail(inputEmail);
+      setEmailError('');
+      enableSignUpButton();
+    }
+  }
+  const onChangePassword =(inputPassword:string) => {
+    if(isEmpty(inputPassword)){
+      setPasswordError('Required');
+      setDisableSignUp(true);
+    } else {
+      setPassword(inputPassword);
+      setPasswordError('');
+      enableSignUpButton();
+    }
+  }
+  
+  const onChangePhoneNumber = (inputPhoneNumber:any) => {
+    if (!inputPhoneNumber.includes("+1"))
+    {
+      inputPhoneNumber = "+1".concat(inputPhoneNumber)
+    }
+
+    if(inputPhoneNumber.length > 0 && inputPhoneNumber.length < 11){
+      setPhoneNumberError(T.error.invalidPhone);
+      if(!disableSignUp){
+        setDisableSignUp(true);
+      }
+    } else {
+      setPhoneNumberError('');
+      setPhoneNumber(inputPhoneNumber);
+      enableSignUpButton();
+    }
+  }
+
+  const onChangeFirstName = (inputFirstName:string) => {
+
+    if(isEmpty(inputFirstName)){
+      setfirstNameError('Required');
+      setDisableSignUp(true);
+    } else {
+      setfirstNameError('');
+      setFirstName(inputFirstName);
+      enableSignUpButton();
+    }
+
+    firstName = inputFirstName;
+  }
+
+  const onChangeLastName = (inputLastName:string) => {
+
+    if(isEmpty(inputLastName)){
+      setlastNameError('Required');
+      setDisableSignUp(true);
+    } else {
+      setlastNameError('');
+      setLastName(inputLastName);
+      enableSignUpButton();
+    }
+  }
+
   const signUpFunction = async () => {
         
     if (email.length > 4 && password.length > 2) {
-      let newphoneNumber = ""
+      let newphoneNumber = phoneNumber;
       //may need to take this out of the signUpFunction since it's not doing the change immediatly as the Auth.signUp gets called
-      if (!phoneNumber.includes("+1"))
+      if (!isEmpty(newphoneNumber) && !newphoneNumber.includes("+1"))
       {
         //onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
         newphoneNumber = "+1".concat(phoneNumber)
@@ -62,7 +134,9 @@ const SignUpView : React.FC = () => {
           
           //Move to confirmation screen, user should get code in email.
           navigation.navigate('confirmation', {
-            email
+            email,
+            password,
+            newphoneNumber
           });
         })
         .catch((err) => {
@@ -75,6 +149,12 @@ const SignUpView : React.FC = () => {
     }
   };
 
+  const enableSignUpButton = () => {
+    if(!isEmpty(firstName) && !isEmpty(lastName) && !isEmpty(email) && !isEmpty(password) && isEmpty(phoneNumberError)){
+      setDisableSignUp(false);
+    }
+  }
+
   return (
     <ScrollView style={styles.screen}>
       <View style={styles.container}>
@@ -85,20 +165,21 @@ const SignUpView : React.FC = () => {
           style={styles.image}
         />
         
-        {/* TODO add validation and requirements for all fields!
-            Phone number field accepts '2082' which it should not
-            First and Last name need to be required
-        */}
         <View style={styles.materialUnderlineTextboxStack}>
           <TextInput placeholder={T.signUp.firstName} onChangeText={onChangeFirstName} style={styles.textBox}></TextInput>
+          {!isEmpty(firstNameError) && <Text style={styles.validation}>{firstNameError}</Text>}
           <TextInput placeholder={T.signUp.lastName} onChangeText={onChangeLastName} style={styles.textBox}></TextInput>
+          {!isEmpty(lastNameError) && <Text style={styles.validation}>{lastNameError}</Text>}
           <TextInput placeholder={T.signUp.email} onChangeText={onChangeEmail} style={styles.textBox} ></TextInput>
+          {!isEmpty(emailError) && <Text style={styles.validation}>{emailError}</Text>}
           <TextInput placeholder={T.signUp.password} secureTextEntry onChangeText={onChangePassword} style={styles.textBox}></TextInput>
+          {!isEmpty(passwordError) && <Text style={styles.validation}>{passwordError}</Text>}
           <TextInput placeholder={T.signUp.phoneNumber} keyboardType='numeric' onChangeText={onChangePhoneNumber} style={styles.textBox}></TextInput>
+          {!isEmpty(phoneNumberError) && <Text style={styles.validation}>{phoneNumberError}</Text>}
         </View>
 
         <View style={styles.materialButtonPrimary}>
-          <Button color={Colors.red} title={T.signUp.title} onPress={signUpFunction}></Button>
+          <Button disabled={disableSignUp} color={Colors.red} title={T.signUp.title} onPress={signUpFunction}></Button>
         </View>
         
         <View style={styles.textContainer}>
@@ -165,6 +246,11 @@ const styles = StyleSheet.create({
     flex: 5,
     marginTop: 20,
     marginBottom: 10
+  },
+  validation: {
+    color: Colors.red, 
+    flex: 1,
+    fontSize: 12,
   }
 });
 
