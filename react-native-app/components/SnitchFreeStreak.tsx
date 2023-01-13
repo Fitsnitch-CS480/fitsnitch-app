@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import moment from 'moment';
+import Colors from '../assets/constants/colors';
 
 export type Props = {
   lastSnitch?: SnitchEvent;
@@ -18,7 +19,7 @@ const SnitchFreeStreak: React.FC<Props> = ({
     else return moment().diff(moment(lastSnitch.created), 'd')
   })();
 
-  const fireColor = streak === 0 || streak === '--' ? '#999' : 'red'
+  const fireColor = streak === 0 || streak === '--' ? Colors.white : Colors.red
 
   const styles = StyleSheet.create({
     streakWrapper: {
@@ -37,6 +38,7 @@ const SnitchFreeStreak: React.FC<Props> = ({
     streakQty: {
       fontSize: size,
       lineHeight: size,
+      color: Colors.white
     },
   });
   

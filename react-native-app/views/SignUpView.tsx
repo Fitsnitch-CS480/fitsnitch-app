@@ -1,22 +1,29 @@
 import React, {useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
-// import KeyboardAvoidingView from 'react-native'
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Keyboard, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
 import User from '../shared/models/User';
 import ServerFacade from '../backend/ServerFacade';
-
+import Colors from '../assets/constants/colors';
+import T from '../assets/constants/text';
+import {isEmpty} from 'lodash';
 
 const SignUpView : React.FC = () => {
 
   const navigation = useNavigation<any>();
-  const [email, onChangeEmail] = useState('');
-  const [password, onChangePassword] = useState('');
-  const [phoneNumber, onChangePhoneNumber] = useState('');
-  const [firstName, onChangeFirstName] = useState('');
-  const [lastName, onChangeLastName] = useState('');
+  let [email, setEmail] = useState('');
+  let [password, setPassword] = useState('');
+  let [phoneNumber, setPhoneNumber] = useState('');
+  let [firstName, setFirstName] = useState('');
+  let [lastName, setLastName] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [hideView, setHideView] = useState(true);
+  const [phoneNumberError, setPhoneNumberError] = useState('');
+  const [firstNameError, setfirstNameError] = useState('');
+  const [lastNameError, setlastNameError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [disableSignUp, setDisableSignUp] = useState(true);
   
 
 
@@ -34,12 +41,77 @@ const SignUpView : React.FC = () => {
     };
   }, []);
 
+  const onChangeEmail =(inputEmail:string) => {
+    if(isEmpty(inputEmail)){
+      setEmailError('Required');
+      setDisableSignUp(true);
+    }else{
+      setEmail(inputEmail);
+      setEmailError('');
+      enableSignUpButton();
+    }
+  }
+  const onChangePassword =(inputPassword:string) => {
+    if(isEmpty(inputPassword)){
+      setPasswordError('Required');
+      setDisableSignUp(true);
+    } else {
+      setPassword(inputPassword);
+      setPasswordError('');
+      enableSignUpButton();
+    }
+  }
+  
+  const onChangePhoneNumber = (inputPhoneNumber:any) => {
+    if (!inputPhoneNumber.includes("+1"))
+    {
+      inputPhoneNumber = "+1".concat(inputPhoneNumber)
+    }
+
+    if(inputPhoneNumber.length > 0 && inputPhoneNumber.length < 11){
+      setPhoneNumberError(T.error.invalidPhone);
+      if(!disableSignUp){
+        setDisableSignUp(true);
+      }
+    } else {
+      setPhoneNumberError('');
+      setPhoneNumber(inputPhoneNumber);
+      enableSignUpButton();
+    }
+  }
+
+  const onChangeFirstName = (inputFirstName:string) => {
+
+    if(isEmpty(inputFirstName)){
+      setfirstNameError('Required');
+      setDisableSignUp(true);
+    } else {
+      setfirstNameError('');
+      setFirstName(inputFirstName);
+      enableSignUpButton();
+    }
+
+    firstName = inputFirstName;
+  }
+
+  const onChangeLastName = (inputLastName:string) => {
+
+    if(isEmpty(inputLastName)){
+      setlastNameError('Required');
+      setDisableSignUp(true);
+    } else {
+      setlastNameError('');
+      setLastName(inputLastName);
+      enableSignUpButton();
+    }
+  }
+
   const signUpFunction = async () => {
         
     if (email.length > 4 && password.length > 2) {
-      let newphoneNumber = ""
+      let newphoneNumber = phoneNumber;
       //may need to take this out of the signUpFunction since it's not doing the change immediatly as the Auth.signUp gets called
-      if (!phoneNumber.includes("+1"))
+      if (!isEmpty(newphoneNumber) && !newphoneNumber.includes("+1"))
       {
         //onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
         newphoneNumber = "+1".concat(phoneNumber)
@@ -62,53 +134,61 @@ const SignUpView : React.FC = () => {
           
           //Move to confirmation screen, user should get code in email.
           navigation.navigate('confirmation', {
-            email
+            email,
+            password,
+            newphoneNumber
           });
         })
         .catch((err) => {
           console.log('Error when signing up: ', err);
-          Alert.alert("Please Try Again", err.message || err);
+          Alert.alert(T.error.tryAgain, err.message || err);
         });
     } else {
-      setErrorMessage('Provide a valid email and password');
+      setErrorMessage(T.error.provideValidEmailPassword);
       Alert.alert('Error:', errorMessage);
     }
   };
 
+  const enableSignUpButton = () => {
+    if(!isEmpty(firstName) && !isEmpty(lastName) && !isEmpty(email) && !isEmpty(password) && isEmpty(phoneNumberError)){
+      setDisableSignUp(false);
+    }
+  }
+
   return (
-      <ScrollView>
+    <ScrollView style={styles.screen}>
       <View style={styles.container}>
 
-      <View style={styles.image}>
         <Image
-          source={require("../assets/images/image_bnui..png")}
+          source={require("../assets/images/main_logo.png")}
           resizeMode="contain"
           style={styles.image}
         />
-      </View>
-      
-
-      {/* TODO add validation and requirements for all fields!
-          Phone number field accepts '2082' which it should not
-          First and Last name need to be required
-      */}
-      <View style={styles.materialUnderlineTextboxStack}>
-        <TextInput placeholder="Email" onChangeText={onChangeEmail} ></TextInput>
-        <TextInput placeholder="Password" secureTextEntry onChangeText={onChangePassword}></TextInput>
-        <TextInput placeholder="Phone Number"  keyboardType='numeric' onChangeText={onChangePhoneNumber}></TextInput>
-        <TextInput placeholder="First Name"  onChangeText={onChangeFirstName}></TextInput>
-        <TextInput placeholder="Last Name" onChangeText={onChangeLastName}></TextInput>
-      </View>
-
-      <View style={styles.materialButtonPrimary}>
-        <Button title="Sign Up" onPress={signUpFunction}></Button>
-      </View>
-      
         
-      {<Text style={styles.defaultText} onPress={() => navigation.navigate('login')}>Already have an account? Log In</Text>} 
-      
-      
-    </View>
+        <View style={styles.materialUnderlineTextboxStack}>
+          <TextInput placeholder={T.signUp.firstName} onChangeText={onChangeFirstName} style={styles.textBox}></TextInput>
+          {!isEmpty(firstNameError) && <Text style={styles.validation}>{firstNameError}</Text>}
+          <TextInput placeholder={T.signUp.lastName} onChangeText={onChangeLastName} style={styles.textBox}></TextInput>
+          {!isEmpty(lastNameError) && <Text style={styles.validation}>{lastNameError}</Text>}
+          <TextInput placeholder={T.signUp.email} onChangeText={onChangeEmail} style={styles.textBox} ></TextInput>
+          {!isEmpty(emailError) && <Text style={styles.validation}>{emailError}</Text>}
+          <TextInput placeholder={T.signUp.password} secureTextEntry onChangeText={onChangePassword} style={styles.textBox}></TextInput>
+          {!isEmpty(passwordError) && <Text style={styles.validation}>{passwordError}</Text>}
+          <TextInput placeholder={T.signUp.phoneNumber} keyboardType='numeric' onChangeText={onChangePhoneNumber} style={styles.textBox}></TextInput>
+          {!isEmpty(phoneNumberError) && <Text style={styles.validation}>{phoneNumberError}</Text>}
+        </View>
+
+        <View style={styles.materialButtonPrimary}>
+          <Button disabled={disableSignUp} color={Colors.red} title={T.signUp.title} onPress={signUpFunction}></Button>
+        </View>
+        
+        <View style={styles.textContainer}>
+          <Text style={styles.alreadyHaveText}>{T.signUp.alreadyHaveAccount}</Text>
+          <Text style={styles.logInText} onPress={() => navigation.navigate('login')}>{T.logIn.title}</Text>
+        </View>
+        
+        
+      </View>
     </ScrollView>
   );
 };
@@ -117,35 +197,60 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  screen: {
+    backgroundColor: Colors.background
   },
   materialButtonPrimary: {
     width: 289,
-    paddingTop: 10,
     flex: 1,
-    marginVertical: 20
+    marginVertical: 20,
   },
-  defaultText: {
+  textContainer: {
+    flex: 2,
+    flexDirection: 'row'
+  },
+  alreadyHaveText: {
     fontFamily: "roboto-regular",
-    color: "#121212",
-    textAlign: 'center',
-    flex: 1
+    fontSize: 15,
+    color: Colors.white,
+    marginRight: 5,
+  },
+  logInText: {
+    fontFamily: "roboto-regular",
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: Colors.red,
   },
   signUpOAuthText: {
     fontFamily: "roboto-regular",
-    color: "#121212",
-    marginLeft: 6,
-    flex: 1
+    color: Colors.white,
+    marginRight: 6,
   },
   materialUnderlineTextboxStack: {
     width: 289,
-    flex: 5
+    flex: 5,
+  },
+  textBox: {
+    backgroundColor: Colors.white,
+    color: Colors.charcoal,
+    borderRadius: 50,
+    marginVertical: 5,
+    paddingLeft: 20,
+    height: 40
   },
   image: {
     height: 200,
     width: 200,
     flex: 5,
-    marginTop: 20
+    marginTop: 20,
+    marginBottom: 10
+  },
+  validation: {
+    color: Colors.red, 
+    flex: 1,
+    fontSize: 12,
   }
 });
 

@@ -1,6 +1,9 @@
-import React, { ReactElement, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Button, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import Colors from '../assets/constants/colors';
+import T from '../assets/constants/text';
 import { PaginatedResponse } from '../shared/models/requests/Paginated';
+import MatButton from './MatButton';
 
 interface Props<TItem, TResponse extends PaginatedResponse<TItem>> {
   loadNextPage: (prevPage?: TResponse)=>Promise<TResponse>
@@ -58,13 +61,18 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
       ))}
 
       { loading ?
-        <View style={styles.loadingWrapper}><ActivityIndicator color="#00bbff" size={30} /></View>
+        <View style={styles.loadingWrapper}><ActivityIndicator color={Colors.red} size={30} /></View>
       :
         results.length === 0 ?
-          <Text>Nothing here</Text>
+          <Text style={styles.text}>{T.list.empty}</Text>
       :
         lastPage?.pageBreakKey ?
-          <Button title="Load More" onPress={loadMoreResults}></Button>
+          <MatButton 
+            title="Load More" 
+            onPress={loadMoreResults} 
+            outline
+            textColor={Colors.white} 
+            style={styles.button}/>
       :
         null
       }
@@ -74,12 +82,21 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
 
 const styles = StyleSheet.create({
   resultRow: {
-    backgroundColor: "white",
+    backgroundColor: Colors.lightBackground,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd'
   },
   loadingWrapper: {
-    padding: 20
-  }
+    padding: 20,
+  },
+  text: {
+    color: Colors.white,
+  },
+  button: {
+    width: 150,
+    alignSelf: 'center',
+    marginTop: 20,
+    marginBottom: 5,
+  },
 })
 export default PaginatedList;

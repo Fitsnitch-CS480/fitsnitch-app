@@ -17,7 +17,7 @@ const NameLink = ({user}) => {
 
 const styles = StyleSheet.create({
   nameLink: {
-    color: Colors.lightBlue,
+    color: Colors.red,
   }
 })
 

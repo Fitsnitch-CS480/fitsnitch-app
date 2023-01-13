@@ -6,8 +6,8 @@ import CheatMealEvent from '../shared/models/CheatMealEvent';
 import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
 import moment from 'moment';
-import CheatMealService from '../backend/services/CheatMealService';
 import { globalContext } from '../navigation/appNavigator';
+import Colors from '../assets/constants/colors';
 
 export type Props = {
   meal: CheatMealEvent;
@@ -32,7 +32,6 @@ const CheatMealEventCard: React.FC<Props> = ({
     }
   }
 
-
   // function shareMeal(meal:CheatMealEvent) {
   //   new CheatMealService().shareMeal(meal,mealOwner)
   // }
@@ -53,15 +52,15 @@ const CheatMealEventCard: React.FC<Props> = ({
     <View style={styles.container}>
       <ProfileImage user={mealOwner} size={40}></ProfileImage>
       <View style={{marginLeft:10, flexGrow:1}}>
-        <Text style={{fontSize: 20}}>{mealOwner.firstname} {mealOwner.lastname}</Text>
+        <Text style={[styles.text, styles.header]}>{mealOwner.firstname} {mealOwner.lastname}</Text>
         <View style={styles.details}>
           <View style={styles.detailRow}>
             <View style={styles.detailRowIcon}><Icon name="place" color="#888" size={20}></Icon></View>
-            <Text>{meal.restaurantData.name}</Text>
+            <Text style={styles.text}>{meal.restaurantData.name}</Text>
           </View>
           <View style={styles.detailRow}>
           <View style={styles.detailRowIcon}><Icon name="event" color="#888" size={18}></Icon></View>
-            <Text>{getRelativeTime(meal.created)}</Text>
+            <Text style={styles.text}>{getRelativeTime(meal.created)}</Text>
           </View>
     
           {/* <View style={styles.shareButton} onTouchEnd={()=>shareMeal(meal)}><Icon name="share" size={20}></Icon></View> */}
@@ -79,7 +78,6 @@ function getRelativeTime(time:any) {
   return moment(time).fromNow()
 }
 
-
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
@@ -87,6 +85,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingVertical: 10,
     width: '100%',
+    backgroundColor: Colors.background,
+  },
+  text: {
+    color: Colors.white,
+  },
+  header: {
+    fontSize: 20
   },
   details: {
     display: 'flex',

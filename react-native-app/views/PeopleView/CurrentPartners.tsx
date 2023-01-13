@@ -1,12 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
-import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
-import PartnerAssociationService from '../../backend/services/PartnerAssociationService';
+import React, { useContext } from 'react';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import Colors from '../../assets/constants/colors';
+import T from '../../assets/constants/text';
 import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
 import { globalContext } from '../../navigation/appNavigator';
-import User from '../../shared/models/User';
 
 const TITLE = "Your Partners"
 
@@ -20,7 +20,7 @@ const CurrentPartners = observer(() => {
   if (partnerStore.loading) {
     return (
       <Card title={TITLE}>
-        <ActivityIndicator color="#00bbff" size={30} />
+        <ActivityIndicator color={Colors.red} size={30} />
       </Card>
     )
   }
@@ -28,7 +28,7 @@ const CurrentPartners = observer(() => {
   if (partners.length === 0) {
     return (
       <Card title={TITLE}>
-        <Text>You have no partners yet!</Text>
+        <Text>{T.people.partner.noPartner}</Text>
       </Card>
     )
   }
@@ -39,7 +39,7 @@ const CurrentPartners = observer(() => {
         <View key={client.userId}>
           <View style={styles.resultRow} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: client})}}>
             <ProfileImage user={client} size={30}></ProfileImage>
-            <Text style={{marginLeft:10, fontSize: 15}}>{client.firstname} {client.lastname}</Text>  
+            <Text style={styles.text}>{client.firstname} {client.lastname}</Text>  
           </View>
           { (i < partners.length - 1) ? <View style={styles.divider} /> : null}
         </View>
@@ -65,5 +65,10 @@ const styles = StyleSheet.create({
     width: '100%',
     borderBottomColor: '#ddd',
     borderBottomWidth: 1
+  },
+  text: {
+    marginLeft: 10, 
+    fontSize: 15,
+    color: Colors.white
   }
 });
