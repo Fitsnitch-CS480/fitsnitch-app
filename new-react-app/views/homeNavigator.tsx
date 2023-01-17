@@ -8,65 +8,62 @@ import SettingsView from '../views/SettingsView';
 import Colors from '../assets/constants/colors';
 import CurrentUserProfile from "./profile/CurrentUserProfile";
 
-const HomeNavigator : React.FC = () => {
+const HomeNavigator: React.FC = () => {
 
-    const Tab = createBottomTabNavigator();
+	const Tab = createBottomTabNavigator();
 
-    return (
-      <Tab.Navigator 
-     	initialRouteName="Profile"
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName = "";
+	return (
+		<Tab.Navigator
+			initialRouteName="Profile"
+			screenOptions={({ route }) => ({
+				tabBarIcon: ({ focused, color, size }) => {
+					let iconName = "";
 
-            switch (route.name) {
-              case "Snitches":
-                iconName = 'campaign';
-                break;
-                
-              case "Profile":
-                iconName = 'person';
-                break;
+					switch (route.name) {
+						case "Snitches":
+							iconName = 'campaign';
+							break;
 
-              case "People":
-                iconName = 'people';
-                break;
-                
-              case "Settings":
-                iconName = 'settings';
-                break;
-            
-              default:
-                break;
-            }
+						case "Profile":
+							iconName = 'person';
+							break;
 
-            return <Icon name={iconName} size={size} color={color} />;
-          },
-          tabBarActiveTintColor: 'white',
-          tabBarInactiveTintColor: 'black',
-          tabBarActiveBackgroundColor: Colors.darkRed,
-          tabBarInactiveBackgroundColor: Colors.red
-        })}
-      >
-        <Tab.Screen name="Snitches" component={SnitchesView}  options={{headerShown: false}} />
-        <Tab.Screen name="Profile" component={CurrentUserProfile}  options={{headerShown: false}} />
-        <Tab.Screen name="People" component={PeopleView}  options={{headerShown: false}} />
-        <Tab.Screen name="Settings" component={SettingsView} />
-      </Tab.Navigator>
-  );
+						case "People":
+							iconName = 'people';
+							break;
+
+						case "Settings":
+							iconName = 'settings';
+							break;
+
+						default:
+							break;
+					}
+
+					return <Icon name={iconName} size={size} color={color} />;
+				},
+				tabBarActiveTintColor: 'white',
+				tabBarInactiveTintColor: 'black',
+				tabBarActiveBackgroundColor: Colors.darkRed,
+				tabBarInactiveBackgroundColor: Colors.red
+			})}
+		>
+			<Tab.Screen name="Snitches" component={SnitchesView} options={{ headerShown: false }} />
+			<Tab.Screen name="Profile" component={CurrentUserProfile} options={{ headerShown: false }} />
+			<Tab.Screen name="People" component={PeopleView} options={{ headerShown: false }} />
+			<Tab.Screen name="Settings" component={SettingsView}
+				options={{
+					headerShown: true,
+					headerStyle: {
+						backgroundColor: Colors.background,
+					},
+					headerTitleStyle: {
+						color: Colors.white
+					}
+				}}
+			/>
+		</Tab.Navigator>
+	);
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center'
-    },
-    greeting: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      margin: 16
-    }
-  });
 
 export default HomeNavigator;

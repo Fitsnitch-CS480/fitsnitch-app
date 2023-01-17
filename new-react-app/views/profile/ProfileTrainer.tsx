@@ -2,14 +2,16 @@ import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { profileContext } from './Profile';
-import NameLink from '../../reusable-components/NameLink';
-import MatIcon from '../../reusable-components/MatIcon';
+import NameLink from '../../components/NameLink';
+import MatIcon from '../../components/MatIcon';
 import { globalContext } from '../../views/appNavigator';
 import ClientTrainerService from '../../services/ClientTrainerService';
 import RelationshipStatus from '../../shared/constants/RelationshipStatus';
 import User from '../../shared/models/User';
-import { MatIconName } from '../../reusable-components/MatIconName';
-import MatButton from '../../reusable-components/MatButton';
+import { MatIconName } from '../../components/MatIconName';
+import MatButton from '../../components/MatButton';
+import T from '../../assets/constants/text';
+import Colors from '../../assets/constants/colors';
 
 
 type state = {
@@ -113,7 +115,7 @@ const ProfileTrainer = observer(() => {
 
   const IconRow = (props:{icon:MatIconName, children:ReactNode}) => (
     <View style={styles.rowWrapper}>
-        <View style={styles.icon}><MatIcon name={props.icon} size={27} /></View>
+        <View style={styles.icon}><MatIcon color={Colors.white} name={props.icon} size={27} /></View>
         {props.children}
       </View>
   )
@@ -148,13 +150,13 @@ const ProfileTrainer = observer(() => {
       :
       state.relationship?.userAsClient == RelationshipStatus.PENDING?
         <IconRow icon="mail">
-          <Text style={styles.rowText}>Your trainer request is pending</Text>
+          <Text style={styles.rowText}>{T.people.trainer.pending}</Text>
           <MatButton icon="delete" secondary onPress={()=>cancelRequest(profileOwner,currentUser)}></MatButton>
         </IconRow>
       :
       !state.processing && !trainerStore.data ?
         <IconRow icon="fitness-center">
-          <Text style={styles.rowText}>You don't have a trainer yet</Text>
+          <Text style={styles.rowText}>{T.people.trainer.noTrainer}</Text>
           <MatButton title="Request Trainer" onPress={()=>requestTrainer(profileOwner,currentUser)}></MatButton>
         </IconRow>
       :
@@ -169,7 +171,7 @@ const ProfileTrainer = observer(() => {
 
     { isCurrentUser && !trainerStore.data && (
       <IconRow icon="fitness-center">
-        <Text style={styles.rowText}>You don't have a trainer yet!</Text>
+        <Text style={styles.rowText}>{T.people.trainer.noTrainer}</Text>
       </IconRow>
     )}
     { profileTrainer && !userIsTrainer && (
@@ -193,12 +195,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   rowText: {
     marginLeft: 5,
     fontSize: 15,
-    flexGrow: 1
+    flexGrow: 1,
+    color: Colors.white,
   },
   buttonContainerSideBySide: {
     display: 'flex',

@@ -1,13 +1,13 @@
-import React, { Component, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { StyleSheet, TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
+import Colors from "../assets/constants/colors";
 import MatIcon from "./MatIcon";
 import { MatIconName } from "./MatIconName";
-
 
 interface Props {
   children?: ReactNode,
   icon?: MatIconName,
-  primary?: boolean,
+  primary?: boolean, 
   secondary?: boolean,
   color?: string,
   textColor?: string,
@@ -21,8 +21,9 @@ interface Props {
 }
 
 const MatButton: React.FC<Props> = (props) => {
-  const TEXT_COLOR = props.textColor || (props.secondary ? "#444" : "white");
-  const BG_COLOR = props.color || (props.secondary ? "white" : "#2196F3");
+  const TEXT_COLOR = props.textColor ||  Colors.white;
+  const BORDER_COLOR = props.textColor ||  Colors.darkRed;
+  const BG_COLOR = props.color || (props.secondary ? Colors.darkRed : Colors.background);
   const SIZE = props.size || 14;
   const SHADOW = props.shadow ?? true;
 
@@ -34,7 +35,7 @@ const MatButton: React.FC<Props> = (props) => {
       alignItems: "center",
       flexDirection: "row",
       borderWidth: (props.outline || props.secondary) ? StyleSheet.hairlineWidth : 0,
-      borderColor: TEXT_COLOR,
+      borderColor: BORDER_COLOR,
       borderRadius: 5,
       paddingHorizontal: SIZE *.8,
       ... (!SHADOW ? {} : {

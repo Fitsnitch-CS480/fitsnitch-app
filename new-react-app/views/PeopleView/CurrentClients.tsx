@@ -2,8 +2,10 @@ import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import Card from '../../reusable-components/Card';
-import ProfileImage from '../../reusable-components/ProfileImage';
+import Colors from '../../assets/constants/colors';
+import T from '../../assets/constants/text';
+import Card from '../../components/Card';
+import ProfileImage from '../../components/ProfileImage';
 import { globalContext } from '../../views/appNavigator';
 
 const TITLE = "Your Clients"
@@ -17,7 +19,7 @@ const CurrentClients = observer(() => {
   if (clientStore.loading) {
     return (
     <Card title={TITLE}>
-      <ActivityIndicator color="#00bbff" size={30} />
+      <ActivityIndicator color={Colors.lightBlue} size={30} />
     </Card>
     )
   }
@@ -25,7 +27,7 @@ const CurrentClients = observer(() => {
   if (clients.length === 0) {
     return (
       <Card title={TITLE}>
-        <Text>You have no clients yet!</Text>
+        <Text style={styles.text}>{T.people.client.noClient}</Text>
       </Card>
     )
   }
@@ -37,7 +39,7 @@ const CurrentClients = observer(() => {
         <View key={client.userId}>
           <View style={styles.resultRow} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: client})}}>
             <ProfileImage user={client} size={30}></ProfileImage>
-            <Text style={{marginLeft:10, fontSize: 15}}>{client.firstname} {client.lastname}</Text>  
+            <Text style={styles.text}>{client.firstname} {client.lastname}</Text>  
           </View>
           { (i < clients.length - 1) ? <View style={styles.divider} /> : null}
         </View>
@@ -61,6 +63,11 @@ const styles = StyleSheet.create({
     width: '100%',
     borderBottomColor: '#ddd',
     borderBottomWidth: 1
+  },
+  text: {
+    marginLeft: 10, 
+    fontSize: 15,
+    color: Colors.white
   }
 });
 

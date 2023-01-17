@@ -7,21 +7,22 @@ import { UserCheatMealResponse } from '../../shared/models/requests/UserCheatMea
 import { UserSnitchesResponse } from '../../shared/models/requests/UserSnitchesRequest';
 import SnitchEvent from '../../shared/models/SnitchEvent';
 import User from '../../shared/models/User';
-import CheatMealEventCard from '../../reusable-components/MealEventCard';
-import PaginatedList from '../../reusable-components/PaginatedList';
-import PartnerAssociationRequestButton from '../../reusable-components/PartnerAssociationRequestButton';
-import ProfileImage from '../../reusable-components/ProfileImage';
-import SnitchEventCard from '../../reusable-components/SnitchEventCard';
+import CheatMealEventCard from '../../components/MealEventCard';
+import PaginatedList from '../../components/PaginatedList';
+import PartnerAssociationRequestButton from '../../components/PartnerAssociationRequestButton';
+import ProfileImage from '../../components/ProfileImage';
+import SnitchEventCard from '../../components/SnitchEventCard';
 import { observer } from 'mobx-react-lite';
 import { ClientStore, PartnerStore, TrainerStore } from '../../stores/PeopleStores';
 import ProfilePartners from './ProfilePartners';
-import Card from '../../reusable-components/Card';
+import Card from '../../components/Card';
 import ProfileTrainer from './ProfileTrainer';
-import MatButton from '../../reusable-components/MatButton';
+import MatButton from '../../components/MatButton';
 import CheatMealSchedule from './CheatMealSchedule';
-import SnitchFreeStreak from '../../reusable-components/SnitchFreeStreak';
+import SnitchFreeStreak from '../../components/SnitchFreeStreak';
 import CheatMealRemaining from './CheatMealRemaining';
 import { globalContext } from '../appNavigator';
+import Colors from '../../assets/constants/colors';
 
 const PAGE_SIZE = 5;
 
@@ -116,8 +117,8 @@ const SnitchFeed = () => {
             <Text numberOfLines={1} style={styles.profileName}>{profileOwner.firstname || "Test"} {profileOwner.lastname || ""}</Text>
             <View style={{flexDirection: 'row'}}>
               { isCurrentUser ? (
-                <MatButton secondary title="Edit Profile" /> // TODO implement profile settings
-              ) : (
+                <MatButton color={Colors.lightBackground} textColor={Colors.white} title="Edit Profile" /> // TODO implement profile settings
+				) : (
                 <PartnerAssociationRequestButton profileOwner={profileOwner} />
               )}
             </View>
@@ -172,13 +173,14 @@ const SIZE = 45;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.background
   },
   header: {
     flex: 1,
     maxHeight: 150,
     position: 'relative',
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: Colors.darkRed,
     paddingVertical: 20,
     paddingHorizontal: 15,
     textAlign: 'left',
@@ -202,11 +204,11 @@ const styles = StyleSheet.create({
   },
   profileName: {
     flex: 2,
-    backgroundColor:'white',
+    backgroundColor: Colors.darkRed,
     fontSize: 28,
     lineHeight: 28,
     fontWeight: 'bold',
-    color: '#333'
+    color: Colors.white
   },
   profileDetails: {
     padding: 10,

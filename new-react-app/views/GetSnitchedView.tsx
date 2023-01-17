@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View, Alert, AppState } from 'react-native';
-import Timer from '../reusable-components/Timer';
+import Timer from '../components/Timer';
 import ServerFacade from '../services/ServerFacade';
 // import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';

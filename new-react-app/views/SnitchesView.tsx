@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, Button, ActivityIndicator } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import SnitchService from '../services/SnitchService';
-import Card from '../reusable-components/Card';
-import SnitchEventCard from '../reusable-components/SnitchEventCard';
-import dayjs from 'dayjs';
+import Card from '../components/Card';
+import SnitchEventCard from '../components/SnitchEventCard';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
-import PaginatedList from '../reusable-components/PaginatedList';
+import PaginatedList from '../components/PaginatedList';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import { useNavigation } from '@react-navigation/native';
-import SnitchFreeStreak from '../reusable-components/SnitchFreeStreak';
 import { globalContext } from './appNavigator';
+import SnitchFreeStreak from '../components/SnitchFreeStreak';
+import Colors from '../assets/constants/colors';
 
 const PAGE_SIZE = 10
 
@@ -50,21 +50,12 @@ const SnitchesView: React.FC = () => {
   }
 
 
-  let streak = (() => {
-    if (!lastSnitch) return null;
-    return {
-      qty: dayjs().diff(dayjs(lastSnitch.created), 'd'),
-      unit: 'day'
-    }
-  })();
-
-
   return (
-  <ScrollView style={{height: '100%'}}>
+  <ScrollView style={styles.screen}>
     <View style={styles.container}>
       <Card title='Snitch-Free Streak'>
         <SnitchFreeStreak lastSnitch={lastSnitch} size={100} />
-      </Card>      
+      </Card>
 
       <Card title="Recent Snitches">
         <PaginatedList
@@ -76,15 +67,6 @@ const SnitchesView: React.FC = () => {
             </View>
           ))}
         />
-        
-        {/* { snitches.map((s,i) => (
-          <>
-          <View style={styles.snitchContainer} key={s.created+s.userId}>
-            <SnitchEventCard snitch={s} user={knownUsers.get(s.userId)}></SnitchEventCard>
-          </View>
-          <View style={styles.divider} />
-          </>
-        ))} */}
 
       </Card>
     </View>
@@ -93,27 +75,9 @@ const SnitchesView: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  streakWrapper: {
-    position: "relative",
-    height: 80,
-  },
-  streakChild: {
-    position: "absolute",
-  },
-  streakFire: {
-    left: 0,
-    bottom: 0
-  },
-  streakQty: {
-    left: 60,
-    fontSize: 100,
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    bottom: -20,
-  },
-  streakUnit: {
-    fontSize: 30,
-    marginLeft: 5
+  screen: {
+    backgroundColor: Colors.background,
+    height: '100%',
   },
   container: {
     flex: 1,

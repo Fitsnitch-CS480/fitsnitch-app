@@ -4,11 +4,11 @@ import { useNavigation } from '@react-navigation/native';
 import {Auth} from '@aws-amplify/auth';
 import {authContext} from '../authWrapper';
 import ServerFacade from '../../services/ServerFacade';
-// import {check, checkNotifications, PERMISSIONS, RESULTS} from 'react-native-permissions';
-// import Popup from '../components/Popup';
 import User from '../../shared/models/User';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import NativeModuleService from '../../services/NativeModuleService';
+import T from '../../assets/constants/text';
+import Colors from '../../assets/constants/colors';
 
 export default function LoginView() {
 
@@ -65,41 +65,43 @@ export default function LoginView() {
           }
           else {
             console.log('Could not log in',err);
-            Alert.alert("Could not log in", err.message);
+            Alert.alert(T.error.noLogIn, err.message);
           }
           setLoading(false)
         });
     }
     else {
-      Alert.alert("", 'Provide an email and password');
-      setLoading(false)
+		Alert.alert("", T.error.provideEmailPassword);
+		setLoading(false)
     }
   };
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.screen}>
     <View style={styles.container}>
-      <Image
-        source={require("../../assets/images/image_bnui..png")}
+      {/* <Image
+        source={require("../assets/images/main_logo.png")}
         resizeMode="contain"
         style={styles.image}
-      />
+      /> */}
       
       <View style={styles.materialUnderlineTextboxStack}>
-        <TextInput placeholder="Email" onChangeText={onChangeEmail}></TextInput>
-        <TextInput placeholder="Password" secureTextEntry onChangeText={onChangePassword}></TextInput>
+        <TextInput placeholder={T.signUp.email} onChangeText={onChangeEmail} style={styles.textBox}></TextInput>
+        <TextInput placeholder={T.signUp.password} secureTextEntry onChangeText={onChangePassword} style={styles.textBox}></TextInput>
       </View>
 
       <View style={styles.materialButtonPrimary}>
         { loading ? 
-            <ActivityIndicator color="#00bbff" size={30} />
+            <ActivityIndicator color={Colors.red} size={30} />
           :
-            <Button title="Log In" onPress={()=>loading? null : signInFunction()}></Button>
+            <Button color={Colors.red} title={T.logIn.title} onPress={()=>loading? null : signInFunction()}></Button>
         }
       </View>
 
-      <Text style={styles.or2}>--------------- OR ---------------</Text>
-      <Text style={styles.loremIpsum} onPress={() => navigation.navigate('signup')}>Don&#39;t have an account? Sign up</Text>      
+      <View style={styles.textContainer}>
+        <Text style={styles.dontHaveAccount}>{T.logIn.dontHaveAccount}</Text>      
+        <Text style={styles.signUpText} onPress={() => navigation.navigate('signup')}>{T.signUp.title}</Text>
+      </View>
     </View>
     </ScrollView>
   );
@@ -112,18 +114,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  screen: {
+    backgroundColor: Colors.background
+  },
   materialButtonPrimary: {
     height: 36,
     width: 289,
+    marginVertical: 20,
   },
-  or2: {
-    fontFamily: "roboto-regular",
-    color: "#121212",
-    marginVertical: 20
+  textContainer: {
+    flex: 2,
+    flexDirection: 'row'
   },
-  loremIpsum: {
+  dontHaveAccount: {
     fontFamily: "roboto-regular",
-    color: "#121212",
+    color: Colors.white,
+    marginRight: 5,
+    fontSize: 15,
+  },
+  signUpText: {
+    fontFamily: "roboto-regular",
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: Colors.red,
   },
   materialUnderlineTextbox: {
     height: 43,
@@ -134,7 +147,15 @@ const styles = StyleSheet.create({
   },
   materialUnderlineTextboxStack: {
     width: 289,
-    marginVertical: 20
+    marginTop: 20
+  },
+  textBox: {
+    backgroundColor: Colors.white,
+    color: Colors.charcoal,
+    borderRadius: 50,
+    marginVertical: 5,
+    paddingLeft: 20,
+    height: 40
   },
   image: {
     height: 200,

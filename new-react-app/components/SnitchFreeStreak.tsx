@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import dayjs from 'dayjs';
+import Colors from '../assets/constants/colors';
 
 export type Props = {
   lastSnitch?: SnitchEvent;
@@ -37,6 +38,7 @@ const SnitchFreeStreak: React.FC<Props> = ({
     streakQty: {
       fontSize: size,
       lineHeight: size,
+      color: Colors.white
     },
   });
   

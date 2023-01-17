@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import ProfileImage from '../../reusable-components/ProfileImage';
+import ProfileImage from '../../components/ProfileImage';
 import { observer } from 'mobx-react-lite';
 import { profileContext } from './Profile';
-import NameLink from '../../reusable-components/NameLink';
+import NameLink from '../../components/NameLink';
+import T from '../../assets/constants/text';
+import Colors from '../../assets/constants/colors';
 
 const NUM_IMAGES = 4;
 const IMAGE_SIZE = 35;
@@ -34,7 +36,7 @@ const ProfilePartners = observer(() => {
 
       <View style={[styles.textWrapper, textOffset]}>
           <Text style={styles.text}><>
-            <Text>Partner of&nbsp;</Text>
+            <Text>{T.people.partner.partnerOf}&nbsp;</Text>
             { namePartners.length === 1 ?
               <NameLink key="namePartner" user={namePartners[0]} />
 
@@ -101,6 +103,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 15,
+	color: Colors.white,
   },
 });
 
