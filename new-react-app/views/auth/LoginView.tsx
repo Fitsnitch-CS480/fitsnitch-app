@@ -79,11 +79,11 @@ export default function LoginView() {
   return (
     <ScrollView style={styles.screen}>
     <View style={styles.container}>
-      {/* <Image
-        source={require("../assets/images/main_logo.png")}
+      <Image
+        source={require("../../assets/images/main_logo.png")}
         resizeMode="contain"
         style={styles.image}
-      /> */}
+      />
       
       <View style={styles.materialUnderlineTextboxStack}>
         <TextInput placeholder={T.signUp.email} onChangeText={onChangeEmail} style={styles.textBox}></TextInput>
