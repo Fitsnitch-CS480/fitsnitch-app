@@ -1,15 +1,14 @@
 import React, { useContext, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import SnitchService from '../backend/services/SnitchService';
+import SnitchService from '../services/SnitchService';
 import Card from '../components/Card';
 import SnitchEventCard from '../components/SnitchEventCard';
-import moment from 'moment';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import PaginatedList from '../components/PaginatedList';
 import { UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import { useNavigation } from '@react-navigation/native';
-import { globalContext } from '../navigation/appNavigator';
+import { globalContext } from './appNavigator';
 import SnitchFreeStreak from '../components/SnitchFreeStreak';
 import Colors from '../assets/constants/colors';
 
@@ -51,21 +50,12 @@ const SnitchesView: React.FC = () => {
   }
 
 
-  let streak = (() => {
-    if (!lastSnitch) return null;
-    return {
-      qty: moment().diff(moment(lastSnitch.created), 'd'),
-      unit: 'day'
-    }
-  })();
-
-
   return (
   <ScrollView style={styles.screen}>
     <View style={styles.container}>
       <Card title='Snitch-Free Streak'>
         <SnitchFreeStreak lastSnitch={lastSnitch} size={100} />
-      </Card>      
+      </Card>
 
       <Card title="Recent Snitches">
         <PaginatedList
@@ -77,15 +67,6 @@ const SnitchesView: React.FC = () => {
             </View>
           ))}
         />
-        
-        {/* { snitches.map((s,i) => (
-          <>
-          <View style={styles.snitchContainer} key={s.created+s.userId}>
-            <SnitchEventCard snitch={s} user={knownUsers.get(s.userId)}></SnitchEventCard>
-          </View>
-          <View style={styles.divider} />
-          </>
-        ))} */}
 
       </Card>
     </View>

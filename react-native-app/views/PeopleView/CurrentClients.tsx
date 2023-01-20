@@ -6,7 +6,7 @@ import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
-import { globalContext } from '../../navigation/appNavigator';
+import { globalContext } from '../../views/appNavigator';
 
 const TITLE = "Your Clients"
 
@@ -31,6 +31,7 @@ const CurrentClients = observer(() => {
       </Card>
     )
   }
+
 
   return (
     <Card title={TITLE}>

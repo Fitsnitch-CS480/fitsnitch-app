@@ -1,8 +1,8 @@
 import { observer } from 'mobx-react-lite';
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, Button, Alert } from 'react-native';
-import PartnerAssociationService from '../backend/services/PartnerAssociationService';
-import { globalContext } from '../navigation/appNavigator';
+import PartnerAssociationService from '../services/PartnerAssociationService';
+import { globalContext } from '../views/appNavigator';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
 import PartnerStatusResponse from '../shared/models/requests/PartnerStatusResponse';
 import User from '../shared/models/User';

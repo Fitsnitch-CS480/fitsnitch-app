@@ -20,7 +20,7 @@ import androidx.core.app.NotificationCompat;
 import com.fitsnitchapp.location_loop.LocationLoopService;
 import com.google.gson.Gson;
 
-public class LocationForegroundService extends Service implements LocationEventReceiver {
+public class LocationForegroundService extends Service {
     public static final String CHANNEL_ID_BG = "FITSNITCH_BG";
     public static final String CHANNEL_NAME_BG = "Background Activity Status";
     public static final int NOTIFICATION_ID = 1;
@@ -41,6 +41,7 @@ public class LocationForegroundService extends Service implements LocationEventR
 
     @Override
     public void onCreate() {
+        Log.i("******FIT", "CREATED LOCATION FOREGROUND SERVICE");
         super.onCreate();
         mAlarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
         mGson = new Gson();
@@ -62,8 +63,9 @@ public class LocationForegroundService extends Service implements LocationEventR
 
     private void startLocationLoop() {
         Intent i = new Intent(getApplicationContext(), LocationLoopService.class);
-        PendingIntent locationLoopIntent = PendingIntent.getService(getApplicationContext(), 1, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        locationLoopIntent = PendingIntent.getService(getApplicationContext(), 1, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Log.i("****FIT","starting loop!");
         mAlarmManager.setExact(
                 AlarmManager.RTC,
                 System.currentTimeMillis() + 5000,
@@ -72,39 +74,16 @@ public class LocationForegroundService extends Service implements LocationEventR
     }
 
 
-
-    @Override
     public void createEventReceiver() {
-        mEventReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
+//        mEventReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
 //                LocationUpdate newLocation = mGson.fromJson(
 //                        intent.getStringExtra(LOCATION_EVENT_DATA_NAME), LocationUpdate.class);
-
-
-            }
-        };
+//            }
+//        };
     }
 
-
-//    private void sendLocationToJs(LocationUpdate location) {
-//        WritableMap eventData = Arguments.createMap();
-//        eventData.putDouble(
-//                JS_LOCATION_LAT_KEY,
-//                location.getLatitude());
-//        eventData.putDouble(
-//                JS_LOCATION_LON_KEY,
-//                location.getLongitude());
-//        eventData.putDouble(
-//                JS_LOCATION_TIME_KEY,
-//                location.getTimestamp());
-//        // if you actually want to send events to JS side, it needs to be in the "Module"
-////                sendEventToJS(getReactApplicationContext(),
-////                        JS_LOCATION_EVENT_NAME, eventData);
-//
-//    }
-
-    @Override
     public void registerEventReceiver() {
         IntentFilter eventFilter = new IntentFilter();
         eventFilter.addAction(LOCATION_EVENT_NAME);
@@ -128,16 +107,14 @@ public class LocationForegroundService extends Service implements LocationEventR
     }
 
     static void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    CHANNEL_ID_BG,
-                    CHANNEL_NAME_BG,
-                    NotificationManager.IMPORTANCE_MIN
-            );
+        NotificationChannel serviceChannel = new NotificationChannel(
+                CHANNEL_ID_BG,
+                CHANNEL_NAME_BG,
+                NotificationManager.IMPORTANCE_MIN
+        );
 
-            NotificationManager manager = mContext.getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceChannel);
-        }
+        NotificationManager manager = mContext.getSystemService(NotificationManager.class);
+        manager.createNotificationChannel(serviceChannel);
     }
 
     static Notification createNotification() {

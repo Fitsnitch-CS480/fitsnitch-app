@@ -1,90 +1,43 @@
-require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
-platform :ios, '12.0'
 
-target 'FitsnitchApp' do
-  use_expo_modules!
-  post_integrate do |installer|
-    begin
-      expo_patch_react_imports!(installer)
-    rescue => e
-      Pod::UI.warn e
-    end
-    begin
-      expo_patch_react_imports!(installer)
-    rescue => e
-      Pod::UI.warn e
-    end
-  end
-  #use_unimodules!
+platform :ios, '12.4'
+install! 'cocoapods', :deterministic_uuids => false
+
+target 'fitsnitchapp' do
   config = use_native_modules!
 
-  use_frameworks!
-  pod  'AWSPinpoint'
-  pod  'AWSMobileClient'
-
-  pod 'RNGestureHandler', :podspec => '../node_modules/react-native-gesture-handler/RNGestureHandler.podspec'
+  # Flags change depending on the env values.
+  flags = get_default_flags()
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # to enable hermes on iOS, change `false` to `true` and then install pods
-    :hermes_enabled => false
+    # Hermes is now enabled by default. Disable by setting this flag to false.
+    # Upcoming versions of React Native may rely on get_default_flags(), but
+    # we make it explicit here to aid in the React Native upgrade process.
+    :hermes_enabled => true,
+    :fabric_enabled => flags[:fabric_enabled],
+    # Enables Flipper.
+    #
+    # Note that if you have use_frameworks! enabled, Flipper will not work and
+    # you should disable the next line.
+    :flipper_configuration => FlipperConfiguration.enabled,
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-
-  target 'FitsnitchAppTests' do
+  target 'fitsnitchappTests' do
     inherit! :complete
     # Pods for testing
   end
 
-  # react-native-permissions permission handlers
-  permissions_path = '../node_modules/react-native-permissions/ios'
-
-  pod 'Permission-AppTrackingTransparency', :path => "#{permissions_path}/AppTrackingTransparency"
-  pod 'Permission-BluetoothPeripheral', :path => "#{permissions_path}/BluetoothPeripheral"
-  pod 'Permission-Calendars', :path => "#{permissions_path}/Calendars"
-  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
-  pod 'Permission-Contacts', :path => "#{permissions_path}/Contacts"
-  pod 'Permission-FaceID', :path => "#{permissions_path}/FaceID"
-  pod 'Permission-LocationAccuracy', :path => "#{permissions_path}/LocationAccuracy"
-  pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways"
-  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
-  pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary"
-  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
-  pod 'Permission-Motion', :path => "#{permissions_path}/Motion"
-  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
-  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
-  pod 'Permission-PhotoLibraryAddOnly', :path => "#{permissions_path}/PhotoLibraryAddOnly"
-  pod 'Permission-Reminders', :path => "#{permissions_path}/Reminders"
-  pod 'Permission-Siri', :path => "#{permissions_path}/Siri"
-  pod 'Permission-SpeechRecognition', :path => "#{permissions_path}/SpeechRecognition"
-  pod 'Permission-StoreKit', :path => "#{permissions_path}/StoreKit"
-
-  $static_framework = ['EXPermissions', 'EXConstants', 'EXImageLoader', 'UMPermissionsInterface', 'UMConstantsInterface']
-
-  pre_install do |installer|
-    Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
-    installer.pod_targets.each do |pod|
-        if $static_framework.include?(pod.name) || pod.name.eql?('RNScreens') || pod.name.eql?('RNPermissions') || pod.name.start_with?('Permission-')
-          def pod.build_type;
-            Pod::BuildType.static_library
-          end
-        end
-      end
-  end
-  # Enables Flipper.
-  #
-  # Note that if you have use_frameworks! enabled, Flipper will not work and
-  # you should disable the next line.
-  #use_flipper!()
-
   post_install do |installer|
-    installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |config|
-        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
-      end
-    end
+    react_native_post_install(
+      installer,
+      # Set `mac_catalyst_enabled` to `true` in order to apply patches
+      # necessary for Mac Catalyst builds
+      :mac_catalyst_enabled => false
+    )
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
-
 end

@@ -6,7 +6,6 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
 public class SettingsManager {
     private final SharedPreferences settings;
 

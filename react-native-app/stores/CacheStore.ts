@@ -1,5 +1,4 @@
 import { observable, action, makeObservable, runInAction, computed } from "mobx";
-import ServerFacade from "../backend/ServerFacade";
 
 export default abstract class CacheStore<T> {
     @observable hasFetched = false;

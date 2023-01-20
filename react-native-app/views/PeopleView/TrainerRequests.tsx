@@ -1,14 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import ClientTrainerService from '../../backend/services/ClientTrainerService';
+import ClientTrainerService from '../../services/ClientTrainerService';
 import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
 import User from '../../shared/models/User';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { notifyMessage } from '../../utils/UiUtils';
 import Badge from '../../components/Badge';
-import { globalContext } from '../../navigation/appNavigator';
+import { globalContext } from '../appNavigator';
 import { observer } from 'mobx-react-lite';
 
 const TITLE = "Trainer Requests"

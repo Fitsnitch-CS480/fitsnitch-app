@@ -1,12 +1,12 @@
 import React, {useContext} from 'react';
-import {authContext} from '../navigation/mainNavigator';
+import {authContext} from './authWrapper';
 import {Auth} from '@aws-amplify/auth';
-import { Alert, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, Button, NativeModules, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import { globalContext } from '../navigation/appNavigator';
+import { globalContext } from './appNavigator';
 import { observer } from 'mobx-react-lite';
 import { LatLonPair } from '../shared/models/CoordinateModels';
-import NativeModuleService from '../backend/services/NativeModuleService';
+import NativeModuleService from '../services/NativeModuleService';
 import T from '../assets/constants/text';
 import Colors from '../assets/constants/colors';
 

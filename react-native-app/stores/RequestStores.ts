@@ -1,5 +1,5 @@
 import { action, makeObservable } from "mobx";
-import ServerFacade from "../backend/ServerFacade";
+import ServerFacade from "../services/ServerFacade";
 import User from "../shared/models/User";
 import CacheStore from "./CacheStore";
 

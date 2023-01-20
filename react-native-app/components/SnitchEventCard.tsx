@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ServerFacade from '../backend/ServerFacade';
+import ServerFacade from '../services/ServerFacade';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
-import moment from 'moment';
-import SnitchService from '../backend/services/SnitchService';
+import dayjs from 'dayjs';
+import SnitchService from '../services/SnitchService';
 import PopupMenu from './SnitchOptionsDropdown';
-import CheatMealService from '../backend/services/CheatMealService';
+import CheatMealService from '../services/CheatMealService';
 import Colors from '../assets/constants/colors';
 import T from '../assets/constants/text';
 
 export type Props = {
   snitch: SnitchEvent;
-  user?: User;
+  user: User;
   onSwitch?: ()=>void
 };
 
@@ -27,7 +27,7 @@ const SnitchEventCard: React.FC<Props> = ({
 
   async function getCheatMealData() {
     if (user.cheatmealSchedule) {
-      let cheatsAllotted = user.cheatmealSchedule.split("_")[1];
+      let cheatsAllotted = Number(user.cheatmealSchedule.split("_")[1]);
       let cheatMeals = await new CheatMealService().getCheatMeals(user);
       let cheatsUsed;
       let remaining;
@@ -80,21 +80,21 @@ const SnitchEventCard: React.FC<Props> = ({
     <View style={styles.container}>
       <ProfileImage user={snitchOwner} size={40}></ProfileImage>
       <View style={{marginLeft:10, flexGrow:1}}>
-      <Text style={[styles.text, styles.header]}>{snitchOwner.firstname} {snitchOwner.lastname}</Text>
+      	<Text style={[styles.text, styles.header]}>{snitchOwner.firstname} {snitchOwner.lastname}</Text>
         <View style={styles.details}>
           <View style={styles.detailRow}>
-            <View style={styles.detailRowIcon}><Icon name="place" color={Colors.lightGrey} size={20}></Icon></View>
+		  	<View style={styles.detailRowIcon}><Icon name="place" color={Colors.lightGrey} size={20}></Icon></View>
             <Text style={styles.text}>{snitch.restaurantData?.name}</Text>
           </View>
           <View style={styles.detailRow}>
-          <View style={styles.detailRowIcon}><Icon name="event" color={Colors.lightGrey} size={18}></Icon></View>
-          <Text style={styles.text}>{getRelativeTime(snitch.created)}</Text>
+			<View style={styles.detailRowIcon}><Icon name="event" color={Colors.lightGrey} size={18}></Icon></View>
+			<Text style={styles.text}>{getRelativeTime(snitch.created)}</Text>
           </View>
         </View>
       </View>
       
       <View style={styles.menuWrapper}>
-        <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" color={Colors.white} size={20}></Icon></View>
+        <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
         <View>
           { useCheats ? 
             <PopupMenu actions={['Switch To Cheatmeal']} onPress={onPopupEvent} />
@@ -107,10 +107,10 @@ const SnitchEventCard: React.FC<Props> = ({
 };
 
 function getRelativeTime(time:any) {
-  if (moment().diff(time, 'd') >= 1) {
-    return moment(time).format('MMM D, YYYY')
+  if (dayjs().diff(time, 'd') >= 1) {
+    return dayjs(time).format('MMM D, YYYY')
   }
-  return moment(time).fromNow()
+  return dayjs(time).fromNow()
 }
 
 
@@ -121,14 +121,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     paddingVertical: 10,
     width: '100%',
-    backgroundColor: Colors.background
-  },
-  text: {
-    color: Colors.white,
-  },
-  header: {
-    fontSize: 20
-  },
+	backgroundColor: Colors.background
+},
+text: {
+  color: Colors.white,
+},
+header: {
+  fontSize: 20
+},
   details: {
     display: 'flex',
     flexDirection: 'row',

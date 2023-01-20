@@ -14,18 +14,24 @@ import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.util.Consumer;
 
+import com.fitsnitchapp.BuildConfig;
 import com.fitsnitchapp.LatLonPair;
 import com.fitsnitchapp.LocationForegroundService;
 import com.fitsnitchapp.R;
 import com.fitsnitchapp.Restaurant;
 import com.fitsnitchapp.SettingsManager;
+//import com.fitsnitchapp.SnitchActivity;
 import com.fitsnitchapp.SnitchActivity;
 import com.fitsnitchapp.SnitchTrigger;
+//import com.fitsnitchapp.api.ApiService;
+//import com.fitsnitchapp.api.CheckLocationRequest;
+//import com.fitsnitchapp.api.CreateSnitchRequest;
 import com.fitsnitchapp.api.ApiService;
 import com.fitsnitchapp.api.CheckLocationRequest;
 import com.fitsnitchapp.api.CreateSnitchRequest;
@@ -40,7 +46,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-@RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
 public class LocationLoopService extends IntentService {
     private static final String CHANNEL_ID = "FITSNITCH_SNITCHES";
     private static final String CHANNEL_NAME = "Active Snitch Warnings";
@@ -60,11 +65,13 @@ public class LocationLoopService extends IntentService {
     private static final int NOTIF_ID_SNITCHED = 1;
 
     private static long nextLocationAlarmTime;
-    public static final long IVAL_WARNING = 30000; // 30 seconds
-    public static final long IVAL_LOOP_SHORT = 60000; // 1 minute
-    // public static final long IVAL_LOOP_LONG = 30000;
-    public static final long IVAL_WILL_LEAVE = 30000;
-    public static final long IVAL_WILL_STAY = 60000 * 10; // 10 minutes
+
+    // Default values for PROD (overwritten for DEV below)
+    public static long IVAL_WARNING = 30000; // 30 seconds
+    public static long IVAL_LOOP_SHORT = 60000; // 1 minute
+    // public static long IVAL_LOOP_LONG = 30000;
+    public static long IVAL_WILL_LEAVE = 30000;
+    public static long IVAL_WILL_STAY = 60000 * 10; // 10 minutes
 
     public static final double SIGNIFICANT_RADIUS = 0.00001f;
 
@@ -76,6 +83,14 @@ public class LocationLoopService extends IntentService {
     public LocationLoopService() {
         super(LocationForegroundService.class.getName());
         mGson = new Gson();
+
+        if (BuildConfig.BUILD_TYPE == "debug") {
+            Log.i("***FIT", "Setting short loop times for debug");
+            IVAL_WARNING = 30000; // 30 seconds
+            IVAL_LOOP_SHORT = 30000; // 30 seconds
+            IVAL_WILL_LEAVE = 30000; // 30 seconds
+            IVAL_WILL_STAY = 60000; // 1 minute
+        }
     }
 
     public static SnitchTrigger getActiveSnitch() {
@@ -92,7 +107,6 @@ public class LocationLoopService extends IntentService {
      * Defaults to IVAL_LOOP_SHORT
      * @param newState
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public static void enterLoopState(LoopState newState) {
         Log.i("***FIT", "Entering loop state: "+newState.getClass().getSimpleName());
         loopState = newState;
@@ -110,14 +124,12 @@ public class LocationLoopService extends IntentService {
      * so some setup must happen here.
      * @param intent
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         setup();
         inspectLocation();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setup() {
         // This one must be recreated each time
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
@@ -149,7 +161,6 @@ public class LocationLoopService extends IntentService {
      * Only call this once per iteration!
      * @param ival How long to wait before the next iteration.
      */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     static void setNextAlarm(long ival) {
         nextLocationAlarmTime = System.currentTimeMillis() + ival;
         mAlarmManager.setExact(
@@ -171,14 +182,8 @@ public class LocationLoopService extends IntentService {
                 .setFastestInterval(0);
 
         mLocationCallback = new LocationCallback() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
-            public void onLocationResult(LocationResult locationResult) {
-                // If no result, just try again later
-                if (locationResult == null) {
-                    setNextAlarm(IVAL_LOOP_SHORT);
-                    return;
-                }
+            public void onLocationResult(@NonNull LocationResult locationResult) {
                 Location newLocation = locationResult.getLastLocation();
                 handleNewLocation(newLocation);
                 mFusedLocationClient.removeLocationUpdates(mLocationCallback);
@@ -188,7 +193,7 @@ public class LocationLoopService extends IntentService {
         new Handler(getMainLooper()).post(() -> mFusedLocationClient.requestLocationUpdates(
                 locationRequest,
                 mLocationCallback,
-                null
+                getMainLooper()
         ));
     }
 
@@ -198,7 +203,6 @@ public class LocationLoopService extends IntentService {
      * All paths MUST terminate with a call to setNextAlarm to keep
      * the loop going.
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void handleNewLocation(Location newLocation) {
         Log.i("*******FIT", "Location update!");
         loopState.handleNewLocation(newLocation);
@@ -246,7 +250,6 @@ public class LocationLoopService extends IntentService {
      */
     public static void checkForRestaurant(LatLonPair location, Consumer<Restaurant> cb) {
         ApiService.getClient().checkLocation(new CheckLocationRequest(location), new Callback<Restaurant>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void success(Restaurant restaurant, Response response) {
                 Log.i("*****FIT CHECK LOCATION", restaurant.name);
@@ -268,7 +271,6 @@ public class LocationLoopService extends IntentService {
      * Handles all setup for snitch warning state.
      * @param snitch
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
     static void beginSnitchWarning(SnitchTrigger snitch) {
         Log.i("***FIT", "Entering Snitch State!");
         activeSnitch = snitch;
@@ -287,7 +289,6 @@ public class LocationLoopService extends IntentService {
         return lastUsedCheatTime != null && activeSnitch != null && lastUsedCheatTime > activeSnitch.created;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     static void publishActiveSnitch() {
         String userId = settingsManager.getItem(SettingsManager.USER_ID);
         Log.i("****FIT", "SENDING SNITCH!! "+userId);
@@ -347,13 +348,11 @@ public class LocationLoopService extends IntentService {
                 .build();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     static void sendWarningNotification() {
         notificationManager.createNotificationChannel(mNotificationChannel);
         notificationManager.notify(0, warningNotification);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     static void sendSnitchedNotification() {
         notificationManager.notify(NOTIF_ID_SNITCHED, snitchedNotification);
     }
@@ -362,6 +361,5 @@ public class LocationLoopService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i("******FIT", "BACKGROUND SERVICE DESTROYED!!!");
     }
 }

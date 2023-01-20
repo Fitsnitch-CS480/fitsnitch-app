@@ -31,7 +31,6 @@ public class ActiveSnitchState extends LoopState {
         return IVAL_WARNING;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void handleNewLocation(Location location) {
         Log.i("***FIT", "Times up!");
         if (usedCheatForActiveSnitch()) {
@@ -61,7 +60,6 @@ public class ActiveSnitchState extends LoopState {
          */
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     private void doSnitch() {
         publishActiveSnitch();
         nextState(new StayingState());

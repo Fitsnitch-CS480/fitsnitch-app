@@ -2,11 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import Colors from '../../assets/constants/colors';
-import T from '../../assets/constants/text';
 import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
-import { globalContext } from '../../navigation/appNavigator';
+import { globalContext } from '../../views/appNavigator';
+import Colors from '../../assets/constants/colors';
+import T from '../../assets/constants/text';
 
 const TITLE = "Your Partners"
 
