@@ -3,17 +3,6 @@ apply plugin: "com.android.application"
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
 
-// Setup Environments
-// https://github.com/luggit/react-native-config#different-environments
-
-project.ext.envConfigFiles = [
-    debug: ".env.development",
-    release: ".env.production",
-]
-
-apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
-
-
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -152,7 +141,6 @@ android {
         versionCode 1
         versionName "1.0"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
-		resValue "string", "build_config_package", "com.fitsnitchapp"
 
         if (isNewArchitectureEnabled()) {
             // We configure the CMake build only if you decide to opt-in for the New Architecture.
@@ -326,14 +314,7 @@ task copyDownloadableDepsToLibs(type: Copy) {
     into 'libs'
 }
 
-
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-
-// RN Icon Fonts
-project.ext.vectoricons = [
-    iconFontNames: [ 'MaterialIcons.ttf' ] // Name of the font files you want to copy
-]
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 def isNewArchitectureEnabled() {
     // To opt-in for the New Architecture, you can either:

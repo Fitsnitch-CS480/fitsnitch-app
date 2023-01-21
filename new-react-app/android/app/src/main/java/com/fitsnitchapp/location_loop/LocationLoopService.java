@@ -84,7 +84,7 @@ public class LocationLoopService extends IntentService {
         super(LocationForegroundService.class.getName());
         mGson = new Gson();
 
-        if (BuildConfig.BUILD_TYPE == "debug") {
+        if ("BuildConfig.BUILD_TYPE" == "debug") {
             Log.i("***FIT", "Setting short loop times for debug");
             IVAL_WARNING = 30000; // 30 seconds
             IVAL_LOOP_SHORT = 30000; // 30 seconds
@@ -126,6 +126,7 @@ public class LocationLoopService extends IntentService {
      */
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        Log.i("***FIT", "Loop Intent Received!!!");
         setup();
         inspectLocation();
     }
