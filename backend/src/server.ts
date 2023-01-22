@@ -25,6 +25,7 @@ app.use(bodyParser.text({type: '*/*'}));
 
 app.post("/:path", async (req,res)=>{
     try {
+        console.log(req.params.path, req.body, typeof req.body)
         let albProxy: Partial<APIGatewayProxyEventV2> = {
             body: typeof req.body === 'object' ? JSON.stringify(req.body) : req.body
         }
@@ -45,7 +46,7 @@ app.post("/:path", async (req,res)=>{
             }
         }
         res.send(proxyRes.body);
-    
+        console.log(proxyRes)
     }
     catch (e:any) {
         console.log(e)
