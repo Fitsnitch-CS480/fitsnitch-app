@@ -50,11 +50,13 @@ const AuthWrapper: React.FC<{ input?: NativeInput }> = ({ input }) => {
 			const authentication = await EncryptedStorage.getItem("user_auth");
 			// console.log("authentication JSON:", authentication)
 			if (authentication) {
+				console.log("Found saved user. Attempting auth...");
 				let userCognitoData = await Auth.signIn(JSON.parse(authentication).email, JSON.parse(authentication).password)
 				//If we get a user back, setCurrentUser in mainNavigator.
 				// Use the UserID from Cognito to look up the User in our DB
+
 				let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
-				if (!user) throw new Error("Could not load user!")
+				if (!user) throw new Error("Could not load user from server!")
 				// Setting the user will trigger a navigation to the rest of the app
 				setAuthUser(user);
 				setLoading(false)
