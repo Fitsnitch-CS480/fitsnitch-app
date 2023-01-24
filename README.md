@@ -8,7 +8,29 @@ See the project wiki for more docs and resources: https://github.com/Fitsnitch-C
 - Install dependencies: `npm ci`
   - This command will only install exactly what is in the `package-lock.json` and will not attempt to update any packages.
 
-After that, make sure your environment is prepared to run either Android or iOS.
+### Environment Variables
+
+The dev server needs credentials to access AWS. Create a file at `backend/.env` with the following variables:
+
+``` bash
+AWS_ACCESS_KEY_ID="<get-a-valid-key>"
+AWS_SECRET_ACCESS_KEY="<secret-for-your-key>"
+```
+
+Talk to another dev about getting credentials.
+
+
+### aws-exports file
+
+You'll also need to create `react-native-app/aws-exports.js` because for some reason Amplify doesn't want that file in the git history.
+
+You can get the contents for that file from BitWarden.
+
+We want to stop using Amplify eventually so we'll just deal with it for now.
+
+## Local Environment
+
+Make sure your environment is prepared to run either Android or iOS emulators.
 
 ### Android Prep
 
