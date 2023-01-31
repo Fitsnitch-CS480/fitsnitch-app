@@ -6,9 +6,6 @@ import AuthWrapper from './views/authWrapper';
 
 Amplify.configure(config);
 
-// Init LogRocket
-import LogRocket from '@logrocket/react-native';
-LogRocket.init('p2dvb9/fitsnitch-dev') // Change this with env vars for prod!
 
 export default function App(props){
   console.log("*****FIT INITIAL PROPS", props)
