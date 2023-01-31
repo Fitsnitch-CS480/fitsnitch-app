@@ -65,10 +65,10 @@ public class LocationForegroundService extends Service {
         Intent i = new Intent(getApplicationContext(), LocationLoopService.class);
         locationLoopIntent = PendingIntent.getService(getApplicationContext(), 1, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Log.i("****FIT","starting loop!");
+        Log.i("****FITLOC","requesting first loop alarm");
         mAlarmManager.setExact(
                 AlarmManager.RTC,
-                System.currentTimeMillis() + 5000,
+                System.currentTimeMillis() + 1000,
                 locationLoopIntent
         );
     }

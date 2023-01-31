@@ -108,7 +108,7 @@ public class LocationLoopService extends IntentService {
      * @param newState
      */
     public static void enterLoopState(LoopState newState) {
-        Log.i("***FIT", "Entering loop state: "+newState.getClass().getSimpleName());
+        Log.i("***FITLOC", "Entering loop state: "+newState.getClass().getSimpleName());
         loopState = newState;
         long ival = newState.getInitialLoopIval();
         if (ival == 0) {
@@ -126,6 +126,7 @@ public class LocationLoopService extends IntentService {
      */
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
+        Log.i("****FITLOC","Received loop intent");
         setup();
         inspectLocation();
     }
@@ -176,6 +177,8 @@ public class LocationLoopService extends IntentService {
      */
     @SuppressLint("MissingPermission")
     private void inspectLocation() {
+        Log.i("****FITLOC","requesting current location");
+
         LocationRequest locationRequest = LocationRequest.create()
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(0)
@@ -184,6 +187,8 @@ public class LocationLoopService extends IntentService {
         mLocationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(@NonNull LocationResult locationResult) {
+                Log.i("****FITLOC","got location");
+
                 Location newLocation = locationResult.getLastLocation();
                 handleNewLocation(newLocation);
                 mFusedLocationClient.removeLocationUpdates(mLocationCallback);
@@ -204,7 +209,7 @@ public class LocationLoopService extends IntentService {
      * the loop going.
      */
     private void handleNewLocation(Location newLocation) {
-        Log.i("*******FIT", "Location update!");
+        Log.i("***FITLOC", "Handling new location");
         loopState.handleNewLocation(newLocation);
 
         // Save new location if change is significant

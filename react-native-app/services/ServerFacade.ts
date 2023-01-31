@@ -30,6 +30,8 @@ import Config from "react-native-config";
  */
 const apiBaseUrl = Config.API_URL;
 
+console.log("USING URL:",apiBaseUrl)
+
 function asRawString(data:string) {
   return `"${data}"`
 }
