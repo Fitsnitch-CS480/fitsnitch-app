@@ -1,75 +1,28 @@
 import React, { createContext, useEffect, useState } from "react";
 import AppNavigator from "./appNavigator";
 import { NavigationContainer } from "@react-navigation/native";
-import Auth from '@aws-amplify/auth';
 import User from "../shared/models/User";
-import EncryptedStorage from 'react-native-encrypted-storage';
 import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 import { NativeInput } from "../models/NativeInput";
 import LoginNavigator from "./auth/loginNavigator";
-import ServerFacade from "../services/ServerFacade";
 import Colors from "../assets/constants/colors";
+import AuthService from "../services/AuthService";
 
-export const authContext = createContext<{ setAuthUser: (user: User | null) => void, authUser: User | null }>({ authUser: null, setAuthUser: () => { } });
+export const authContext = createContext<{ setAuthUser: (user: User | undefined) => void, authUser: User | undefined }>({ authUser: undefined, setAuthUser: () => { } });
 
 const AuthWrapper: React.FC<{ input?: NativeInput }> = ({ input }) => {
-
 	const [loading, setLoading] = useState<boolean>(true);
-	const [authUser, setAuthUser] = useState<User | null>(null);
-
-	// This method uses Amplify to succesfully resurrect a user session without making
-	// them log in again. However, Filipe says he read that it is somehow insecure
-	// and not recommended. It's commented out and saved for later
-
-	// const attemptResumeSession = async() => {
-	//   console.log("looking for auth user")
-	//   try {
-	//     let cognitoUser = await Auth.currentAuthenticatedUser()
-	//     if (!cognitoUser) return null;
-	//     console.log("current authenticated user",cognitoUser.attributes)
-	//     let user = await ServerFacade.getUserById(cognitoUser.attributes.sub);   
-	//     // Setting the user will trigger a navigation to the rest of the app
-	//     if (!user) {
-	//       // If the user doesn't exist this is probably the first time they are logging in, so create them.
-	//       user = new User(cognitoUser.attributes.sub,cognitoUser.attributes.email,undefined,undefined,undefined)
-	//       await ServerFacade.createUser(user);
-	//     }
-	//     setCurrentUser(user); 
-	//     setLoading(false)
-	//   }
-	//   catch(e) {
-	//     console.log("Encountered error while checking for logged in user:", e)
-	//     setLoading(false)
-	//   }
-	// }
-
-
+	const [authUser, setAuthUser] = useState<User | undefined>(undefined);
 
 	const componentDidMount = async () => {
 		try {
-			const authentication = await EncryptedStorage.getItem("user_auth");
-			// console.log("authentication JSON:", authentication)
-			if (authentication) {
-				let userCognitoData = await Auth.signIn(JSON.parse(authentication).email, JSON.parse(authentication).password)
-				//If we get a user back, setCurrentUser in mainNavigator.
-				// Use the UserID from Cognito to look up the User in our DB
-				let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
-				if (!user) throw new Error("Could not load user!")
-				// Setting the user will trigger a navigation to the rest of the app
-				setAuthUser(user);
-				setLoading(false)
-				console.log("Logged in with previous user:", user)
-			}
-			else {
-				console.log("Could not get previous authentication.")
-			}
+			let user = await AuthService.attemptResumeSession();
+			if (user) setAuthUser(user);
 		}
 		catch (error) {
 			console.log('Failed persistent login: ', error);
 		}
-		finally {
-			setLoading(false)
-		}
+		setLoading(false)
 	}
 
 	useEffect(() => {
@@ -90,12 +43,11 @@ const AuthWrapper: React.FC<{ input?: NativeInput }> = ({ input }) => {
 		)
 	}
 
-
 	//If user is logged in, go to normal app screens. If not, go to the login screens. 
 	return (
 		<authContext.Provider value={{ authUser, setAuthUser }}>
 			<NavigationContainer>
-				{authUser !== null ? <AppNavigator input={input} authUser={authUser} /> : <LoginNavigator />}
+				{authUser !== undefined ? <AppNavigator input={input} authUser={authUser} /> : <LoginNavigator />}
 			</NavigationContainer>
 		</authContext.Provider>
 	)

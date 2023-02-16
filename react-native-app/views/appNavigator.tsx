@@ -18,7 +18,7 @@ import GetSnitchedView from "./GetSnitchedView";
 import Colors from "../assets/constants/colors";
 
 type props = {
-	authUser: User,
+	authUser?: User,
 	input?: NativeInput
 }
 
