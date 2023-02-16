@@ -48,18 +48,20 @@ To run the app locally, you need to first have the local server running:
 cd backend && npm run dev
 ```
 
+
+The above commands will start the server in dev mode which compile the Typescript and watch for changes.
+
+You will need to add a mapping to the port running the server on your machine. To do so, run the following commands:
+
+- Android (Windows cmd): `adb reverse tcp:4000 tcp:4000`
+- iOS: ???
+
+
+You can test the mapping by visiting `localhost:4000` in a browser on your emulator. It should simply return 'FitSnitch Server'.
+
 Now you're ready to run the app in an emulator! If you have everything setup right in your environment, that should be as simple as running the appropriate npm script:
 
 - Android: `cd react-native-app && npm run android`
 - iOS: `cd react-native-app && npm run ios`
 
 Either of those will spin up the Metro server (provides hot reloading for the React Native app itself) and the appropriate emulator.
-
-**NOTE:**
-If you are connecting to a physical device via USB, you will need to add a mapping to the port running the server on your machine. To do so, run the following commands:
-
-- Android (Windows cmd): `adb reverse tcp:4000 tcp:4000`
-- iOS: ???
-
-The above commands will start the server in dev mode which compile the Typescript and watch for changes.
-
