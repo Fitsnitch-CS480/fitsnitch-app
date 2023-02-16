@@ -1,12 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Platform, ActivityIndicator, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Auth } from '@aws-amplify/auth';
 import { authContext } from '../authWrapper';
-import ServerFacade from '../../services/ServerFacade';
-import User from '../../shared/models/User';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import NativeModuleService from '../../services/NativeModuleService';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
 import AuthService from '../../services/AuthService';
