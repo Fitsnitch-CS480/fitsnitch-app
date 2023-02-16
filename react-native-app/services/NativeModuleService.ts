@@ -1,14 +1,14 @@
-import { NativeModules } from "react-native";
+import { NativeModules, NativeEventEmitter, Platform, AppState, PermissionsAndroid } from "react-native";
 import SnitchTrigger from "../shared/models/SnitchTrigger";
 
 
 interface NativeModule {
-    stopBackgroundLocation(): void;
-    startBackgroundLocation(): void;
-    getActiveSnitch(cb: (json: string)=>void): void;
-    // setWillLeave(): void;
-    setUsedCheat(): void;
-    saveUserId(id: string): void;
+	stopBackgroundLocation(): void;
+	startBackgroundLocation(): void;
+	getActiveSnitch(cb: (json: string) => void): void;
+	// setWillLeave(): void;
+	setUsedCheat(): void;
+	saveUserId(id: string): void;
 }
 
 class NativeModuleService {
@@ -20,15 +20,56 @@ class NativeModuleService {
 		this.isInitialized = true;
 	}
 
-    getModule(): NativeModule {
-        return NativeModules.LocationManager;
-    }
+	getModule(): NativeModule {
+		return NativeModules.LocationManager;
+	}
 
-    getActiveSnitch(cb: (snitch: SnitchTrigger)=>void): void {
-        this.getModule().getActiveSnitch(lastSnitch => {
-            cb(JSON.parse(lastSnitch));
-        });
-    }
+	getActiveSnitch(cb: (snitch: SnitchTrigger) => void): void {
+		this.getModule().getActiveSnitch(lastSnitch => {
+			cb(JSON.parse(lastSnitch));
+		});
+	}
+
+	async checkPermissions() {
+		try {
+			if (Platform.OS === "ios") {
+
+			}
+			else if (Platform.OS === "android") {
+				let granted = await PermissionsAndroid.request(
+					PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+					{
+						title: 'FitSnitch Permission',
+						message:
+							'FitSnitch needs to access your location in order to work',
+						buttonNegative: 'Cancel',
+						buttonPositive: 'OK',
+					}
+				);
+
+				if (granted !== "granted") {
+					return granted;
+				}
+
+				granted = await PermissionsAndroid.request(
+					PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+					{
+						title: 'FitSnitch Permission',
+						message:
+							'FitSnitch needs to access your location in order to work',
+						buttonNegative: 'Cancel',
+						buttonPositive: 'OK',
+					},
+				);
+
+				return granted;
+			}
+
+		} catch (err) {
+			console.warn(err);
+			return false;
+		}
+	};
 }
 
 export default new NativeModuleService();

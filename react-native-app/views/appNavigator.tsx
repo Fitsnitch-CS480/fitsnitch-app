@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import OtherUserProfile from './profile/OtherUserProfile';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -34,6 +34,10 @@ export var globalContext: React.Context<{
 }>;
 
 const AppNavigator: React.FC<props> = ({ authUser, input }) => {
+	useEffect(()=>{
+		NativeModuleService.checkPermissions();
+	}, []);
+
 	if (!authUser) return null;
 
 	let START_SCREEN = 'Tabs';
