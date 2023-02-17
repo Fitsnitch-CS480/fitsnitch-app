@@ -1,14 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import ClientTrainerService from '../../backend/services/ClientTrainerService';
-import PageSection from '../../components/PageSection';
+import ClientTrainerService from '../../services/ClientTrainerService';
+import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
 import User from '../../shared/models/User';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { notifyMessage } from '../../utils/UiUtils';
 import Badge from '../../components/Badge';
-import { globalContext } from '../../navigation/appNavigator';
+import { globalContext } from '../appNavigator';
 import { observer } from 'mobx-react-lite';
 
 const TITLE = "Trainer Requests"
@@ -39,7 +39,7 @@ const TrainerRequests = observer(() => {
   }
 
   return (
-    <PageSection title={TITLE} headerRight={<Badge qty={requests.length} size={25} />}>
+    <Card title={TITLE} headerRight={<Badge qty={requests.length} size={25} />}>
       { requests.map((client,i)=>(
         <View key={client.userId}>
         <View style={styles.resultRow}>
@@ -53,7 +53,7 @@ const TrainerRequests = observer(() => {
         { (i < requests.length - 1) ? <View style={styles.divider} /> : null}
         </View>
       ))}
-    </PageSection>
+    </Card>
   );
 });
 

@@ -7,7 +7,7 @@ import { MatIconName } from "./MatIconName";
 interface Props {
   children?: ReactNode,
   icon?: MatIconName,
-  primary?: boolean,
+  primary?: boolean, 
   secondary?: boolean,
   color?: string,
   textColor?: string,

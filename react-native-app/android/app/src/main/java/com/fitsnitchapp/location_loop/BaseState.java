@@ -20,7 +20,6 @@ public class BaseState extends LoopState {
         return IVAL_LOOP_SHORT;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void handleNewLocation(Location location) {
         LatLonPair triggerLocation = new LatLonPair(location.getLatitude(), location.getLongitude());
 

@@ -9,7 +9,7 @@
     "build": "webpack",
     "test": "jest",
     "test:watch": "jest --watch",
-    "dev": "concurrently \"npm:build:dev\" \"npm:start:dev\"",
+    "dev": "tsc && concurrently -n \"build,run\" \"npm:build:dev\" \"npm:start:dev\"",
     "start:dev": "nodemon dev-dist/backend/src/server.js",
     "build:dev": "tsc --watch --preserveWatchOutput --outDir dev-dist"
   },

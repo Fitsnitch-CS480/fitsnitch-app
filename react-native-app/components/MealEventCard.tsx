@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ServerFacade from '../backend/ServerFacade';
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
-import moment from 'moment';
-import { globalContext } from '../navigation/appNavigator';
+import dayjs from 'dayjs';
+import { globalContext } from '../views/appNavigator';
+import ServerFacade from '../services/ServerFacade';
 import Colors from '../assets/constants/colors';
 
 export type Props = {
@@ -32,6 +32,7 @@ const CheatMealEventCard: React.FC<Props> = ({
     }
   }
 
+
   // function shareMeal(meal:CheatMealEvent) {
   //   new CheatMealService().shareMeal(meal,mealOwner)
   // }
@@ -52,7 +53,7 @@ const CheatMealEventCard: React.FC<Props> = ({
     <View style={styles.container}>
       <ProfileImage user={mealOwner} size={40}></ProfileImage>
       <View style={{marginLeft:10, flexGrow:1}}>
-        <Text style={[styles.text, styles.header]}>{mealOwner.firstname} {mealOwner.lastname}</Text>
+	  	<Text style={[styles.text, styles.header]}>{mealOwner.firstname} {mealOwner.lastname}</Text>
         <View style={styles.details}>
           <View style={styles.detailRow}>
             <View style={styles.detailRowIcon}><Icon name="place" color="#888" size={20}></Icon></View>
@@ -60,7 +61,7 @@ const CheatMealEventCard: React.FC<Props> = ({
           </View>
           <View style={styles.detailRow}>
           <View style={styles.detailRowIcon}><Icon name="event" color="#888" size={18}></Icon></View>
-            <Text style={styles.text}>{getRelativeTime(meal.created)}</Text>
+		  	<Text style={styles.text}>{getRelativeTime(meal.created)}</Text>
           </View>
     
           {/* <View style={styles.shareButton} onTouchEnd={()=>shareMeal(meal)}><Icon name="share" size={20}></Icon></View> */}
@@ -72,11 +73,12 @@ const CheatMealEventCard: React.FC<Props> = ({
 };
 
 function getRelativeTime(time:any) {
-  if (moment().diff(time, 'd') >= 1) {
-    return moment(time).format('MMM D, YYYY')
+  if (dayjs().diff(time, 'd') >= 1) {
+    return dayjs(time).format('MMM D, YYYY')
   }
-  return moment(time).fromNow()
+  return dayjs(time).fromNow()
 }
+
 
 const styles = StyleSheet.create({
   container: {

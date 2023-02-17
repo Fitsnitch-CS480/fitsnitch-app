@@ -4,9 +4,9 @@ import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
-import PageSection from '../../components/PageSection';
+import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
-import { globalContext } from '../../navigation/appNavigator';
+import { globalContext } from '../../views/appNavigator';
 
 const TITLE = "Your Clients"
 
@@ -18,22 +18,23 @@ const CurrentClients = observer(() => {
 
   if (clientStore.loading) {
     return (
-    <PageSection title={TITLE}>
+    <Card title={TITLE}>
       <ActivityIndicator color={Colors.lightBlue} size={30} />
-    </PageSection>
+    </Card>
     )
   }
   
   if (clients.length === 0) {
     return (
-      <PageSection title={TITLE}>
+      <Card title={TITLE}>
         <Text style={styles.text}>{T.people.client.noClient}</Text>
-      </PageSection>
+      </Card>
     )
   }
 
+
   return (
-    <PageSection title={TITLE}>
+    <Card title={TITLE}>
       { clients.map((client,i)=>(
         <View key={client.userId}>
           <View style={styles.resultRow} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: client})}}>
@@ -43,7 +44,7 @@ const CurrentClients = observer(() => {
           { (i < clients.length - 1) ? <View style={styles.divider} /> : null}
         </View>
       ))}
-    </PageSection>
+    </Card>
   );
 });
 

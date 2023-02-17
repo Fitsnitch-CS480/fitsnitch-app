@@ -2,19 +2,19 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { Button, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Colors from '../assets/constants/colors';
-import T from '../assets/constants/text';
-import UserDataService from '../backend/services/UserDataService';
+import UserDataService from '../services/UserDataService';
 import ProfileImage from '../components/ProfileImage';
-import { globalContext } from '../navigation/appNavigator';
+import { globalContext } from '../views/appNavigator';
 import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import User from '../shared/models/User';
+import Colors from '../assets/constants/colors';
+import T from '../assets/constants/text';
 
 type state = {
   results: User[],
   lastPageBreakKey?: string,
   loading: boolean,
-  query?: string
+  query?:string
 }
 
 const PAGE_SIZE = 20;
@@ -51,6 +51,7 @@ const UserSearch: React.FC = () => {
       lastPageBreakKey: page.pageBreakKey
     })
   }
+
 
   async function loadMoreResults() {
     if (!state.query) return;

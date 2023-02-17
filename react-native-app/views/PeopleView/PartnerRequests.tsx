@@ -1,14 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import PartnerAssociationService from '../../backend/services/PartnerAssociationService';
-import PageSection from '../../components/PageSection';
+import PartnerAssociationService from '../../services/PartnerAssociationService';
+import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
 import User from '../../shared/models/User';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { notifyMessage } from '../../utils/UiUtils';
 import Badge from '../../components/Badge';
-import { globalContext } from '../../navigation/appNavigator';
+import { globalContext } from '../appNavigator';
 import { observer } from 'mobx-react-lite';
 
 const TITLE = "Partner Requests"
@@ -39,7 +39,7 @@ const PartnerRequests = observer(() => {
   }
 
   return (
-    <PageSection title={TITLE} headerRight={<Badge qty={requesters.length} size={25} />}>
+    <Card title={TITLE} headerRight={<Badge qty={requesters.length} size={25} />}>
       { requesters.map((requester,i)=>(
         <View key={requester.userId}>
           <View style={styles.resultRow}>
@@ -53,7 +53,7 @@ const PartnerRequests = observer(() => {
           { (i < requesters.length - 1) ? <View style={styles.divider} /> : null}
         </View>
       ))}
-    </PageSection>
+    </Card>
   );
 });
 

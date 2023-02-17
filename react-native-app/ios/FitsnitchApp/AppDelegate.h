@@ -1,12 +1,6 @@
-#import <React/RCTBridgeDelegate.h>
-#import <Expo/Expo.h>
+#import <RCTAppDelegate.h>
 #import <UIKit/UIKit.h>
 
-@import UserNotifications.UNUserNotificationCenter;
-@import AWSPinpoint;
- 
-@interface AppDelegate : EXAppDelegateWrapper <UIApplicationDelegate, RCTBridgeDelegate>
-+ (AWSPinpoint*) pinpoint:(AWSPinpointConfiguration*) pinpointConfiguration;
-@property (nonatomic, strong) UIWindow *window;
+@interface AppDelegate : RCTAppDelegate
 
 @end

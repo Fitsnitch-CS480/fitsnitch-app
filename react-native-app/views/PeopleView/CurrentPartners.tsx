@@ -2,11 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import { observer } from 'mobx-react-lite';
 import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import Card from '../../components/Card';
+import ProfileImage from '../../components/ProfileImage';
+import { globalContext } from '../../views/appNavigator';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
-import PageSection from '../../components/PageSection';
-import ProfileImage from '../../components/ProfileImage';
-import { globalContext } from '../../navigation/appNavigator';
 
 const TITLE = "Your Partners"
 
@@ -19,22 +19,22 @@ const CurrentPartners = observer(() => {
 
   if (partnerStore.loading) {
     return (
-      <PageSection title={TITLE}>
+      <Card title={TITLE}>
         <ActivityIndicator color={Colors.red} size={30} />
-      </PageSection>
+      </Card>
     )
   }
 
   if (partners.length === 0) {
     return (
-      <PageSection title={TITLE}>
+      <Card title={TITLE}>
         <Text>{T.people.partner.noPartner}</Text>
-      </PageSection>
+      </Card>
     )
   }
 
   return (
-    <PageSection title={TITLE}>
+    <Card title={TITLE}>
       { partners.map((client,i)=>(
         <View key={client.userId}>
           <View style={styles.resultRow} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: client})}}>
@@ -44,7 +44,7 @@ const CurrentPartners = observer(() => {
           { (i < partners.length - 1) ? <View style={styles.divider} /> : null}
         </View>
       ))}
-    </PageSection>
+    </Card>
   );
 });
 export default CurrentPartners;

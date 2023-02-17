@@ -31,8 +31,6 @@ public class SnitchActivity extends ReactActivity {
 
   public static class TestActivityDelegate extends ReactActivityDelegate {
 
-
-    private static final String TEST = "test";
     private Bundle mInitialProps = null;
     private final
     @Nullable
@@ -58,7 +56,7 @@ public class SnitchActivity extends ReactActivity {
       Log.i("***FIT", "NEW INTENT!");
       mInitialProps = mActivity.getIntent().getExtras();
       if (mInitialProps != null) {
-        Log.i("***FIT", "Intent Action: "+mInitialProps.getString("META_DATA"));
+        Log.i("***FIT", "Snitch Activity: Intent Action: "+mInitialProps.getString("META_DATA"));
         LocationModule.sendEventToJS("NEW_PROPS", mInitialProps);
       }
       return super.onNewIntent(intent);
@@ -66,27 +64,13 @@ public class SnitchActivity extends ReactActivity {
 
     @Override
     protected Bundle getLaunchOptions() {
-      Log.i("***FIT", "LOADING PROPS");
+      Log.i("***FIT", "Snitch Activity: LOADING PROPS");
       return mInitialProps;
     }
   }
 
-
-  static public void registerLocationModule(LocationModule module) {
-    locationModule = module;
-  }
-
-  static public void deRegisterLocationModule() {
-    locationModule = null;
-  }
-
-  static boolean isOpen() {
-    return locationModule != null;
-  }
-
   @Override
   protected void onDestroy() {
-    deRegisterLocationModule();
     super.onDestroy();
   }
 }

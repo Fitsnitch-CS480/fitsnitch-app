@@ -2,6 +2,7 @@ import { APIGatewayProxyEventV2 } from "aws-lambda";
 import { ProxyResultWrapper } from "./utils/LambdaUtils";
 import { handler as cheatmealCreate } from "./handlers/cheatmeal-create";
 import { handler as cheatmealGetForUser } from "./handlers/cheatmeal-get-for-users";
+import { handler as cheatmealGet } from "./handlers/cheatmeal-get";
 import { handler as checkForRestaurant } from "./handlers/check-for-restaurant";
 import { handler as partnerGetForUser } from "./handlers/partner-get-for-user";
 import { handler as partnerGetRequesters } from "./handlers/partner-get-requesters";
@@ -54,4 +55,5 @@ export const handlers: {[key:string]:(event:APIGatewayProxyEventV2)=>Promise<Pro
     "/push-snitch-notification" : pushSnitchNotification,
     "/cheatmeal-create" : cheatmealCreate,
     "/cheatmeal-get-for-users" : cheatmealGetForUser,
+    "/cheatmeal-get" : cheatmealGet,
 }

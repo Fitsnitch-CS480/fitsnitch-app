@@ -1,18 +1,16 @@
 package com.fitsnitchapp;
+
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import expo.modules.ReactActivityDelegateWrapper;
-import com.facebook.react.ReactActivityDelegate;
-
 import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.ReactRootView;
 
 public class MainActivity extends ReactActivity {
-
   private static LocationModule locationModule;
 
   /**
@@ -21,45 +19,63 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "FitsnitchApp";
+    return "fitsnitchapp";
   }
 
+  /**
+   * Returns the instance of the {@link ReactActivityDelegate}. There the RootView is created and
+   * you can specify the renderer you wish to use - the new renderer (Fabric) or the old renderer
+   * (Paper).
+   */
   @Override
   protected ReactActivityDelegate createReactActivityDelegate() {
-    return new TestActivityDelegate(this, getMainComponentName());
+    return new MainActivityDelegate(this, getMainComponentName());
   }
 
+  public static class MainActivityDelegate extends ReactActivityDelegate {
 
-  public static class TestActivityDelegate extends ReactActivityDelegate {
-
-
-    private static final String TEST = "test";
     private Bundle mInitialProps = null;
     private final
     @Nullable
     Activity mActivity;
 
-    public TestActivityDelegate(Activity activity, String mainComponentName) {
+    public MainActivityDelegate(ReactActivity activity, String mainComponentName) {
       super(activity, mainComponentName);
       this.mActivity = activity;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-      Log.i("***FIT", "ON CREATE!!!!");
       mInitialProps = mActivity.getIntent().getExtras();
       if (mInitialProps != null) {
-        Log.i("***FIT", "Intent Action: "+mInitialProps.getString("ACTION"));
+        Log.i("***FIT", "Main Activity: Intent Action: "+mInitialProps.getString("ACTION"));
       }
       super.onCreate(savedInstanceState);
     }
 
     @Override
     protected Bundle getLaunchOptions() {
-      Log.i("***FIT", "LOADING PROPS");
+      Log.i("***FIT", "Main Activity: LOADING PROPS");
       return mInitialProps;
     }
+
+    @Override
+    protected ReactRootView createRootView() {
+      ReactRootView reactRootView = new ReactRootView(getContext());
+      // If you opted-in for the New Architecture, we enable the Fabric Renderer.
+      reactRootView.setIsFabric(BuildConfig.IS_NEW_ARCHITECTURE_ENABLED);
+      return reactRootView;
+    }
+
+    @Override
+    protected boolean isConcurrentRootEnabled() {
+      // If you opted-in for the New Architecture, we enable Concurrent Root (i.e. React 18).
+      // More on this on https://reactjs.org/blog/2022/03/29/react-v18.html
+      return BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
+    }
   }
+
+
 
 
   static public void registerLocationModule(LocationModule module) {
