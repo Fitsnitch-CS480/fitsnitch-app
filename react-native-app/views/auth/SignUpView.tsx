@@ -18,8 +18,6 @@ import {
 } from 'amazon-cognito-identity-js';
 import PoolData from '../../services/PoolData';
 import * as AWS from 'aws-sdk/global';
-import AmazonCognitoIdentity from 'amazon-cognito-identity-js';
-import poolData from '../../services/PoolData';
 
 const SignUpView : React.FC = () => {
 
@@ -121,7 +119,7 @@ const SignUpView : React.FC = () => {
 
   const signUpFunction = async () => {
 
-    const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    const userPool = new CognitoUserPool(PoolData);
 
     const attributeList:any[] = [];
         
@@ -143,8 +141,8 @@ const SignUpView : React.FC = () => {
         Value: newphoneNumber,
       };
 
-      const attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
-      const attributePhoneNumber = new AmazonCognitoIdentity.CognitoUserAttribute(
+      const attributeEmail = new CognitoUserAttribute(dataEmail);
+      const attributePhoneNumber = new CognitoUserAttribute(
         dataPhoneNumber
       );
 
@@ -165,10 +163,17 @@ const SignUpView : React.FC = () => {
           await ServerFacade.createUser(user);
           
           //Move to confirmation screen, user should get code in email.
-          navigation.navigate('confirmation', {
-            email,
-            password,
-            newphoneNumber
+          // navigation.navigate('confirmation', {
+          //   email,
+          //   password,
+          //   newphoneNumber
+          // });
+          cognitoUser.confirmRegistration('123456', true, function(err, result) {
+            if (err) {
+              Alert.alert(err.message || JSON.stringify(err));
+              return;
+            }
+            console.log('call result: ' + result);
           });
       });
       // await Auth.signUp({

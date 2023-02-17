@@ -16,6 +16,7 @@ import {
   } from 'amazon-cognito-identity-js';
 import PoolData from '../../services/PoolData';
 import * as AWS from 'aws-sdk/global';
+import ServerFacade from '../../services/ServerFacade';
 
 
 export default function LoginView() {
@@ -68,7 +69,38 @@ export default function LoginView() {
 								// example: var s3 = new AWS.S3();
 								console.log("result", {result});
 								console.log('Successfully logged!');
-								setLoading(false);
+								cognitoUser.getUserAttributes(async (err, result:any) => {
+									if (err) {
+										Alert.alert(err.message || JSON.stringify(err));
+										return;
+									}
+									let tempUser:any = {id: '', email: ''};
+									for (let i = 0; i < result.length; i++) {
+										console.log(
+											'attribute ' + result[i].getName() + ' has value ' + result[i].getValue()
+										);
+										const field = result[i].getName();
+										const value = result[i].getValue();
+										if(field === 'sub'){
+											tempUser = {
+												...tempUser,
+												id: value
+											}
+										}
+										if(field === 'email'){
+											tempUser = {
+												...tempUser,
+												email: value
+											}
+										}
+									}
+									console.log("user result", {tempUser});
+									console.log("user result ", tempUser.id);
+									const user = await ServerFacade.getUserById(tempUser.email);
+									setLoading(false);
+									setAuthUser(user);
+								});
+								
 								// setAuthUser(result);
 							}
 						});
@@ -77,6 +109,7 @@ export default function LoginView() {
 					onFailure: function(err) {
 						console.log("step Err: ", {err});
 						Alert.alert(err.message || JSON.stringify(err));
+						setLoading(false);
 					},
 				});
 				// let user = await AuthService.attemptLogin(email, password);
@@ -90,6 +123,7 @@ export default function LoginView() {
 					navigation.navigate('confirmation', {
 						email,
 					});
+					setLoading(false);
 				}
 				else {
 					console.log('Could not log in', err);
