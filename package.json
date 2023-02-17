@@ -3,5 +3,13 @@
 		"dev:android": "npx concurrently -n \"Android,Server\" \"npm run run:android\" \"npm run run:server\"",
 		"run:android": "cd react-native-app && npm run android",
 		"run:server": "cd backend && npm run dev"
+	},
+	"dependencies": {
+		"amazon-cognito-identity-js": "^6.1.2",
+		"aws-sdk": "^2.1317.0",
+		"jsonwebtoken": "^9.0.0",
+		"jwk-to-pem": "^2.0.5",
+		"node-fetch": "^3.3.0",
+		"request": "^2.88.2"
 	}
 }

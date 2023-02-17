@@ -21,6 +21,7 @@ const AuthService = {
 	},
 
 	async attemptLogin(email, password): Promise<User | undefined> {
+		console.log({Auth});
 		let userCognitoData = await Auth.signIn(email, password);
 		if (!userCognitoData) {
 			throw new Error("Failed to authenticate with given credentials");

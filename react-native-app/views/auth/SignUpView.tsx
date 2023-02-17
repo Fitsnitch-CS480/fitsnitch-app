@@ -7,6 +7,19 @@ import ServerFacade from '../../services/ServerFacade';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import {isEmpty} from 'lodash';
+import {
+  AuthenticationDetails,
+  CognitoUserPool,
+  CognitoUser,
+  CognitoUserAttribute,
+  ICognitoUserAttributeData,
+  ISignUpResult,
+  CognitoUserSession,
+} from 'amazon-cognito-identity-js';
+import PoolData from '../../services/PoolData';
+import * as AWS from 'aws-sdk/global';
+import AmazonCognitoIdentity from 'amazon-cognito-identity-js';
+import poolData from '../../services/PoolData';
 
 const SignUpView : React.FC = () => {
 
@@ -107,6 +120,10 @@ const SignUpView : React.FC = () => {
   }
 
   const signUpFunction = async () => {
+
+    const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
+    const attributeList:any[] = [];
         
     if (email.length > 4 && password.length > 2) {
       let newphoneNumber = phoneNumber;
@@ -116,20 +133,35 @@ const SignUpView : React.FC = () => {
         //onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
         newphoneNumber = "+1".concat(phoneNumber)
       }
+      const dataEmail = {
+        Name: 'email',
+        Value: email,
+      };
       
-      await Auth.signUp({
-        username : email,
-        password : password,
-        attributes: {
-          email : email,
-          phone_number : newphoneNumber,
+      const dataPhoneNumber = {
+        Name: 'phone_number',
+        Value: newphoneNumber,
+      };
+
+      const attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
+      const attributePhoneNumber = new AmazonCognitoIdentity.CognitoUserAttribute(
+        dataPhoneNumber
+      );
+
+      attributeList.push(attributeEmail);
+      attributeList.push(attributePhoneNumber);
+
+      userPool.signUp(email, password, attributeList, [], async (
+        err:any,
+        result:any
+      ) => {
+        if (err) {
+          Alert.alert(err.message || JSON.stringify(err));
+          return;
         }
-      })
-        .then(async (cognitoSignUp) => {
-          console.log('Return from signUp information: ', cognitoSignUp);
-          
-          // Create User in DynamoDB too
-          let user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber)
+        const cognitoUser = result.user;
+        console.log('user name is ' + cognitoUser.getUsername());
+        let user = new User(cognitoUser.getUsername() ,firstName, lastName, undefined, newphoneNumber);
           await ServerFacade.createUser(user);
           
           //Move to confirmation screen, user should get code in email.
@@ -138,11 +170,33 @@ const SignUpView : React.FC = () => {
             password,
             newphoneNumber
           });
-        })
-        .catch((err) => {
-          console.log('Error when signing up: ', err);
-          Alert.alert(T.error.tryAgain, err.message || err);
-        });
+      });
+      // await Auth.signUp({
+      //   username : email,
+      //   password : password,
+      //   attributes: {
+      //     email : email,
+      //     phone_number : newphoneNumber,
+      //   }
+      // })
+      //   .then(async (cognitoSignUp) => {
+      //     console.log('Return from signUp information: ', cognitoSignUp);
+          
+      //     // Create User in DynamoDB too
+      //     let user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber)
+      //     await ServerFacade.createUser(user);
+          
+      //     //Move to confirmation screen, user should get code in email.
+      //     navigation.navigate('confirmation', {
+      //       email,
+      //       password,
+      //       newphoneNumber
+      //     });
+      //   })
+      //   .catch((err) => {
+      //     console.log('Error when signing up: ', err);
+      //     Alert.alert(T.error.tryAgain, err.message || err);
+      //   });
     } else {
       setErrorMessage(T.error.provideValidEmailPassword);
       Alert.alert('Error:', errorMessage);
