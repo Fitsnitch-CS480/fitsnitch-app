@@ -38,8 +38,12 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 		NativeModuleService.checkPermissions();
 	}, []);
 
+	console.log("YAY logged in: ", authUser);
+	console.log("Here is input: ", input);
 	if (!authUser) return null;
 
+	console.log("YAY logged in: ", authUser);
+	console.log("Here is input: ", input);
 	let START_SCREEN = 'Tabs';
 	let snitchProps = {};
 

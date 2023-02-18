@@ -7,6 +7,7 @@ import { NativeInput } from "../models/NativeInput";
 import LoginNavigator from "./auth/loginNavigator";
 import Colors from "../assets/constants/colors";
 import AuthService from "../services/AuthService";
+import { isEmpty } from "lodash";
 
 export const authContext = createContext<{ setAuthUser: (user: User | undefined) => void, authUser: User | undefined }>({ authUser: undefined, setAuthUser: () => { } });
 
@@ -47,7 +48,7 @@ const AuthWrapper: React.FC<{ input?: NativeInput }> = ({ input }) => {
 	return (
 		<authContext.Provider value={{ authUser, setAuthUser }}>
 			<NavigationContainer>
-				{authUser !== undefined ? <AppNavigator input={input} authUser={authUser} /> : <LoginNavigator />}
+				{!isEmpty(authUser) ? <AppNavigator input={input} authUser={authUser} /> : <LoginNavigator />}
 			</NavigationContainer>
 		</authContext.Provider>
 	)
