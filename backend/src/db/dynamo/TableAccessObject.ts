@@ -59,7 +59,7 @@ export default class TableAccessObject<T> {
      */
     async createOrUpdate(data:T): Promise<void> {
         let item = {};
-        for (let [key, val] of Object.entries(data)) item[key] = val;
+        for (let [key, val] of Object.entries(data || {})) item[key] = val;
 
         const params = {
             TableName: this.name,

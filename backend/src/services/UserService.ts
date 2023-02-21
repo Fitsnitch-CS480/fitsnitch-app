@@ -1,8 +1,19 @@
 import { UserSearchRequest, UserSearchResponse } from "../../../react-native-app/shared/models/requests/UserSearchRequest";
 import User from "../../../react-native-app/shared/models/User";
+import Login from "../../../react-native-app/shared/models/Login";
+import SignUp from "../../../react-native-app/shared/models/SignUp";
 import DaoFactory from "../db/DaoFactory";
 
 export default class UserService {
+
+    async login(data:Login):Promise<User|undefined> {
+        return await DaoFactory.getUserDao().login(data);
+    }
+
+    async signUp(data: SignUp):Promise<User|undefined> {
+        return await DaoFactory.getUserDao().signUp(data);
+    }
+
     async createUser(data: User) {
         await DaoFactory.getUserDao().createUser(data);
     }

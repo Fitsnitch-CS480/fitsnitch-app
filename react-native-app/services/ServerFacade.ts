@@ -15,6 +15,8 @@ import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchReque
 import { LatLonPair } from '../shared/models/CoordinateModels';
 import { GetCheatMealRequest } from '../shared/models/requests/GetCheatMealRequest';
 import Config from "react-native-config";
+import Login from '../shared/models/Login';
+import SignUp from '../shared/models/SignUp';
 
 /**
  * Acts as a Facade to the FitSnitch server. All network requests to the server should go through
@@ -84,6 +86,15 @@ class ExecutionError<T> extends ExecutionResult<T> {
 }
 
  export default class ServerFacade {
+
+  static async signUp(request: SignUp): Promise<any> {
+    let res = await executeRequest<User|null>("/sign_up", request)
+    return res.data as User
+  }
+  static async login(request: Login): Promise<User|undefined> {
+    let res = await executeRequest<User|null>("/login", request)
+    return res.data as User
+  }
 
   static async getUserById(userId: string): Promise<User|undefined> {
     let res = await executeRequest<User|null>("/user_get", asRawString(userId))

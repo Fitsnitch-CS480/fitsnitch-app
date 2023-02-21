@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-import Auth from '@aws-amplify/auth';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
 //Change these to something default, just use these for now for testing
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
+import ServerFacade from '../../services/ServerFacade';
 
 type TProps = {
   route: any;
@@ -19,30 +18,18 @@ const Confirmation : React.FC<TProps> = ({route}) => {
     const navigation = useNavigation<any>();
     const [authCode, setAuthCode] = useState('');
     const [error, setError] = useState(' ');
-    const {email} = route.params;
+    const {cognitoUser} = route.params;
 
     const confirmSignUp = async () => {
       if (authCode.length > 0) {
-        await Auth.confirmSignUp(email, authCode)
-          .then(() => {
-            navigation.navigate('login');
-          })
-          .catch((err) => {
-            if (!err.message) {
-              setError('Something went wrong, please contact support!');
-            } else {
-              setError(err.message);
-            }
-          });
+        // create serverfacade function in backend to make confirmation. 
       } else {
         setError('You must enter confirmation code');
       }
     };
   
     const resendConfirmationCode = async () => {
-		await Auth.resendSignUp(
-		  email
-		)
+      // create serverfacade function in backend to resend confirmation code. 
 	  }
 	
   return (

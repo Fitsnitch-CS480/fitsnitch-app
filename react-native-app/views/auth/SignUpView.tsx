@@ -7,17 +7,6 @@ import ServerFacade from '../../services/ServerFacade';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import {isEmpty} from 'lodash';
-import {
-  AuthenticationDetails,
-  CognitoUserPool,
-  CognitoUser,
-  CognitoUserAttribute,
-  ICognitoUserAttributeData,
-  ISignUpResult,
-  CognitoUserSession,
-} from 'amazon-cognito-identity-js';
-import PoolData from '../../services/PoolData';
-import * as AWS from 'aws-sdk/global';
 
 const SignUpView : React.FC = () => {
 
@@ -118,90 +107,27 @@ const SignUpView : React.FC = () => {
   }
 
   const signUpFunction = async () => {
-
-    const userPool = new CognitoUserPool(PoolData);
-
-    const attributeList:any[] = [];
         
     if (email.length > 4 && password.length > 2) {
       let newphoneNumber = phoneNumber;
       //may need to take this out of the signUpFunction since it's not doing the change immediatly as the Auth.signUp gets called
       if (!isEmpty(newphoneNumber) && !newphoneNumber.includes("+1"))
       {
-        //onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
         newphoneNumber = "+1".concat(phoneNumber)
       }
-      const dataEmail = {
-        Name: 'email',
-        Value: email,
-      };
-      
-      const dataPhoneNumber = {
-        Name: 'phone_number',
-        Value: newphoneNumber,
-      };
 
-      const attributeEmail = new CognitoUserAttribute(dataEmail);
-      const attributePhoneNumber = new CognitoUserAttribute(
-        dataPhoneNumber
-      );
-
-      attributeList.push(attributeEmail);
-      attributeList.push(attributePhoneNumber);
-
-      userPool.signUp(email, password, attributeList, [], async (
-        err:any,
-        result:any
-      ) => {
-        if (err) {
-          Alert.alert(err.message || JSON.stringify(err));
-          return;
-        }
-        const cognitoUser = result.user;
-        console.log('user name is ' + cognitoUser.getUsername());
-        let user = new User(cognitoUser.getUsername() ,firstName, lastName, undefined, newphoneNumber);
-          await ServerFacade.createUser(user);
-          
-          //Move to confirmation screen, user should get code in email.
-          // navigation.navigate('confirmation', {
-          //   email,
-          //   password,
-          //   newphoneNumber
-          // });
-          cognitoUser.confirmRegistration('123456', true, function(err, result) {
-            if (err) {
-              Alert.alert(err.message || JSON.stringify(err));
-              return;
-            }
-            console.log('call result: ' + result);
-          });
-      });
-      // await Auth.signUp({
-      //   username : email,
-      //   password : password,
-      //   attributes: {
-      //     email : email,
-      //     phone_number : newphoneNumber,
-      //   }
-      // })
-      //   .then(async (cognitoSignUp) => {
-      //     console.log('Return from signUp information: ', cognitoSignUp);
-          
-      //     // Create User in DynamoDB too
-      //     let user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber)
-      //     await ServerFacade.createUser(user);
-          
-      //     //Move to confirmation screen, user should get code in email.
-      //     navigation.navigate('confirmation', {
-      //       email,
-      //       password,
-      //       newphoneNumber
-      //     });
-      //   })
-      //   .catch((err) => {
-      //     console.log('Error when signing up: ', err);
-      //     Alert.alert(T.error.tryAgain, err.message || err);
-      //   });
+      const data = {
+        firstname: firstName,
+        lastname: lastName,
+				email,
+				password,
+        phone: newphoneNumber
+			}
+			const cognitoUser = await ServerFacade.signUp(data);
+			console.log("response from server: ", cognitoUser);
+      if(!isEmpty(cognitoUser)){
+        navigation.navigate('confirmation', cognitoUser);
+      }
     } else {
       setErrorMessage(T.error.provideValidEmailPassword);
       Alert.alert('Error:', errorMessage);

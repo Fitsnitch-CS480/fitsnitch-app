@@ -27,8 +27,12 @@ import { handler as userCreate } from "./handlers/user-create";
 import { handler as userGet } from "./handlers/user-get";
 import { handler as userSearch } from "./handlers/user-search";
 import { handler as userUpdate } from "./handlers/user-update";
+import { handler as login } from "./handlers/login";
+import { handler as signUp } from "./handlers/sign-up";
 
 export const handlers: {[key:string]:(event:APIGatewayProxyEventV2)=>Promise<ProxyResultWrapper>} = {
+    "/login": login,
+    "/sign_up": signUp,
     "/user_get": userGet,
     "/user_search": userSearch,
     "/user_create": userCreate,
