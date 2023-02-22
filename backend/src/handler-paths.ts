@@ -29,10 +29,14 @@ import { handler as userSearch } from "./handlers/user-search";
 import { handler as userUpdate } from "./handlers/user-update";
 import { handler as login } from "./handlers/login";
 import { handler as signUp } from "./handlers/sign-up";
+import { handler as confirmation } from "./handlers/confirmation";
+import { handler as resendConfirmation } from "./handlers/resend-confirmation";
 
 export const handlers: {[key:string]:(event:APIGatewayProxyEventV2)=>Promise<ProxyResultWrapper>} = {
     "/login": login,
     "/sign_up": signUp,
+    "/confirmation": confirmation,
+    "/resend_confirmation": resendConfirmation,
     "/user_get": userGet,
     "/user_search": userSearch,
     "/user_create": userCreate,

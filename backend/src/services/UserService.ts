@@ -3,6 +3,7 @@ import User from "../../../react-native-app/shared/models/User";
 import Login from "../../../react-native-app/shared/models/Login";
 import SignUp from "../../../react-native-app/shared/models/SignUp";
 import DaoFactory from "../db/DaoFactory";
+import Confirmation from "../../../react-native-app/shared/models/Confirmation";
 
 export default class UserService {
 
@@ -12,6 +13,14 @@ export default class UserService {
 
     async signUp(data: SignUp):Promise<User|undefined> {
         return await DaoFactory.getUserDao().signUp(data);
+    }
+
+    async confirmation(data: Confirmation):Promise<String> {
+        return await DaoFactory.getUserDao().sendConfirmation(data);
+    }
+
+    async resendConfirmation():Promise<String> {
+        return await DaoFactory.getUserDao().resendConfirmation();
     }
 
     async createUser(data: User) {

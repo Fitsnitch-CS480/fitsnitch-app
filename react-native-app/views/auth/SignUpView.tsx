@@ -121,12 +121,16 @@ const SignUpView : React.FC = () => {
         lastname: lastName,
 				email,
 				password,
-        phone: newphoneNumber
+        phone: newphoneNumber,
+        image: ''
 			}
 			const cognitoUser = await ServerFacade.signUp(data);
 			console.log("response from server: ", cognitoUser);
       if(!isEmpty(cognitoUser)){
         navigation.navigate('confirmation', cognitoUser);
+      } else {
+        throw new Error("Error on sign up. Please try again.");
+        
       }
     } else {
       setErrorMessage(T.error.provideValidEmailPassword);

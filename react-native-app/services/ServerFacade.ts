@@ -17,6 +17,7 @@ import { GetCheatMealRequest } from '../shared/models/requests/GetCheatMealReque
 import Config from "react-native-config";
 import Login from '../shared/models/Login';
 import SignUp from '../shared/models/SignUp';
+import Confirmation from '../shared/models/Confirmation';
 
 /**
  * Acts as a Facade to the FitSnitch server. All network requests to the server should go through
@@ -91,9 +92,20 @@ class ExecutionError<T> extends ExecutionResult<T> {
     let res = await executeRequest<User|null>("/sign_up", request)
     return res.data as User
   }
+
   static async login(request: Login): Promise<User|undefined> {
     let res = await executeRequest<User|null>("/login", request)
     return res.data as User
+  }
+
+  static async confirmation(data: Confirmation): Promise<string> {
+    let res = await executeRequest<string>("/confirmation", data);
+    return res.data as string
+  }
+
+  static async resendConfirmation() {
+    const payload = {};
+    let res = await executeRequest("/resend_confirmation", payload);
   }
 
   static async getUserById(userId: string): Promise<User|undefined> {
