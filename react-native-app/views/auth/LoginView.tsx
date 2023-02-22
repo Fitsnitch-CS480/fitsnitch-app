@@ -4,18 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
-import AuthService from '../../services/AuthService';
-import {
-    AuthenticationDetails,
-    CognitoUserPool,
-    CognitoUser,
-    CognitoUserAttribute,
-    ICognitoUserAttributeData,
-    ISignUpResult,
-    CognitoUserSession,
-  } from 'amazon-cognito-identity-js';
+import { CognitoUserPool } from 'amazon-cognito-identity-js';
 import PoolData from '../../services/PoolData';
-import * as AWS from 'aws-sdk/global';
 import ServerFacade from '../../services/ServerFacade';
 
 

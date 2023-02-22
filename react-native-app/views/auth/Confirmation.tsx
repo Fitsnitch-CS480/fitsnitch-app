@@ -29,6 +29,9 @@ const Confirmation : React.FC<TProps> = ({route}) => {
         if(isEmpty(response)){
           setError("Invalid code, please try again.");
         }
+        else {
+          navigation.navigate('login', route.params);
+        }
       } else {
         setError('You must enter confirmation code');
       }
