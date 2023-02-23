@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Keyboard, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import {Auth} from '@aws-amplify/auth';
-import User from '../../shared/models/User';
 import ServerFacade from '../../services/ServerFacade';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
@@ -124,10 +122,13 @@ const SignUpView : React.FC = () => {
         phone: newphoneNumber,
         image: ''
 			}
-			const cognitoUser = await ServerFacade.signUp(data);
-			console.log("response from server: ", cognitoUser);
-      if(!isEmpty(cognitoUser)){
-        navigation.navigate('confirmation', cognitoUser);
+			const userId = await ServerFacade.signUp(data);
+      const userDetails = {
+        userId,
+        ...data
+      }
+      if(!isEmpty(userDetails)){
+        navigation.navigate('confirmation', userDetails);
       } else {
         throw new Error("Error on sign up. Please try again.");
         

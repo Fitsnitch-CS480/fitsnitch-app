@@ -6,9 +6,8 @@ import User from "../../../react-native-app/shared/models/User";
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
     return await LambaUtils.handleEventWithBody<UserSignUpRequest>(event, async (data, res)=>{
-        console.log("handler data: ", data);
-        let user:any = await new UserService().signUp(data);
-        res.setBodyToData(user);
+        let userId:any = await new UserService().signUp(data);
+        res.setBodyToData(userId);
         res.setCode(200);
         return res;
     });

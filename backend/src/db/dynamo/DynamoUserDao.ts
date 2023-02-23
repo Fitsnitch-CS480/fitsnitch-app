@@ -8,7 +8,6 @@ import UserDao from "../UserDao";
 import TableAccessObject, { Conditions, LogicalChainLink, LogicalConditionChain, LogicalOperator, PaginationOptions } from "./TableAccessObject";
 import { isEmpty } from 'lodash';
 import DB_TABLES from "./tables";
-import { CognitoUser } from "amazon-cognito-identity-js";
 
 export default class DynamoUserDao implements UserDao {
     private schema = DB_TABLES.USERS;
@@ -48,7 +47,6 @@ export default class DynamoUserDao implements UserDao {
     async signUp(data: SignUp): Promise<any> {
         let cognito:any = new aws.CognitoIdentityServiceProvider();
         let userId:string = '';
-        let input:User;
         try{
             await cognito.signUp({
                 ClientId: this.clientId,
@@ -76,63 +74,46 @@ export default class DynamoUserDao implements UserDao {
                 UserPoolId: this.userPoolId,
                 Username: data.email,
             }).promise();
-            console.log("user returned: ", {user});
-            if(!isEmpty(user)){
-                userId = user.Username;
-                let responseUserId:string ='';
-                let responseEmail:string ='';
-    
-                for(const item of user.UserAttributes){
-                    console.log({item})
-                    if(item.Name === 'sub'){
-                        responseUserId = item.Value;
-                    }
-                    if(item.Name === 'email'){
-                        responseEmail = item.Value;
-                    }
-                }
-                input = {
-                    userId: responseUserId,
-                    email: responseEmail,
-                    firstname: data.firstname,
-                    lastname: data.lastname,
-                    image: data.image,
-                    phone: data.phone,
-                }
-                await this.createUser(input);
-            }
+            userId = user.Username
         } catch(err:any){
             throw new Error(err);
         }
-
-        return await this.getUser(userId);
+        
+        return userId;
     }
     
-    async sendConfirmation(data: Confirmation) {
-        // await this.userTable.createOrUpdate(userToTableData(data));
+    async confirmSignUp(data: Confirmation) {
         const {user, authCode} = data;
-        console.log("user in confirmation: ", user);
         const cognito = new aws.CognitoIdentityServiceProvider({region: this.region});
         const params:any = {
             ClientId: this.clientId,
             Username: user.email,
             ConfirmationCode: authCode,
         };
+
         try{
             const result = await cognito.confirmSignUp(params).promise();
-            console.log("confirm result: ", result)
         } catch(err:any){
-            console.log("confirm err: ", err)
             throw new Error(err);
         }
-        // let cognito:any = new aws.CognitoIdentityServiceProvider();
+        
+        await this.createUser(user);
 
-        return "Sign up succesful!";
+        return await this.getUser(user.userId);
     }
 
-    async resendConfirmation() {
-        // await this.userTable.createOrUpdate(userToTableData(data));
-        return "hello";
+    async resendConfirmation(username: string) {
+        console.log("resend username: ", username)
+        const cognito = new aws.CognitoIdentityServiceProvider({region: this.region});
+        const params:any = {
+            ClientId: this.clientId,
+            Username: username,
+        };
+        try {
+            await cognito.resendConfirmationCode(params).promise();
+        } catch(err:any){
+            throw new Error(err);
+        }
     }
 
     async createUser(data: User) {

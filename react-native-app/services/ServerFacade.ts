@@ -88,9 +88,9 @@ class ExecutionError<T> extends ExecutionResult<T> {
 
  export default class ServerFacade {
 
-  static async signUp(request: SignUp): Promise<any> {
-    let res = await executeRequest<User|null>("/sign_up", request)
-    return res.data as User
+  static async signUp(request: SignUp): Promise<string> {
+    let res = await executeRequest<string>("/sign_up", request)
+    return res.data as string
   }
 
   static async login(request: Login): Promise<User|undefined> {
@@ -98,14 +98,13 @@ class ExecutionError<T> extends ExecutionResult<T> {
     return res.data as User
   }
 
-  static async confirmation(data: Confirmation): Promise<string> {
-    let res = await executeRequest<string>("/confirmation", data);
-    return res.data as string
+  static async confirmation(data: Confirmation): Promise<User|undefined> {
+    let res = await executeRequest<User>("/confirmation", data);
+    return res.data as User
   }
 
-  static async resendConfirmation() {
-    const payload = {};
-    let res = await executeRequest("/resend_confirmation", payload);
+  static async resendConfirmation(username: string) {
+    let res = await executeRequest<string>("/resend_confirmation", username);
   }
 
   static async getUserById(userId: string): Promise<User|undefined> {

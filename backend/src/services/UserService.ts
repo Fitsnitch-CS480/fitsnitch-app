@@ -11,16 +11,16 @@ export default class UserService {
         return await DaoFactory.getUserDao().login(data);
     }
 
-    async signUp(data: SignUp):Promise<User|undefined> {
+    async signUp(data: SignUp):Promise<string> {
         return await DaoFactory.getUserDao().signUp(data);
     }
 
-    async confirmation(data: Confirmation):Promise<String> {
-        return await DaoFactory.getUserDao().sendConfirmation(data);
+    async confirmation(data: Confirmation):Promise<User|undefined> {
+        return await DaoFactory.getUserDao().confirmSignUp(data);
     }
 
-    async resendConfirmation():Promise<String> {
-        return await DaoFactory.getUserDao().resendConfirmation();
+    async resendConfirmation(username: string) {
+        return await DaoFactory.getUserDao().resendConfirmation(username);
     }
 
     async createUser(data: User) {
