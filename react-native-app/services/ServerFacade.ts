@@ -8,7 +8,6 @@ import TrainerClientPair from '../shared/models/TrainerClientPair';
 import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
 import User from '../shared/models/User'
 import PartnerRequest from '../shared/models/PartnerRequest';
-import SnitchEvent from '../shared/models/SnitchEvent';
 import { UserCheatMealRequest, UserCheatMealResponse } from '../shared/models/requests/UserCheatMealRequest';
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';

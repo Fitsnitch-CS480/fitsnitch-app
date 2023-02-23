@@ -6,7 +6,6 @@ import Confirmation from "../../../../react-native-app/shared/models/Confirmatio
 import aws from 'aws-sdk';
 import UserDao from "../UserDao";
 import TableAccessObject, { Conditions, LogicalChainLink, LogicalConditionChain, LogicalOperator, PaginationOptions } from "./TableAccessObject";
-import { isEmpty } from 'lodash';
 import DB_TABLES from "./tables";
 
 export default class DynamoUserDao implements UserDao {

@@ -22,7 +22,6 @@ const Confirmation : React.FC<TProps> = ({route}) => {
 
     const confirmSignUp = async () => {
       if (authCode.length > 0) {
-        // create serverfacade function in backend to make confirmation. 
         const data = {user: userDetails, authCode: authCode}
         const response = await ServerFacade.confirmation(data);
         if(isEmpty(response)){
