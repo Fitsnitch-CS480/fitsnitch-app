@@ -15,6 +15,10 @@ export default class UserService {
         return await DaoFactory.getUserDao().signUp(data);
     }
 
+    async logout(username: string){
+        return await DaoFactory.getUserDao().logout(username);
+    }
+
     async confirmation(data: Confirmation):Promise<User|undefined> {
         return await DaoFactory.getUserDao().confirmSignUp(data);
     }

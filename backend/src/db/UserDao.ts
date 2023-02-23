@@ -7,6 +7,7 @@ import Confirmation from "../../../react-native-app/shared/models/Confirmation";
 export default interface UserDao {
     login(data: Login): Promise<User|undefined>;
     signUp(data: SignUp): Promise<any>;
+    logout(username: string): void;
     confirmSignUp(data: Confirmation): Promise<User|undefined>;
     resendConfirmation(username: string): void;
     createUser(data:User);

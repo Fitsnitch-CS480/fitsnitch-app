@@ -7,6 +7,7 @@ import { LatLonPair } from '../shared/models/CoordinateModels';
 import T from '../assets/constants/text';
 import Colors from '../assets/constants/colors';
 import AuthService from '../services/AuthService';
+import ServerFacade from '../services/ServerFacade';
 
 const SettingsView = observer(({ navigation }: any) => {
 	//Get user from Context from mainNavigator
@@ -15,7 +16,8 @@ const SettingsView = observer(({ navigation }: any) => {
 
 	let logout = async () => {
 		try {
-			await AuthService.logout();
+			const username:any = authUser?.email;
+			await ServerFacade.logout(username);
 		}
 		catch (e) {
 			console.log("Error during logout!", e)

@@ -97,13 +97,17 @@ class ExecutionError<T> extends ExecutionResult<T> {
     return res.data as User
   }
 
+  static async logout(username: string) {
+    let res = await executeRequest<string>("/logout", asRawString(username));
+  }
+
   static async confirmation(data: Confirmation): Promise<User|undefined> {
     let res = await executeRequest<User>("/confirmation", data);
     return res.data as User
   }
 
   static async resendConfirmation(username: string) {
-    let res = await executeRequest<string>("/resend_confirmation", username);
+    let res = await executeRequest<string>("/resend_confirmation", asRawString(username));
   }
 
   static async getUserById(userId: string): Promise<User|undefined> {

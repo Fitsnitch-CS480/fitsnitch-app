@@ -36,8 +36,10 @@ const Confirmation : React.FC<TProps> = ({route}) => {
     };
   
     const resendConfirmationCode = async () => {
-      const email = userDetails.email;
+      if(!isEmpty(userDetails.email)){
+        const email = userDetails.email;
       await ServerFacade.resendConfirmation(email); 
+      }
 	  }
 	
   return (

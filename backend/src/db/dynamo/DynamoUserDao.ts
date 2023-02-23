@@ -42,6 +42,19 @@ export default class DynamoUserDao implements UserDao {
 
         return await this.getUser(userId);
     }
+
+    async logout(username: string) {
+        const cognito = new aws.CognitoIdentityServiceProvider();
+        const params:any = {
+            UserPoolId: this.userPoolId,
+            Username: username,
+        };
+        try {
+            await cognito.adminUserGlobalSignOut(params).promise();
+        } catch(err:any){
+            throw new Error(err);
+        }
+    }
     
     async signUp(data: SignUp): Promise<any> {
         let cognito:any = new aws.CognitoIdentityServiceProvider();
@@ -102,7 +115,6 @@ export default class DynamoUserDao implements UserDao {
     }
 
     async resendConfirmation(username: string) {
-        console.log("resend username: ", username)
         const cognito = new aws.CognitoIdentityServiceProvider({region: this.region});
         const params:any = {
             ClientId: this.clientId,
