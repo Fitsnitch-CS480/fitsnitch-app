@@ -5,6 +5,9 @@ import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
 import ServerFacade from '../../services/ServerFacade';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import NativeModuleService from '../../services/NativeModuleService';
+import User from '../../shared/models/User';
 
 const LoginView : React.FC = () => {
 	const navigation = useNavigation<any>();
@@ -25,9 +28,21 @@ const LoginView : React.FC = () => {
 				username: email,
 				password: password,
 			}
-			const response = await ServerFacade.login(data);
+			const user:any  = await ServerFacade.login(data);
+			try {
+				await EncryptedStorage.setItem(
+					"user_auth",
+					JSON.stringify({
+						email,
+						password
+					})
+				);
+				NativeModuleService.getModule()?.saveUserId(user.userId);
+			} catch (error) {
+				console.log('Failed to save login: ', error);
+			}
 			setLoading(false)
-			setAuthUser(response);
+			setAuthUser(user);
 		}
 		else {
 			Alert.alert("", T.error.provideEmailPassword);

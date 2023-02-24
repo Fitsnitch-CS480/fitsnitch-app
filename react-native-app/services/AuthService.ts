@@ -21,13 +21,16 @@ const AuthService = {
 	},
 
 	async attemptLogin(email, password): Promise<User | undefined> {
-		console.log({Auth});
-		let userCognitoData = await Auth.signIn(email, password);
+		const data = {
+			username: email,
+			password
+		}
+		let userCognitoData = await ServerFacade.login(data);
 		if (!userCognitoData) {
 			throw new Error("Failed to authenticate with given credentials");
 		}
 		// Use the UserID from Cognito to look up the User in our DB
-		let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
+		let user = await ServerFacade.getUserById(userCognitoData.userId);
 		if (!user) {
 			throw new Error("Found no user matching credentials");
 		}
