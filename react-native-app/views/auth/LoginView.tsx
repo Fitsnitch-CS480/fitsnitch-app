@@ -8,6 +8,7 @@ import ServerFacade from '../../services/ServerFacade';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import NativeModuleService from '../../services/NativeModuleService';
 import User from '../../shared/models/User';
+import AuthService from '../../services/AuthService';
 
 const LoginView : React.FC = () => {
 	const navigation = useNavigation<any>();
@@ -24,23 +25,7 @@ const LoginView : React.FC = () => {
 
 		//If email and password are good, attempt login. Read errors and respond acordingly.
 		if (email.length > 4 && password.length > 2) {
-			const data = {
-				username: email,
-				password: password,
-			}
-			const user:any  = await ServerFacade.login(data);
-			try {
-				await EncryptedStorage.setItem(
-					"user_auth",
-					JSON.stringify({
-						email,
-						password
-					})
-				);
-				NativeModuleService.getModule()?.saveUserId(user.userId);
-			} catch (error) {
-				console.log('Failed to save login: ', error);
-			}
+			const user:any  = await AuthService.attemptLogin(email, password);
 			setLoading(false)
 			setAuthUser(user);
 		}

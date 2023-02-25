@@ -5,6 +5,7 @@ import ServerFacade from '../../services/ServerFacade';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import {isEmpty} from 'lodash';
+import AuthService from '../../services/AuthService';
 
 const SignUpView : React.FC = () => {
 
@@ -122,7 +123,7 @@ const SignUpView : React.FC = () => {
         phone: newphoneNumber,
         image: ''
 			}
-			const userId = await ServerFacade.signUp(data);
+			const userId = await AuthService.attemptSignUp(data);
       const userDetails = {
         userId,
         ...data
@@ -131,7 +132,6 @@ const SignUpView : React.FC = () => {
         navigation.navigate('confirmation', userDetails);
       } else {
         throw new Error("Error on sign up. Please try again.");
-        
       }
     } else {
       setErrorMessage(T.error.provideValidEmailPassword);

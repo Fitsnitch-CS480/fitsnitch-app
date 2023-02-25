@@ -17,7 +17,7 @@ const SettingsView = observer(({ navigation }: any) => {
 	let logout = async () => {
 		try {
 			const username:any = authUser?.email;
-			await ServerFacade.logout(username);
+			await AuthService.logout(username);
 		}
 		catch (e) {
 			console.log("Error during logout!", e)

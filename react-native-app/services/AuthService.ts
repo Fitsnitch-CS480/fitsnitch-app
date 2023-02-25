@@ -3,6 +3,7 @@ import ServerFacade from "./ServerFacade";
 import Auth from '@aws-amplify/auth';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import NativeModuleService from "./NativeModuleService";
+import { isEmpty } from "lodash";
 
 const AuthService = {
 	async attemptResumeSession(): Promise<User | undefined> {
@@ -20,13 +21,24 @@ const AuthService = {
 		return await this.attemptLogin(email, password);
 	},
 
-	async attemptLogin(email, password): Promise<User | undefined> {
+	async attemptSignUp(data:any):Promise<string> {
+		try {
+			return await ServerFacade.signUp(data);
+		} catch {
+			throw new Error("Error on sign up. Please try again.");
+		}
+
+	},
+
+	async attemptLogin(email:string, password:string): Promise<User | undefined> {
 		const data = {
 			username: email,
 			password
 		}
-		let userCognitoData = await ServerFacade.login(data);
-		if (!userCognitoData) {
+
+		let userCognitoData:any = await ServerFacade.login(data);
+
+		if (isEmpty(userCognitoData)) {
 			throw new Error("Failed to authenticate with given credentials");
 		}
 		// Use the UserID from Cognito to look up the User in our DB
@@ -34,6 +46,7 @@ const AuthService = {
 		if (!user) {
 			throw new Error("Found no user matching credentials");
 		}
+
 		try {
 			await EncryptedStorage.setItem(
 				"user_auth",
@@ -42,15 +55,17 @@ const AuthService = {
 					password
 				})
 			);
+
 			NativeModuleService.getModule()?.saveUserId(user.userId);
 		} catch (error) {
 			console.log('Failed to save login: ', error);
 		}
+
 		return user;
 	},
 
-	async logout() {
-		await Auth.signOut();
+	async logout(username) {
+		await ServerFacade.logout(username);
 		await EncryptedStorage.removeItem("user_auth");
 		NativeModuleService.getModule().stopBackgroundLocation();
 	}

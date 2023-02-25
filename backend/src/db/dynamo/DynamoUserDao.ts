@@ -34,7 +34,7 @@ export default class DynamoUserDao implements UserDao {
             UserPoolId: this.userPoolId,
             Username: data.username,
             }).promise();
-
+            
             userId = user.Username;
         } catch(err:any){
             throw new Error(err);
