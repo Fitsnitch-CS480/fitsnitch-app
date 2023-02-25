@@ -1,4 +1,4 @@
-import { SwitchSnitchToCheatmealRequest } from './../../../react-native-app/shared/models/requests/SwitchSnitchToCheatmealRequest';
+import { SwitchSnitchToCheatmealRequest } from '../../../react-native-app/shared/models/requests/SwitchSnitchToCheatmealRequest';
 import SnitchEvent from "../../../react-native-app/shared/models/SnitchEvent";
 import {UserSnitchesRequest, UserSnitchesResponse} from "../../../react-native-app/shared/models/requests/UserSnitchesRequest";
 import {GetSnitchRequest} from "../../../react-native-app/shared/models/requests/GetSnitchRequest";

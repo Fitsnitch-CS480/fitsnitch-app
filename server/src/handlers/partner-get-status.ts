@@ -1,4 +1,4 @@
-import PartnerStatusResponse from './../../../react-native-app/shared/models/requests/PartnerStatusResponse';
+import PartnerStatusResponse from '../../../react-native-app/shared/models/requests/PartnerStatusResponse';
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import LambaUtils from "../utils/LambdaUtils";
 import PartnerAssociationPair from "../../../react-native-app/shared/models/PartnerAssociationPair";
