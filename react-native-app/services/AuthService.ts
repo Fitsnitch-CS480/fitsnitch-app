@@ -39,7 +39,8 @@ const AuthService = {
 		let userCognitoData:any = await ServerFacade.login(data);
 
 		if (isEmpty(userCognitoData)) {
-			throw new Error("Failed to authenticate with given credentials");
+			// throw new Error("Failed to authenticate with given credentials");
+			return undefined;
 		}
 		// Use the UserID from Cognito to look up the User in our DB
 		let user = await ServerFacade.getUserById(userCognitoData.userId);

@@ -9,6 +9,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import NativeModuleService from '../../services/NativeModuleService';
 import User from '../../shared/models/User';
 import AuthService from '../../services/AuthService';
+import { isEmpty } from '@aws-amplify/core';
 
 const LoginView : React.FC = () => {
 	const navigation = useNavigation<any>();
@@ -26,8 +27,14 @@ const LoginView : React.FC = () => {
 		//If email and password are good, attempt login. Read errors and respond acordingly.
 		if (email.length > 4 && password.length > 2) {
 			const user:any  = await AuthService.attemptLogin(email, password);
-			setLoading(false)
-			setAuthUser(user);
+			if(!isEmpty(user)){
+				setLoading(false)
+				setAuthUser(user);
+			}
+			else{
+				Alert.alert("Invalid credentials", T.error.provideValidEmailPassword);
+				setLoading(false)
+			}
 		}
 		else {
 			Alert.alert("", T.error.provideEmailPassword);
