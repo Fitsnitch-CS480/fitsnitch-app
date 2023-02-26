@@ -1,6 +1,5 @@
 import User from "../shared/models/User";
 import ServerFacade from "./ServerFacade";
-import Auth from '@aws-amplify/auth';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import NativeModuleService from "./NativeModuleService";
 import { isEmpty } from "lodash";

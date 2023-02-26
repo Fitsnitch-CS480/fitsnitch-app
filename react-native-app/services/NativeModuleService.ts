@@ -16,7 +16,7 @@ class NativeModuleService {
 
 	init() {
 		if (this.isInitialized) return;
-		// this.getModule().startBackgroundLocation();
+		this.getModule().startBackgroundLocation();
 		this.isInitialized = true;
 	}
 

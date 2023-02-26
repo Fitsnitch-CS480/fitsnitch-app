@@ -4,12 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
-import ServerFacade from '../../services/ServerFacade';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import NativeModuleService from '../../services/NativeModuleService';
-import User from '../../shared/models/User';
 import AuthService from '../../services/AuthService';
-import { isEmpty } from '@aws-amplify/core';
+import { isEmpty } from 'lodash';
 
 const LoginView : React.FC = () => {
 	const navigation = useNavigation<any>();

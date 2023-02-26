@@ -6,7 +6,7 @@ import Input from '../../components/Input';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import ServerFacade from '../../services/ServerFacade';
-import { isEmpty } from '@aws-amplify/core';
+import { isEmpty } from 'lodash';
 import { authContext } from '../authWrapper';
 
 type TProps = {

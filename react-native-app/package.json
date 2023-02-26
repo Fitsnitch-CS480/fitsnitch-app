@@ -11,8 +11,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@aws-amplify/auth": "^5.0.3",
-    "@aws-amplify/core": "^5.0.3",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-picker/picker": "^2.4.8",
     "@react-navigation/bottom-tabs": "^6.4.1",
