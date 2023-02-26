@@ -68,6 +68,7 @@ const AuthService = {
 		await ServerFacade.logout(username);
 		await EncryptedStorage.removeItem("user_auth");
 		NativeModuleService.getModule().stopBackgroundLocation();
+		return;
 	}
 }
 

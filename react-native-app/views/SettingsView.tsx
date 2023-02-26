@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { authContext } from './authWrapper';
-import { Alert, Button, NativeModules, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { globalContext } from './appNavigator';
 import { observer } from 'mobx-react-lite';
 import { LatLonPair } from '../shared/models/CoordinateModels';
 import T from '../assets/constants/text';
 import Colors from '../assets/constants/colors';
 import AuthService from '../services/AuthService';
-import ServerFacade from '../services/ServerFacade';
+import User from '../shared/models/User';
 
 const SettingsView = observer(({ navigation }: any) => {
 	//Get user from Context from mainNavigator
@@ -15,6 +15,7 @@ const SettingsView = observer(({ navigation }: any) => {
 	const { logStore } = useContext(globalContext);
 
 	let logout = async () => {
+
 		try {
 			const username:any = authUser?.email;
 			await AuthService.logout(username);
