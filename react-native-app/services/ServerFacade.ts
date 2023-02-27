@@ -36,11 +36,15 @@ function asRawString(data:string) {
   return `"${data}"`
 }
 
+export const request = axios.create({
+	baseURL: apiBaseUrl,
+});
+
 async function executeRequest<TResponse>(path:string, payload:any, print:boolean = false): Promise<ExecutionResult<TResponse>> {
   let tag = path+" "+Date.now();
   if (print) console.log(tag+": Executing Request\n", JSON.stringify(payload,null,2));
   try {
-    let res = await axios.post(apiBaseUrl+path, payload);  
+    let res = await axios.post(apiBaseUrl+'/lambda'+path, payload);  
     if (print) console.log(tag+" Response\n", JSON.stringify(res.data,null,2))
     return new ExecutionSuccess<TResponse>(res);
   }
@@ -82,6 +86,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
     this.errorMessage = error.message;
   }
 }
+
 
  export default class ServerFacade {
 
