@@ -12,6 +12,9 @@ FitsnitchApp\android\local.properties
 
 react-native-app/ios/Pods
 
+google-services.json
+firebase-key.json
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
