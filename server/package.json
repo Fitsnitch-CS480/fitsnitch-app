@@ -6,12 +6,13 @@
   "types": "src/types.d.ts",
   "module": "commonjs",
   "scripts": {
-    "build": "webpack",
+    "build": "tsc",
+    "start": "node dist/server/src/server.js",
+    "dev": "tsc && concurrently -n \"build,log\" \"npm:build:dev\" \"npm:start:dev\"",
+    "start:dev": "nodemon dist/server/src/server.js",
+    "build:dev": "tsc --watch --preserveWatchOutput",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "dev": "tsc && concurrently -n \"build,run\" \"npm:build:dev\" \"npm:start:dev\"",
-    "start:dev": "nodemon dev-dist/backend/src/server.js",
-    "build:dev": "tsc --watch --preserveWatchOutput --outDir dev-dist"
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@jest/globals": "^27.3.1",
