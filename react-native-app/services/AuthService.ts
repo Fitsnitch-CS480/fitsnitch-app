@@ -35,33 +35,27 @@ const AuthService = {
 			password
 		}
 
-		let userCognitoData:any = await ServerFacade.login(data);
+		let userCognitoData:User | undefined = await ServerFacade.login(data);
 
 		if (isEmpty(userCognitoData)) {
 			// throw new Error("Failed to authenticate with given credentials");
 			return undefined;
+		} else {
+			try {
+				await EncryptedStorage.setItem(
+					"user_auth",
+					JSON.stringify({
+						email,
+						password
+					})
+				);
+	
+				NativeModuleService.getModule()?.saveUserId(userCognitoData?.userId ?? '');
+				return userCognitoData ?? undefined;
+			} catch (error) {
+				console.log('Failed to save login: ', error);
+			}
 		}
-		// Use the UserID from Cognito to look up the User in our DB
-		let user = await ServerFacade.getUserById(userCognitoData.userId);
-		if (!user) {
-			throw new Error("Found no user matching credentials");
-		}
-
-		try {
-			await EncryptedStorage.setItem(
-				"user_auth",
-				JSON.stringify({
-					email,
-					password
-				})
-			);
-
-			NativeModuleService.getModule()?.saveUserId(user.userId);
-		} catch (error) {
-			console.log('Failed to save login: ', error);
-		}
-
-		return user;
 	},
 
 	async logout(username) {
