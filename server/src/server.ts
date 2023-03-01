@@ -8,60 +8,37 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import bodyParser from "body-parser";
 import cors from "cors";
-import { APIGatewayProxyEventV2 } from "aws-lambda";
-import { handlers } from "./handler-paths";
 import PushNotificationService from "./services/PushNotificationService";
+import SnitchRouter from "./routes/snitch.routes";
+import LambdaRouter from "./routes/lambda.routes";
+import UserRouter from "./routes/user.routes";
 
 
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.text({type: '*/*'}));
+app.use(express.json());
+
+let port = process.env.PORT || 4000;
+app.listen(port, ()=>{
+    console.log("Server listening on port "+ port);
+})
 
 app.get('/', (req, res) => {
 	res.send("FitSnitch API");
 });
 
-app.post('/saveNotificationToken', (req, res) => {
-	let { userId, token } = JSON.parse(req.body);
-	console.log({ userId, token })
 
-	PushNotificationService.updateUserEndpoint(userId, token);
-	res.status(200).send('good');
-})
+app.use('/user', UserRouter);
+app.use('/snitch', SnitchRouter);
+app.use('/lambda', LambdaRouter);
 
-app.post("/lambda/:path", async (req,res)=>{
-    try {
-        let albProxy: Partial<APIGatewayProxyEventV2> = {
-            body: typeof req.body === 'object' ? JSON.stringify(req.body) : req.body
-        }
-        let handler = handlers[req.params.path];
-        if (!handler) {
-            console.log("There is no handler for path",req.params.path)
-            return res.sendStatus(404)
-        }
-        
-        let proxyRes = await handler(albProxy as APIGatewayProxyEventV2)
-        res.status(proxyRes.statusCode || 200);
-        if (proxyRes.headers) {
-            for (let [header,val] of Object.entries(proxyRes.headers)) {
-                if (typeof val === 'boolean'){
-                    val = String(val);
-                }
-                res.setHeader(header,val)
-            }
-        }
-        res.send(proxyRes.body);
-    }
-    catch (e:any) {
-        console.log(e)
-        res.status(500).send(e.message)
-    }
-})
 
-let port = 4000;
-app.listen(port, ()=>{
-    console.log("Server listening on pooort "+port);
+app.use((err, req, res, next) => {
+	console.log(err);
+	res.status(err.status || 500).json({
+		message: err.publicMessage || 'Unknown Error',
+		details: err.details,
+	})
 })

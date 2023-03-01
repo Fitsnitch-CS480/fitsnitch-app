@@ -10,7 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -123,7 +122,7 @@ public class LocationForegroundService extends Service {
 
         return new NotificationCompat.Builder(mContext, CHANNEL_ID_BG)
                 .setContentIntent(pendingIntent)
-                .setSmallIcon(R.drawable.ic_logo_pin)
+                .setSmallIcon(R.drawable.ic_launcher)
                 .setContentText("FitSnitch is running. We'll help you keep your goals!")
                 .setSilent(true)
                 .build();

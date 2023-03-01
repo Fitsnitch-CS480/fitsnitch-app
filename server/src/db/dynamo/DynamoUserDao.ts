@@ -49,16 +49,21 @@ export default class DynamoUserDao implements UserDao {
 
 
 interface UserTableData extends User {
+	_associatedDeviceTokens: string,
     searchStrings: string;
 }
 
 function userToTableData(user:User): UserTableData {
     return {
         ...user,
-        searchStrings: `${user.firstname ?? ""}_${user.lastname ?? ""}`.toLowerCase()
+        searchStrings: `${user.firstname ?? ""}_${user.lastname ?? ""}`.toLowerCase(),
+		_associatedDeviceTokens: JSON.stringify(user.associatedDeviceTokens || []),
     }
 }
 
 function tableDataToUser(data:UserTableData): User {
-    return data as User;
+    return {
+		...data,
+		associatedDeviceTokens: JSON.parse(data._associatedDeviceTokens || '[]'),
+	} as User;
 }

@@ -106,7 +106,7 @@ public class LocationLoopService extends IntentService {
      * @param newState
      */
     public static void enterLoopState(LoopState newState) {
-        Log.i("***FITLOC", "Entering loop state: "+newState.getClass().getSimpleName());
+        Log.i("***FITLOC", "Entering loop state: " + newState.getClass().getSimpleName());
         loopState = newState;
         long ival = newState.getInitialLoopIval();
         if (ival == 0) {
@@ -207,7 +207,7 @@ public class LocationLoopService extends IntentService {
      * the loop going.
      */
     private void handleNewLocation(Location newLocation) {
-        Log.i("***FITLOC", "Handling new location");
+        Log.i("***FITLOC", "Handling new location: " + loopState.getClass().getSimpleName());
         loopState.handleNewLocation(newLocation);
 
         // Save new location if change is significant

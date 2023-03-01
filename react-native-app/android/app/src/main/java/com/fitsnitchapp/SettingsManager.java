@@ -36,7 +36,7 @@ public class SettingsManager {
     }
 
 
-    private static class SettingItem {
+    public static class SettingItem {
         public final String name;
         public final String type;
 

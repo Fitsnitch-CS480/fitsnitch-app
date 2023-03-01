@@ -1,5 +1,9 @@
+plugins {
+	id "com.google.gms.google-services"
+}
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply plugin: "com.google.gms.google-services"
 
 import com.android.build.OutputFile
 
@@ -176,6 +180,10 @@ dependencies {
     // Google play services for Location
     implementation 'com.google.android.gms:play-services-location:19.0.1'
 
+	// Firebase for push notifications
+	implementation platform('com.google.firebase:firebase-bom:31.2.2')
+	implementation 'com.google.firebase:firebase-analytics'
+	implementation 'com.google.firebase:firebase-messaging'
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

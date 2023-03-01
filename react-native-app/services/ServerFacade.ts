@@ -123,11 +123,6 @@ class ExecutionError<T> extends ExecutionResult<T> {
     return response;
   }
 
-  static async snitchOnUser(snitch: CreateSnitchRequest){
-    let res = await executeRequest("/snitch-on-user", snitch, true);
-  }
-
-
   // TRAINER / CLIENT RELATIONSHIPS
   static async getTrainerStatus(trainer:User,user:User): Promise<RelationshipStatus> {
     let res = await executeRequest<RelationshipStatus>("/trainer_get_status", new TrainerClientPair(trainer.userId,user.userId));

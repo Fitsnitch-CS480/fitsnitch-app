@@ -51,7 +51,7 @@ public class AutoStart extends BroadcastReceiver
         Notification n = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentIntent(pendingIntent)
                 .setContentText("Uh-oh! Fitsnitch has stopped. Tap to restart!")
-                .setSmallIcon(R.drawable.ic_logo_pin)
+                .setSmallIcon(R.drawable.ic_launcher)
                 .setAutoCancel(true)
                 .build();
 
