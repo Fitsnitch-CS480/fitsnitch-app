@@ -11,9 +11,7 @@ import { handler as partnerRemove } from "./handlers/partner-remove";
 import { handler as partnerRequestApprove } from "./handlers/partner-request-approve";
 import { handler as partnerRequestCancel } from "./handlers/partner-request-cancel";
 import { handler as partnerRequestCreate } from "./handlers/partner-request-create";
-import { handler as pushSnitchNotification } from "./handlers/push-snitch-notification";
 import { handler as snitchCreate } from "./handlers/snitch-create";
-import { handler as snitchOnUser } from "./handlers/snitch-on-user";
 import { handler as snitchGetForUsers } from "./handlers/snitch-get-for-users";
 import { handler as trainerGetClients } from "./handlers/trainer-get-clients";
 import { handler as trainerGetForClient } from "./handlers/trainer-get-for-client";
@@ -44,7 +42,6 @@ export const handlers: {[key:string]:(event:APIGatewayProxyEventV2)=>Promise<Pro
     "trainer_get_requests_for_trainer": trainerGetRequestsForTrainer,
     "snitch-get-for-users": snitchGetForUsers,
     "snitch_create": snitchCreate,
-    "snitch-on-user": snitchOnUser,
     "partner-get-status": partnerGetStatus,
     "partner_get_for_user": partnerGetForUser,
     "partner-request-create": partnerRequestCreate,
@@ -52,7 +49,6 @@ export const handlers: {[key:string]:(event:APIGatewayProxyEventV2)=>Promise<Pro
     "partner-request-cancel": partnerRequestCancel,
     "partner-request-approve": partnerRequestApprove,
     "partner-remove": partnerRemove,
-    "push-snitch-notification" : pushSnitchNotification,
     "cheatmeal-create" : cheatmealCreate,
     "cheatmeal-get-for-users" : cheatmealGetForUser,
     "cheatmeal-get" : cheatmealGet,
