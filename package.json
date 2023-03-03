@@ -2,6 +2,6 @@
 	"scripts": {
 		"dev:android": "npx concurrently -n \"Android,Server\" \"npm run run:android\" \"npm run run:server\"",
 		"run:android": "cd react-native-app && npm run android",
-		"run:server": "cd backend && npm run dev"
+		"run:server": "cd server && npm run dev"
 	}
 }

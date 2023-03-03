@@ -16,6 +16,7 @@ import UserSearch from "./UserSearch";
 import NativeModuleService from "../services/NativeModuleService";
 import GetSnitchedView from "./GetSnitchedView";
 import Colors from "../assets/constants/colors";
+import PushNotificationService from "../services/PushNotificationService";
 
 type props = {
 	authUser?: User,
@@ -35,6 +36,7 @@ export var globalContext: React.Context<{
 
 const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 	useEffect(()=>{
+		if (authUser) PushNotificationService.init(authUser.userId);
 		NativeModuleService.checkPermissions();
 	}, []);
 

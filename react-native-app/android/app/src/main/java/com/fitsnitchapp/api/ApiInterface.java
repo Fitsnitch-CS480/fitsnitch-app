@@ -9,13 +9,13 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 
 public interface ApiInterface {
-    @POST("/check-location") // specify the sub url for our base url
+    @POST("/lambda/check-location") // specify the sub url for our base url
     public void checkLocation(
             @Body CheckLocationRequest request,
             Callback<Restaurant> callback
     );
 
-    @POST("/snitch-on-user") // specify the sub url for our base url
+    @POST("/snitch/publishNewSnitch") // specify the sub url for our base url
     public void publishSnitch(
             @Body CreateSnitchRequest snitch,
             Callback<Object> callback

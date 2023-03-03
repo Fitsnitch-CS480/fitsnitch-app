@@ -6,12 +6,13 @@
   "types": "src/types.d.ts",
   "module": "commonjs",
   "scripts": {
-    "build": "webpack",
+    "build": "tsc",
+    "start": "node dist/server/src/server.js",
+    "dev": "tsc && concurrently -n \"build,log\" \"npm:build:dev\" \"npm:start:dev\"",
+    "start:dev": "nodemon dist/server/src/server.js",
+    "build:dev": "tsc --watch --preserveWatchOutput",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "dev": "tsc && concurrently -n \"build,run\" \"npm:build:dev\" \"npm:start:dev\"",
-    "start:dev": "nodemon dev-dist/backend/src/server.js",
-    "build:dev": "tsc --watch --preserveWatchOutput --outDir dev-dist"
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@jest/globals": "^27.3.1",
@@ -25,12 +26,12 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jest": "^27.3.1",
+    "nodemon": "^2.0.15",
     "ts-jest": "^27.0.7",
     "ts-loader": "^8.0.17",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.5",
     "webpack": "^5.21.2",
-    "nodemon": "^2.0.15",
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
@@ -39,6 +40,7 @@
     "aws-sdk": "^2.831.0",
     "axios": "^0.24.0",
     "dotenv": "^16.0.0",
+    "firebase-admin": "^11.5.0",
     "robust-point-in-polygon": "^1.0.3"
   }
 }

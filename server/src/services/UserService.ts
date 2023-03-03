@@ -18,6 +18,22 @@ export default class UserService {
     async getUser(id: string): Promise<User|undefined> {
         return await DaoFactory.getUserDao().getUser(id);
     }
+	
+    async addDeviceToken(userId: string, token: string) {
+        let user = await this.getUser(userId);
+		if (!user) {
+			throw new Error("Can't find user with that ID!");
+		}
+		if (user.associatedDeviceTokens) {
+			if (!user.associatedDeviceTokens.includes(token)) {
+				user.associatedDeviceTokens.push(token);
+			}
+		}
+		else {
+			user.associatedDeviceTokens = [token];
+		}
+		await this.updateUser(user);
+    }
     
     async getExistingUsers(ids: string[]): Promise<User[]> {
         let dao = DaoFactory.getUserDao();        

@@ -10,13 +10,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.core.util.Consumer;
 
@@ -108,7 +106,7 @@ public class LocationLoopService extends IntentService {
      * @param newState
      */
     public static void enterLoopState(LoopState newState) {
-        Log.i("***FITLOC", "Entering loop state: "+newState.getClass().getSimpleName());
+        Log.i("***FITLOC", "Entering loop state: " + newState.getClass().getSimpleName());
         loopState = newState;
         long ival = newState.getInitialLoopIval();
         if (ival == 0) {
@@ -209,7 +207,7 @@ public class LocationLoopService extends IntentService {
      * the loop going.
      */
     private void handleNewLocation(Location newLocation) {
-        Log.i("***FITLOC", "Handling new location");
+        Log.i("***FITLOC", "Handling new location: " + loopState.getClass().getSimpleName());
         loopState.handleNewLocation(newLocation);
 
         // Save new location if change is significant
@@ -329,7 +327,7 @@ public class LocationLoopService extends IntentService {
         warningNotification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentIntent(pendingNotifIntent)
                 .setContentText("You'll be snitched on in 30 seconds!")
-                .setSmallIcon(R.drawable.ic_logo_pin)
+                .setSmallIcon(R.drawable.ic_launcher)
                 .setAutoCancel(true)
                 .setPriority(2)
                 .build();
@@ -347,7 +345,7 @@ public class LocationLoopService extends IntentService {
         snitchedNotification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentIntent(pendingNotifIntent)
                 .setContentText("You've been snitched on!")
-                .setSmallIcon(R.drawable.ic_logo_pin)
+                .setSmallIcon(R.drawable.ic_launcher)
                 .setAutoCancel(true)
                 .setPriority(2)
                 .build();
