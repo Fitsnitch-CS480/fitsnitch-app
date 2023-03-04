@@ -3,8 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android": "react-native run-android --mode=debug",
+    "android:dev": "react-native run-android --mode=dev",
+    "android:beta": "react-native run-android --mode=beta",
     "android:prod": "react-native run-android --mode=release",
+	"tunnel:android": "adb reverse tcp:4000 tcp:4000",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
