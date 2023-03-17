@@ -1,9 +1,8 @@
 import React, { useContext } from 'react';
 import { authContext } from './authWrapper';
-import { Alert, Button, NativeModules, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { globalContext } from './appNavigator';
 import { observer } from 'mobx-react-lite';
-import { LatLonPair } from '../shared/models/CoordinateModels';
 import T from '../assets/constants/text';
 import Colors from '../assets/constants/colors';
 import AuthService from '../services/AuthService';
@@ -30,15 +29,6 @@ const SettingsView = observer(({ navigation }: any) => {
 		]);
 	}
 
-	function demoSnitch() {
-		navigation.navigate('GetSnitchedOn', {
-			restaurant: {
-				name: "Domino's"
-			},
-			coords: new LatLonPair(-41, -111)
-		})
-	}
-
 	return (
 		<ScrollView style={styles.screen}>
 			<View style={styles.listItem}>
@@ -49,10 +39,6 @@ const SettingsView = observer(({ navigation }: any) => {
 					thumbColor={Colors.red}
 					trackColor={{ true: Colors.darkRed, false: Colors.white }} />
 			</View>
-
-			{/* <View style={styles.listItem} onTouchEnd={demoSnitch}>
-        <Text style={styles.optionTitle}>Run Demo Snitch</Text>
-      </View> */}
 
 			<View style={styles.listItem} onTouchEnd={promptLogout}>
 				<Text style={styles.optionTitle}>{T.settings.logout}</Text>

@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Platform, ActivityIndicator, ScrollView } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Button, StyleSheet, Text, View, Image, Alert, TextInput, ActivityIndicator, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
@@ -29,16 +29,8 @@ export default function LoginView() {
 				setAuthUser(user);
 			}
 			catch (err:any) {
-				if (err.code === 'UserNotConfirmedException') {
-					console.log('User not confirmed');
-					navigation.navigate('confirmation', {
-						email,
-					});
-				}
-				else {
-					console.log('Could not log in', err);
-					Alert.alert(T.error.noLogIn, err.message);
-				}
+				console.log('Could not log in', err);
+				Alert.alert(T.error.noLogIn, err.message);
 				setLoading(false)
 			}
 		}

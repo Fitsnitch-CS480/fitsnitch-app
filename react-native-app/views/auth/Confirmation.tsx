@@ -8,6 +8,7 @@ import Button from '../../components/Button';
 import Input from '../../components/Input';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
+import auth from '@react-native-firebase/auth';
 
 type TProps = {
   route: any;
@@ -19,46 +20,37 @@ const Confirmation : React.FC<TProps> = ({route}) => {
     const navigation = useNavigation<any>();
     const [authCode, setAuthCode] = useState('');
     const [error, setError] = useState(' ');
-    const {email} = route.params;
+    // const {email} = route.params;
 
-    const confirmSignUp = async () => {
-      if (authCode.length > 0) {
-        await Auth.confirmSignUp(email, authCode)
-          .then(() => {
-            navigation.navigate('login');
-          })
-          .catch((err) => {
-            if (!err.message) {
-              setError('Something went wrong, please contact support!');
-            } else {
-              setError(err.message);
-            }
-          });
-      } else {
-        setError('You must enter confirmation code');
-      }
-    };
+    // const returnTologin = async () => {
+    //   if (authCode.length > 0) {
+    //     await Auth.confirmSignUp(email, authCode)
+    //       .then(() => {
+    //         navigation.navigate('login');
+    //       })
+    //       .catch((err) => {
+    //         if (!err.message) {
+    //           setError('Something went wrong, please contact support!');
+    //         } else {
+    //           setError(err.message);
+    //         }
+    //       });
+    //   } else {
+    //     setError('You must enter confirmation code');
+    //   }
+    // };
   
     const resendConfirmationCode = async () => {
-		await Auth.resendSignUp(
-		  email
-		)
+		await auth().currentUser?.sendEmailVerification();
 	  }
 	
   return (
     <View style={styles.container}>
       <View style={styles.box}>
-        <Text style={styles.text}>{T.signUp.checkEmail}</Text>
-         <Input
-            value={authCode}
-            placeholder="123456"
-            onChange={(text : any) => setAuthCode(text)}
-          />
-        <Text style={styles.text}>{error}</Text>
         <View style={styles.buttons}>
-          <Button  onPress={() => resendConfirmationCode()}  backgroundColor={Colors.red}>Resend Code</Button>
-          <Button onPress={() => confirmSignUp()} backgroundColor={Colors.background}>{T.signUp.confirm}</Button>
+          <Button  backgroundColor={Colors.background}>{T.signUp.checkEmail} <Text style={styles.link} onPress={navigation.navigate('login')}>Return to login </Text></Button>
         </View>
+        <Text style={styles.error}>{error}</Text>
       </View>
 	</View>
   );
@@ -90,7 +82,15 @@ const styles = StyleSheet.create({
 	text: {
 	  color: Colors.white,
 	  marginBottom: 5
-	}
+	},
+  error: {
+    color: Colors.red,
+	  marginTop: 5
+  },
+  link: {
+    color: Colors.lightBlue,
+	  marginTop: 5
+  }
   });
   
   

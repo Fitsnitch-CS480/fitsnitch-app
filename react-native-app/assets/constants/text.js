@@ -9,7 +9,7 @@ const T = {
         lastName: "Last Name",
         alreadyHaveAccount: "Already have an account?",
         confirm: "Confirm Sign Up",
-        checkEmail: "Check your email for the confirmation code.",
+        checkEmail: "A confirmation link has been sent to your email.",
     },
     logIn: {
         title: "Log In",
