@@ -20,25 +20,6 @@ const Confirmation : React.FC<TProps> = ({route}) => {
     const navigation = useNavigation<any>();
     const [authCode, setAuthCode] = useState('');
     const [error, setError] = useState(' ');
-    // const {email} = route.params;
-
-    // const returnTologin = async () => {
-    //   if (authCode.length > 0) {
-    //     await Auth.confirmSignUp(email, authCode)
-    //       .then(() => {
-    //         navigation.navigate('login');
-    //       })
-    //       .catch((err) => {
-    //         if (!err.message) {
-    //           setError('Something went wrong, please contact support!');
-    //         } else {
-    //           setError(err.message);
-    //         }
-    //       });
-    //   } else {
-    //     setError('You must enter confirmation code');
-    //   }
-    // };
   
     const resendConfirmationCode = async () => {
 		await auth().currentUser?.sendEmailVerification();
