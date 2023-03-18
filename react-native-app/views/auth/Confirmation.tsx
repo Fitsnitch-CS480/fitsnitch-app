@@ -35,7 +35,7 @@ const Confirmation : React.FC<TProps> = ({route}) => {
           <Button onPress={() => navigation.navigate('login')} backgroundColor={Colors.red}>{T.confirm.login}</Button>
         </View>
 		<Text style={styles.error}>{error}</Text>
-		<Text style={styles.link} onPress={() => resendConfirmationEmail()}>Resend verification link</Text>
+		<Text style={styles.link} onPress={() => resendConfirmationEmail()}>{T.confirm.resend}</Text>
       </View>
 	</View>
   );
