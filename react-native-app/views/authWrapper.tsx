@@ -16,10 +16,8 @@ const AuthWrapper: React.FC<{ input?: NativeInput }> = ({ input }) => {
 	const [initializing, setInitializing] = useState(true);
 	const [authUser, setAuthUser] = useState<User | undefined>(undefined);
 	const onAuthStateChanged = async (user: any) => {
-		console.log("user details: ", user)
 		if (user === null){
-			user = undefined;
-			setAuthUser(user);
+			setAuthUser(undefined);
 		}
 
 		if(!isEmpty(user)){

@@ -105,7 +105,6 @@ const SignUpView : React.FC = () => {
   }
 
   const signUpFunction = async () => {
-        console.log("STEP 0")
     if (email.length > 4 && password.length > 2) {
       let newphoneNumber = phoneNumber;
       //may need to take this out of the signUpFunction since it's not doing the change immediatly as the Auth.signUp gets called
@@ -114,7 +113,7 @@ const SignUpView : React.FC = () => {
         //onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
         newphoneNumber = "+1".concat(phoneNumber)
       }
-      console.log("STEP 1")
+
       const user:any = {
         email,
         password,
@@ -123,7 +122,7 @@ const SignUpView : React.FC = () => {
         phoneNumber
       }
       await AuthService.signUp(user);
-      console.log("STEP 2")
+
       navigation.navigate('confirmation', {
         email,
       });

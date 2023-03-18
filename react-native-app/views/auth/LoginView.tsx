@@ -10,7 +10,6 @@ export default function LoginView() {
 	const navigation = useNavigation<any>();
 	const [email, onChangeEmail] = useState('');
 	const [password, onChangePassword] = useState('');
-	const [errorMessage, setErrorMessage] = useState('');
 
 	//Get user from Context from mainNavigator
 	const { authUser, setAuthUser } = useContext(authContext);

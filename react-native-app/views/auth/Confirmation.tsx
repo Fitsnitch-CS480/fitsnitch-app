@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import {View, StyleSheet, Text} from 'react-native';
-import Auth from '@aws-amplify/auth';
-import { useNavigation, useRoute } from '@react-navigation/native';
-
+import { useNavigation } from '@react-navigation/native';
 //Change these to something default, just use these for now for testing
 import Button from '../../components/Button';
-import Input from '../../components/Input';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
-import auth from '@react-native-firebase/auth';
 import AuthService from '../../services/AuthService';
 
 type TProps = {
@@ -19,7 +15,6 @@ type TProps = {
 const Confirmation : React.FC<TProps> = ({route}) => {
 
     const navigation = useNavigation<any>();
-    const [authCode, setAuthCode] = useState('');
     const [error, setError] = useState(' ');
   
     const resendConfirmationEmail = async () => {
@@ -31,7 +26,6 @@ const Confirmation : React.FC<TProps> = ({route}) => {
       <View style={styles.box}>
         <Text style={styles.text}>{T.confirm.checkEmail}</Text>
         <View style={styles.buttons}>
-          {/* <Button onPress={() => resendConfirmationEmail()}  backgroundColor={Colors.red}>{T.confirm.resend}</Button> */}
           <Button onPress={() => navigation.navigate('login')} backgroundColor={Colors.red}>{T.confirm.login}</Button>
         </View>
 		<Text style={styles.error}>{error}</Text>

@@ -6,13 +6,10 @@ import { isEmpty } from "lodash";
 
 const AuthService = {
 	async signUp(user: any) {
-		console.log("STEP 2.5", {user})
-		 
 
 		 await auth()
         .createUserWithEmailAndPassword(user.email, user.password)
         .then(async (userCredential) => {
-          console.log('User account created & signed in!');
           userCredential.user.sendEmailVerification();
 		  const data:any = auth().currentUser;
 		  let input: User;
@@ -45,7 +42,6 @@ const AuthService = {
 			.signInWithEmailAndPassword(email, password)
 			.then(async () => {
 				const input:any = auth().currentUser;
-				console.log("Log in user: ", input);
 				console.log('User account created & signed in!');
 				return await ServerFacade.getUserById(input.uid);
 			})
