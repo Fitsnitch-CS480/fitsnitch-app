@@ -64,9 +64,11 @@ const AuthService = {
 	},
 
 	async resendConfirmationEmail()  {
-		const idk = await auth().currentUser?.sendEmailVerification();
-		console.log(auth().currentUser)
-		console.log(idk)
+		try{
+			await auth().currentUser?.sendEmailVerification();
+		} catch(error){
+			console.log({error})
+		}
 	  },
 
 	async logout() {

@@ -1,6 +1,6 @@
 // this will be good if we need to support other languages
 const T = {
-    signUp : {
+    signUp: {
         title: "Sign Up",
         email: "Email",
         password: "Password",
@@ -8,8 +8,11 @@ const T = {
         firstName: "First Name",
         lastName: "Last Name",
         alreadyHaveAccount: "Already have an account?",
-        confirm: "Attempt Login",
-        checkEmail: "A confirmation link has been sent to your email. You may attempt login once confirmation is complete. You have one attempt to resend a verification email. Please wait a little while to receive email.",
+    },
+    confirm: {
+        login: "Login",
+        resend: "Resend Email",
+        checkEmail: "A verification link has been sent to your email. You may attempt to login once your email has been verified.",
     },
     logIn: {
         title: "Log In",

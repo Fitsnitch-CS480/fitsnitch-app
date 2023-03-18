@@ -29,12 +29,13 @@ const Confirmation : React.FC<TProps> = ({route}) => {
   return (
     <View style={styles.container}>
       <View style={styles.box}>
-        <Text style={styles.text}>{T.signUp.checkEmail}</Text>
-        <Text style={styles.text}>{error}</Text>
+        <Text style={styles.text}>{T.confirm.checkEmail}</Text>
         <View style={styles.buttons}>
-          <Button onPress={() => resendConfirmationEmail()}  backgroundColor={Colors.red}>Resend Code</Button>
-          <Button onPress={() => navigation.navigate('login')} backgroundColor={Colors.background}>{T.signUp.confirm}</Button>
+          {/* <Button onPress={() => resendConfirmationEmail()}  backgroundColor={Colors.red}>{T.confirm.resend}</Button> */}
+          <Button onPress={() => navigation.navigate('login')} backgroundColor={Colors.red}>{T.confirm.login}</Button>
         </View>
+		<Text style={styles.error}>{error}</Text>
+		<Text style={styles.link} onPress={() => resendConfirmationEmail()}>Resend verification link</Text>
       </View>
 	</View>
   );
@@ -65,7 +66,8 @@ const styles = StyleSheet.create({
 	},
 	text: {
 	  color: Colors.white,
-	  marginBottom: 5
+	  marginBottom: 15,
+	  textAlign: 'center',
 	},
   error: {
     color: Colors.red,
@@ -73,7 +75,8 @@ const styles = StyleSheet.create({
   },
   link: {
     color: Colors.lightBlue,
-	  marginTop: 5
+	  marginTop: 5,
+	  marginBottom: 5
   }
   });
   
