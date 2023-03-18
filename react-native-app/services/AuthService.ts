@@ -63,6 +63,12 @@ const AuthService = {
 			});
 	},
 
+	async resendConfirmationEmail()  {
+		const idk = await auth().currentUser?.sendEmailVerification();
+		console.log(auth().currentUser)
+		console.log(idk)
+	  },
+
 	async logout() {
 		await auth().signOut();
 		// NativeModuleService.getModule().stopBackgroundLocation();

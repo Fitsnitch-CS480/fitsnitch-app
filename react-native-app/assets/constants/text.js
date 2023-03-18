@@ -8,8 +8,8 @@ const T = {
         firstName: "First Name",
         lastName: "Last Name",
         alreadyHaveAccount: "Already have an account?",
-        confirm: "Confirm Sign Up",
-        checkEmail: "A confirmation link has been sent to your email.",
+        confirm: "Attempt Login",
+        checkEmail: "A confirmation link has been sent to your email. You may attempt login once confirmation is complete. You have one attempt to resend a verification email. Please wait a little while to receive email.",
     },
     logIn: {
         title: "Log In",

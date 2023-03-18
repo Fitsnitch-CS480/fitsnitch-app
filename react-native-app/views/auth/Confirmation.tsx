@@ -9,6 +9,7 @@ import Input from '../../components/Input';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import auth from '@react-native-firebase/auth';
+import AuthService from '../../services/AuthService';
 
 type TProps = {
   route: any;
@@ -21,17 +22,19 @@ const Confirmation : React.FC<TProps> = ({route}) => {
     const [authCode, setAuthCode] = useState('');
     const [error, setError] = useState(' ');
   
-    const resendConfirmationCode = async () => {
-		await auth().currentUser?.sendEmailVerification();
+    const resendConfirmationEmail = async () => {
+		await AuthService.resendConfirmationEmail();
 	  }
 	
   return (
     <View style={styles.container}>
       <View style={styles.box}>
+        <Text style={styles.text}>{T.signUp.checkEmail}</Text>
+        <Text style={styles.text}>{error}</Text>
         <View style={styles.buttons}>
-          <Button  backgroundColor={Colors.background}>{T.signUp.checkEmail} <Text style={styles.link} onPress={navigation.navigate('login')}>Return to login </Text></Button>
+          <Button onPress={() => resendConfirmationEmail()}  backgroundColor={Colors.red}>Resend Code</Button>
+          <Button onPress={() => navigation.navigate('login')} backgroundColor={Colors.background}>{T.signUp.confirm}</Button>
         </View>
-        <Text style={styles.error}>{error}</Text>
       </View>
 	</View>
   );
