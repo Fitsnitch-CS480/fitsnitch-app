@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Keyboard, ScrollView} from 'react-native';
+import { Button, StyleSheet, Text, View, Image, TextInput, Keyboard, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
@@ -121,14 +121,19 @@ const SignUpView : React.FC = () => {
         lastName,
         phoneNumber
       }
-      await AuthService.signUp(user);
+      try{
+        await AuthService.signUp(user);
+      }catch(err:any){
+        console.log('Could not log in', err);
+				setErrorMessage(err.message);
+        return;
+      }
 
       navigation.navigate('confirmation', {
         email,
       });
     } else {
       setErrorMessage(T.error.provideValidEmailPassword);
-      Alert.alert('Error:', errorMessage);
     }
   };
 
@@ -160,6 +165,10 @@ const SignUpView : React.FC = () => {
           <TextInput placeholder={T.signUp.phoneNumber} keyboardType='numeric' onChangeText={onChangePhoneNumber} style={styles.textBox}></TextInput>
           {!isEmpty(phoneNumberError) && <Text style={styles.validation}>{phoneNumberError}</Text>}
         </View>
+
+        <View>
+				<Text style={styles.errorMessage}>{errorMessage}</Text>
+				</View>
 
         <View style={styles.materialButtonPrimary}>
           <Button disabled={disableSignUp} color={Colors.red} title={T.signUp.title} onPress={signUpFunction}></Button>
@@ -234,7 +243,10 @@ const styles = StyleSheet.create({
     color: Colors.red, 
     flex: 1,
     fontSize: 12,
-  }
+  },
+  errorMessage: {
+		color: Colors.red,
+	}
 });
 
 export default SignUpView;

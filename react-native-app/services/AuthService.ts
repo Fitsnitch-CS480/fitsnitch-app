@@ -25,15 +25,17 @@ const AuthService = {
 		  }
         })
         .catch(error => {
+			let errorMessage = '';
           if (error.code === 'auth/email-already-in-use') {
-            console.log('That email address is already in use!');
+            errorMessage = 'That email address is already in use!';
           }
 
           if (error.code === 'auth/invalid-email') {
-            console.log('That email address is invalid!');
+            errorMessage = "Invalid email!";
           }
 
           console.error(error);
+		  throw new Error(errorMessage);
         });
 	},
 
@@ -46,16 +48,18 @@ const AuthService = {
 				return await ServerFacade.getUserById(input.uid);
 			})
 			.catch(error => {
-				if (error.code === 'auth/email-already-in-use') {
-					console.log('That email address is already in use!');
+				let errorMessage = '';
+				if (error.code === 'auth/user-not-found') {
+					errorMessage = "Email not recognized!";
 				}
-
 				if (error.code === 'auth/invalid-email') {
-				console.log('That email address is invalid!');
+					errorMessage = "Invalid email!";
 				}
-
-				console.error(error);
-				return undefined;
+				if (error.code === 'auth/wrong-password') {
+					errorMessage = "Invalid password";
+				}
+				console.log(error.code)
+				throw new Error(errorMessage);
 			});
 	},
 

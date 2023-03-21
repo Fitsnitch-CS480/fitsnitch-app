@@ -10,6 +10,7 @@ export default function LoginView() {
 	const navigation = useNavigation<any>();
 	const [email, onChangeEmail] = useState('');
 	const [password, onChangePassword] = useState('');
+	const [error, setErrorMessage] = useState('');
 
 	//Get user from Context from mainNavigator
 	const { authUser, setAuthUser } = useContext(authContext);
@@ -29,8 +30,9 @@ export default function LoginView() {
 			}
 			catch (err:any) {
 				console.log('Could not log in', err);
-				Alert.alert(T.error.noLogIn, err.message);
+				setErrorMessage(err.message);
 				setLoading(false)
+				return;
 			}
 		}
 		else {
@@ -51,6 +53,10 @@ export default function LoginView() {
 				<View style={styles.materialUnderlineTextboxStack}>
 					<TextInput placeholder={T.signUp.email} onChangeText={onChangeEmail} style={styles.textBox}></TextInput>
 					<TextInput placeholder={T.signUp.password} secureTextEntry onChangeText={onChangePassword} style={styles.textBox}></TextInput>
+				</View>
+
+				<View>
+				<Text style={styles.errorMessage}>{error}</Text>
 				</View>
 
 				<View style={styles.materialButtonPrimary}>
@@ -128,5 +134,8 @@ const styles = StyleSheet.create({
 	materialUnderlineTextbox1: {
 		height: 43,
 		width: 289,
+	},
+	errorMessage: {
+		color: Colors.red,
 	}
 });
