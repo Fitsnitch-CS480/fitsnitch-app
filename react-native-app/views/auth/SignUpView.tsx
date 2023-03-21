@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, TextInput, Keyboard, ScrollView} from 'react-native';
+import { Button, StyleSheet, Text, View, Image, TextInput, Keyboard, ScrollView, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
@@ -22,9 +22,8 @@ const SignUpView : React.FC = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [disableSignUp, setDisableSignUp] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
   
-
-
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setHideView(false)
@@ -105,6 +104,7 @@ const SignUpView : React.FC = () => {
   }
 
   const signUpFunction = async () => {
+    setLoading(true);
     if (email.length > 4 && password.length > 2) {
       let newphoneNumber = phoneNumber;
       //may need to take this out of the signUpFunction since it's not doing the change immediatly as the Auth.signUp gets called
@@ -123,9 +123,11 @@ const SignUpView : React.FC = () => {
       }
       try{
         await AuthService.signUp(user);
+        setLoading(false);
       }catch(err:any){
         console.log('Could not log in', err);
 				setErrorMessage(err.message);
+        setLoading(false);
         return;
       }
 
@@ -171,7 +173,11 @@ const SignUpView : React.FC = () => {
 				</View>
 
         <View style={styles.materialButtonPrimary}>
+        {loading ?
+						<ActivityIndicator color={Colors.red} size={30} />
+						:
           <Button disabled={disableSignUp} color={Colors.red} title={T.signUp.title} onPress={signUpFunction}></Button>
+        }
         </View>
         
         <View style={styles.textContainer}>

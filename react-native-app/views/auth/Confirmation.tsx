@@ -6,6 +6,7 @@ import Button from '../../components/Button';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import AuthService from '../../services/AuthService';
+import {isEmpty} from 'lodash';
 
 type TProps = {
   route: any;
@@ -15,10 +16,18 @@ type TProps = {
 const Confirmation : React.FC<TProps> = ({route}) => {
 
     const navigation = useNavigation<any>();
-    const [error, setError] = useState(' ');
+    const [showRensendLink, setShowResendLink] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('Initial email verification has been sent!');
   
     const resendConfirmationEmail = async () => {
-		await AuthService.resendConfirmationEmail();
+		try{
+			await AuthService.resendConfirmationEmail();
+		}catch(err:any){
+			setErrorMessage(err.message)
+		}
+		setSuccessMessage("Email verification sent!");
+		setShowResendLink(false)
 	  }
 	
   return (
@@ -28,8 +37,12 @@ const Confirmation : React.FC<TProps> = ({route}) => {
         <View style={styles.buttons}>
           <Button onPress={() => navigation.navigate('login')} backgroundColor={Colors.red}>{T.confirm.login}</Button>
         </View>
-		<Text style={styles.error}>{error}</Text>
-		<Text style={styles.link} onPress={() => resendConfirmationEmail()}>{T.confirm.resend}</Text>
+		{errorMessage ? (
+			<Text style={styles.errorMessage}>{errorMessage}</Text>
+		): (
+			<Text style={styles.successMessage}>{successMessage}</Text>
+		)}
+		{ showRensendLink && <Text style={styles.link} onPress={() => resendConfirmationEmail()}>{T.confirm.resend}</Text>}
       </View>
 	</View>
   );
@@ -62,6 +75,8 @@ const styles = StyleSheet.create({
 	  color: Colors.white,
 	  marginBottom: 15,
 	  textAlign: 'center',
+	  marginLeft: 15,
+	  marginRight: 15,
 	},
   error: {
     color: Colors.red,
@@ -71,7 +86,15 @@ const styles = StyleSheet.create({
     color: Colors.lightBlue,
 	  marginTop: 5,
 	  marginBottom: 5
-  }
+  },
+  errorMessage: {
+	marginTop: 5,
+	color: Colors.red,
+  },
+  successMessage: {
+	marginTop: 5,
+	color: "green",
+  },
   });
   
   

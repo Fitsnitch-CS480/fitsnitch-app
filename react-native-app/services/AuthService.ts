@@ -64,16 +64,18 @@ const AuthService = {
 	},
 
 	async resendConfirmationEmail()  {
-		try{
-			await auth().currentUser?.sendEmailVerification();
-		} catch(error){
-			console.log({error})
-		}
+		return await auth().currentUser?.sendEmailVerification()
+		.then(async () => {})
+		.catch(error => {
+			console.log(error)
+			console.log(error.code)
+			throw new Error("Error sending verification email.");
+		});
 	  },
 
 	async logout() {
 		await auth().signOut();
-		NativeModuleService.getModule().stopBackgroundLocation();
+		// NativeModuleService.getModule().stopBackgroundLocation();
 	}
 }
 

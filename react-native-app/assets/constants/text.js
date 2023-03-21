@@ -12,7 +12,7 @@ const T = {
     confirm: {
         login: "Login",
         resend: "Resend verification link",
-        checkEmail: "A verification link has been sent to your email. You may attempt to login once your email has been verified.",
+        checkEmail: "A verification link has been sent to your email. You may attempt to login once your email has been verified. You are allowed to resend a verification link only once.",
     },
     logIn: {
         title: "Log In",

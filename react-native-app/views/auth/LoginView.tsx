@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, ActivityIndicator, ScrollView } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, TextInput, ActivityIndicator, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
@@ -36,7 +36,7 @@ export default function LoginView() {
 			}
 		}
 		else {
-			Alert.alert("", T.error.provideEmailPassword);
+			setErrorMessage(T.error.provideEmailPassword);
 			setLoading(false)
 		}
 	};
