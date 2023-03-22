@@ -6,30 +6,34 @@ import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 import { NativeInput } from "../models/NativeInput";
 import LoginNavigator from "./auth/loginNavigator";
 import Colors from "../assets/constants/colors";
-import AuthService from "../services/AuthService";
+import auth from '@react-native-firebase/auth';
+import ServerFacade from "../services/ServerFacade";
+import { isEmpty } from "lodash";
 
 export const authContext = createContext<{ setAuthUser: (user: User | undefined) => void, authUser: User | undefined }>({ authUser: undefined, setAuthUser: () => { } });
 
 const AuthWrapper: React.FC<{ input?: NativeInput }> = ({ input }) => {
-	const [loading, setLoading] = useState<boolean>(true);
+	const [initializing, setInitializing] = useState(true);
 	const [authUser, setAuthUser] = useState<User | undefined>(undefined);
+	const onAuthStateChanged = async (user: any) => {
+		if (user === null){
+			setAuthUser(undefined);
+		}
 
-	const componentDidMount = async () => {
-		try {
-			let user = await AuthService.attemptResumeSession();
-			if (user) setAuthUser(user);
+		if(!isEmpty(user)){
+			const loggedInUser = await ServerFacade.getUserById(user.uid);
+			setAuthUser(loggedInUser);
 		}
-		catch (error) {
-			console.log('Failed persistent login: ', error);
-		}
-		setLoading(false)
-	}
+
+		if (initializing) setInitializing(false);
+	  }
 
 	useEffect(() => {
-		componentDidMount();
+		const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+		return subscriber; // unsubscribe on unmount
 	}, [])
 
-	if (loading) {
+	if (initializing) {
 		return (
 			<View style={styles.loadingScreen}>
 

@@ -11,7 +11,6 @@ import { useNavigation, useNavigationState } from '@react-navigation/native';
 import { LatLonPair } from '../shared/models/CoordinateModels';
 import { globalContext } from "../navigation/appNavigator";
 import {observer} from 'mobx-react-lite'
-import { retry } from "@aws-amplify/core";
 import { getMetaData, NativeInput } from "../models/NativeInput";
 
 /**

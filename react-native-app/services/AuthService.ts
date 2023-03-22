@@ -1,54 +1,81 @@
 import User from "../shared/models/User";
 import ServerFacade from "./ServerFacade";
-import Auth from '@aws-amplify/auth';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import NativeModuleService from "./NativeModuleService";
+import auth from '@react-native-firebase/auth';
+import { isEmpty } from "lodash";
 
 const AuthService = {
-	async attemptResumeSession(): Promise<User | undefined> {
-		{ }
-		const authentication = await EncryptedStorage.getItem("user_auth");
-		// console.log("authentication JSON:", authentication)
-		if (!authentication) {
-			console.log("No previous session identified.");
-			return;
-		}
+	async signUp(user: any) {
 
-		const { email, password } = JSON.parse(authentication);
-		console.log("Found previous user:", email)
+		 await auth()
+        .createUserWithEmailAndPassword(user.email, user.password)
+        .then(async (userCredential) => {
+          userCredential.user.sendEmailVerification();
+		  const data:any = auth().currentUser;
+		  let input: User;
+		  if(!isEmpty(data)){
+			input = {
+				userId: data.uid,
+				email: user.email,
+				firstname: user.firstname,
+				lastname: user.lastname,
+				phone: user?.phoneNumber,
+			}
+			await ServerFacade.createUser(input);
+		  }
+        })
+        .catch(error => {
+			let errorMessage = '';
+          if (error.code === 'auth/email-already-in-use') {
+            errorMessage = 'That email address is already in use!';
+          }
 
-		return await this.attemptLogin(email, password);
+          if (error.code === 'auth/invalid-email') {
+            errorMessage = "Invalid email!";
+          }
+
+          console.error(error);
+		  throw new Error(errorMessage);
+        });
 	},
 
-	async attemptLogin(email, password): Promise<User | undefined> {
-		let userCognitoData = await Auth.signIn(email, password);
-		if (!userCognitoData) {
-			throw new Error("Failed to authenticate with given credentials");
-		}
-		// Use the UserID from Cognito to look up the User in our DB
-		let user = await ServerFacade.getUserById(userCognitoData.attributes.sub);
-		if (!user) {
-			throw new Error("Found no user matching credentials");
-		}
-		try {
-			await EncryptedStorage.setItem(
-				"user_auth",
-				JSON.stringify({
-					email,
-					password
-				})
-			);
-			NativeModuleService.getModule()?.saveUserId(user.userId);
-		} catch (error) {
-			console.log('Failed to save login: ', error);
-		}
-		return user;
+	async attemptLogin(email:string, password:string): Promise<User | undefined> {
+		return await auth()
+			.signInWithEmailAndPassword(email, password)
+			.then(async () => {
+				const input:any = auth().currentUser;
+				console.log('User account created & signed in!');
+				return await ServerFacade.getUserById(input.uid);
+			})
+			.catch(error => {
+				let errorMessage = '';
+				if (error.code === 'auth/user-not-found') {
+					errorMessage = "Email not recognized!";
+				}
+				if (error.code === 'auth/invalid-email') {
+					errorMessage = "Invalid email!";
+				}
+				if (error.code === 'auth/wrong-password') {
+					errorMessage = "Invalid password";
+				}
+				console.log(error.code)
+				throw new Error(errorMessage);
+			});
 	},
+
+	async resendConfirmationEmail()  {
+		return await auth().currentUser?.sendEmailVerification()
+		.then(async () => {})
+		.catch(error => {
+			console.log(error)
+			console.log(error.code)
+			throw new Error("Error sending verification email.");
+		});
+	  },
 
 	async logout() {
-		await Auth.signOut();
-		await EncryptedStorage.removeItem("user_auth");
-		NativeModuleService.getModule().stopBackgroundLocation();
+		await auth().signOut();
+		// NativeModuleService.getModule().stopBackgroundLocation();
 	}
 }
 
