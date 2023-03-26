@@ -18,10 +18,11 @@ const SendVerification : React.FC<TProps> = ({route}) => {
     const [showRensendLink, setShowResendLink] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('Initial email verification has been sent!');
+	const user = route.user;
   
     const viaEmail = async () => {
 		try{
-			await AuthService.signUpViaEmail();
+			await AuthService.signUpViaEmail(user);
 		}catch(err:any){
 			setErrorMessage(err.message)
 		}
@@ -30,13 +31,9 @@ const SendVerification : React.FC<TProps> = ({route}) => {
 	}
 
     const viaPhone = async () => {
-		try{
-			await AuthService.resendConfirmationEmail();
-		}catch(err:any){
-			setErrorMessage(err.message)
-		}
-		setSuccessMessage("Email verification sent!");
-		setShowResendLink(false)
+		navigation.navigate('phone', {
+			user,
+		  });
 	}
 	
   return (
@@ -49,7 +46,7 @@ const SendVerification : React.FC<TProps> = ({route}) => {
 				<Button color={Colors.red} title={T.verificationOptions.email} onPress={viaEmail}></Button>	
 			</View>
 			<View style={styles.buttons}>				
-				<Button color={Colors.red} title={T.verificationOptions.phone} onPress={viaEmail}></Button>	
+				<Button color={Colors.red} title={T.verificationOptions.phone} onPress={viaPhone}></Button>	
 			</View>
 		</View>
       </View>

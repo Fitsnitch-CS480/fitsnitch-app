@@ -12,8 +12,7 @@ type TProps = {
   route: any;
 }
 
-
-const Confirmation : React.FC<TProps> = ({route}) => {
+const EmailVerification : React.FC<TProps> = ({route}) => {
 
     const navigation = useNavigation<any>();
     const [showRensendLink, setShowResendLink] = useState(true);
@@ -78,24 +77,24 @@ const styles = StyleSheet.create({
 	  marginLeft: 15,
 	  marginRight: 15,
 	},
-  error: {
-    color: Colors.red,
-	  marginTop: 5
-  },
-  link: {
-    color: Colors.lightBlue,
-	  marginTop: 5,
-	  marginBottom: 5
-  },
-  errorMessage: {
-	marginTop: 5,
-	color: Colors.red,
-  },
-  successMessage: {
-	marginTop: 5,
-	color: "green",
-  },
+	error: {
+		color: Colors.red,
+		marginTop: 5
+	},
+	link: {
+		color: Colors.lightBlue,
+		marginTop: 5,
+		marginBottom: 5
+	},
+	errorMessage: {
+		marginTop: 5,
+		color: Colors.red,
+	},
+	successMessage: {
+		marginTop: 5,
+		color: "green",
+	},
   });
   
   
-  export default Confirmation;
+  export default EmailVerification;

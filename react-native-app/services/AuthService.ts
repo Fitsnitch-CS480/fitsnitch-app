@@ -38,6 +38,9 @@ const AuthService = {
 		  throw new Error(errorMessage);
         });
 	},
+	async signUpViaPhone(user: any) {
+		return await auth().signInWithPhoneNumber(user.phoneNumber);
+	},
 
 	async attemptLogin(email:string, password:string): Promise<User | undefined> {
 		return await auth()

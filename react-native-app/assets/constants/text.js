@@ -8,6 +8,8 @@ const T = {
         firstName: "First Name",
         lastName: "Last Name",
         alreadyHaveAccount: "Already have an account?",
+        confirm: "Confirm Sign Up",
+        phoneConfirmation: "SMS confirmation code has been sent.",
     },
     confirm: {
         login: "Login",
@@ -20,7 +22,7 @@ const T = {
     },
     verificationOptions: {
         title: "Send Code",
-        subtitle: "Choose a method to send your code.",
+        subtitle: "Choose a method to send your verification.",
         email: "Email",
         phone: "Text Message"
     },

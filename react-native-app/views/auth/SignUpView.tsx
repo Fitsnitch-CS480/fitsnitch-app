@@ -121,19 +121,40 @@ const SignUpView : React.FC = () => {
         lastName,
         phoneNumber
       }
-      // try{
-      //   await AuthService.signUp(user);
-      //   setLoading(false);
-      // }catch(err:any){
-      //   console.log('Could not log in', err);
-			// 	setErrorMessage(err.message);
-      //   setLoading(false);
-      //   return;
-      // }
 
-      navigation.navigate('options', {
-        user,
-      });
+      if(!isEmpty(email) && !isEmpty(phoneNumber)){
+        navigation.navigate('options', {
+          user,
+        });
+      } 
+      else if(!isEmpty(phoneNumber)){
+        try{
+          await AuthService.signUpViaPhone(user);
+          setLoading(false);
+        } 
+        catch(err:any){
+          console.log('Could not log in', err);
+          setErrorMessage(err.message);
+          setLoading(false);
+          return;
+        }
+        navigation.navigate('phone');
+      }
+      else  {
+        try{
+          await AuthService.signUpViaEmail(user);
+          setLoading(false);
+        } 
+        catch(err:any){
+          console.log('Could not log in', err);
+          setErrorMessage(err.message);
+          setLoading(false);
+          return;
+        }
+
+        navigation.navigate('email');
+      }
+
     } else {
       setErrorMessage(T.error.provideValidEmailPassword);
     }
