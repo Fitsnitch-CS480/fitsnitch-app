@@ -5,7 +5,7 @@ import auth from '@react-native-firebase/auth';
 import { isEmpty } from "lodash";
 
 const AuthService = {
-	async signUp(user: any) {
+	async signUpViaEmail(user: any) {
 
 		 await auth()
         .createUserWithEmailAndPassword(user.email, user.password)
@@ -58,7 +58,6 @@ const AuthService = {
 				if (error.code === 'auth/wrong-password') {
 					errorMessage = "Invalid password";
 				}
-				console.log(error.code)
 				throw new Error(errorMessage);
 			});
 	},
@@ -67,15 +66,13 @@ const AuthService = {
 		return await auth().currentUser?.sendEmailVerification()
 		.then(async () => {})
 		.catch(error => {
-			console.log(error)
-			console.log(error.code)
 			throw new Error("Error sending verification email.");
 		});
 	  },
 
 	async logout() {
 		await auth().signOut();
-		// NativeModuleService.getModule().stopBackgroundLocation();
+		// NativeModuleService.getModule().stopB ackgroundLocation();
 	}
 }
 

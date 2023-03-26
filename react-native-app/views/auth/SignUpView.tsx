@@ -121,18 +121,18 @@ const SignUpView : React.FC = () => {
         lastName,
         phoneNumber
       }
-      try{
-        await AuthService.signUp(user);
-        setLoading(false);
-      }catch(err:any){
-        console.log('Could not log in', err);
-				setErrorMessage(err.message);
-        setLoading(false);
-        return;
-      }
+      // try{
+      //   await AuthService.signUp(user);
+      //   setLoading(false);
+      // }catch(err:any){
+      //   console.log('Could not log in', err);
+			// 	setErrorMessage(err.message);
+      //   setLoading(false);
+      //   return;
+      // }
 
-      navigation.navigate('confirmation', {
-        email,
+      navigation.navigate('options', {
+        user,
       });
     } else {
       setErrorMessage(T.error.provideValidEmailPassword);

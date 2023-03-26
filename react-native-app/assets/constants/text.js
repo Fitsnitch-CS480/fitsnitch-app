@@ -18,6 +18,12 @@ const T = {
         title: "Log In",
         dontHaveAccount: "Don't have an account?"
     },
+    verificationOptions: {
+        title: "Send Code",
+        subtitle: "Choose a method to send your code.",
+        email: "Email",
+        phone: "Text Message"
+    },
     error: {
         noLogIn: "Could not log in",
         provideEmailPassword: "Provide an email and password",
