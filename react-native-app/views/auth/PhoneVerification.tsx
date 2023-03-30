@@ -22,21 +22,39 @@ const PhoneVerification : React.FC<TProps> = ({route}) => {
     const [showRensendLink, setShowResendLink] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('Initial email verification has been sent!');
-    const user = route.user;
+    const user = route.params.user;
   
     if(sendCode){
-        const confirmation:any = AuthService.signUpViaPhone(user);
-        setConfirm(confirmation);
-        setSendCode(false);
+        try{
+          const confirmation:any = AuthService.signUpViaPhone(user);
+          console.log({confirmation});
+          setConfirm(confirmation);
+          setSendCode(false);
+        }catch(error){
+          console.log(error);
+          // setErrorMessage("Error");
+        }
     }
     const confirmSignUp = async () => {
-        try {
-            //@ts-ignore
-          await confirm.confirm(code);
-        } catch (error) {
-          console.log('Invalid code.');
-        }
+      try {
+          //@ts-ignore
+        await confirm.confirm(code);
+      } catch (error) {
+        console.log('Invalid code.');
+        setErrorMessage('Invalid code.');
       }
+    }
+
+    const resendVerificationCode = async () => {
+      console.log("phone verification user: ", user)
+      try {
+          //@ts-ignore
+        await AuthService.resendVerificationCode(user.phoneNumber);
+      } catch (error) {
+        console.log('Invalid code.');
+        setErrorMessage('Unable to resend code.');
+      }
+    }
   return (
     <View style={styles.container}>
       <View style={styles.box}>
@@ -46,9 +64,9 @@ const PhoneVerification : React.FC<TProps> = ({route}) => {
             placeholder="123456"
             onChange={(text : any) => setCode(text)}
           />
-        {/* <Text style={styles.text}>{error}</Text> */}
+        {errorMessage && (<Text style={styles.error}>{errorMessage}</Text>)}
         <View style={styles.buttons}>
-          {/* <Button  onPress={() => resendConfirmationCode()}  backgroundColor={Colors.red}>Resend Code</Button> */}
+          <Button  onPress={() => resendVerificationCode()}  backgroundColor={Colors.red}>Resend Code</Button>
           <Button onPress={() => confirmSignUp()} backgroundColor={Colors.background}>{T.signUp.confirm}</Button>
         </View>
       </View>
@@ -76,9 +94,9 @@ const styles = StyleSheet.create({
 	  justifyContent: 'flex-start',
 	},
 	buttons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-      },
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 	text: {
 	  color: Colors.white,
 	  marginBottom: 15,
@@ -88,7 +106,8 @@ const styles = StyleSheet.create({
 	},
 	error: {
 		color: Colors.red,
-		marginTop: 5
+		marginBottom: 10,
+    fontWeight: 'bold'
 	},
 	link: {
 		color: Colors.lightBlue,

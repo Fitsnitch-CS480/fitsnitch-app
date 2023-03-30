@@ -18,7 +18,9 @@ const SendVerification : React.FC<TProps> = ({route}) => {
     const [showRensendLink, setShowResendLink] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('Initial email verification has been sent!');
-	const user = route.user;
+	const user = route.params.user;
+	console.log("route in options", route)
+	console.log("user in options", user)
   
     const viaEmail = async () => {
 		try{

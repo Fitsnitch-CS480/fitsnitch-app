@@ -39,7 +39,17 @@ const AuthService = {
         });
 	},
 	async signUpViaPhone(user: any) {
-		return await auth().signInWithPhoneNumber(user.phoneNumber);
+		console.log("sign in user param: ", user);
+		return await auth().signInWithPhoneNumber('+17604812144');
+	},
+
+	async resendVerificationCode(phoneNumber: string){
+		console.log("resend number param: ", phoneNumber);
+		return await auth().signInWithPhoneNumber(phoneNumber, true)
+		.then(async () => {})
+		.catch(error => {
+			throw new Error("Error sending verification email.");
+		});
 	},
 
 	async attemptLogin(email:string, password:string): Promise<User | undefined> {
@@ -65,13 +75,13 @@ const AuthService = {
 			});
 	},
 
-	async resendConfirmationEmail()  {
+	async resendConfirmationEmail(){
 		return await auth().currentUser?.sendEmailVerification()
 		.then(async () => {})
 		.catch(error => {
 			throw new Error("Error sending verification email.");
 		});
-	  },
+	},
 
 	async logout() {
 		await auth().signOut();

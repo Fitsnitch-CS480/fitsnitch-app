@@ -69,7 +69,7 @@ export default function LoginView() {
 
 				<View style={styles.textContainer}>
 					<Text style={styles.dontHaveAccount}>{T.logIn.dontHaveAccount}</Text>
-					<Text style={styles.signUpText} onPress={() => navigation.navigate('options')}>{T.signUp.title}</Text>
+					<Text style={styles.signUpText} onPress={() => navigation.navigate('signup')}>{T.signUp.title}</Text>
 				</View>
 			</View>
 		</ScrollView>

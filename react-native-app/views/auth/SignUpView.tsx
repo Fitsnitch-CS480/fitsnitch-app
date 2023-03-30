@@ -60,16 +60,28 @@ const SignUpView : React.FC = () => {
   }
   
   const onChangePhoneNumber = (inputPhoneNumber:any) => {
-    if (!inputPhoneNumber.includes("+1"))
-    {
-      inputPhoneNumber = "+1".concat(inputPhoneNumber)
-    }
+    console.log(inputPhoneNumber)
+    // if (!isEmpty(inputPhoneNumber) && !inputPhoneNumber.includes("+1") && inputPhoneNumber.length === 8)
+    // {
+    //   inputPhoneNumber = "+".concat(inputPhoneNumber)
+    // }
+    // else if (!isEmpty(inputPhoneNumber) && !inputPhoneNumber.includes("+1"))
+    // {
+    //   inputPhoneNumber = "+1".concat(inputPhoneNumber)
+    // }
+    console.log(inputPhoneNumber)
 
     if(inputPhoneNumber.length > 0 && inputPhoneNumber.length < 11){
-      setPhoneNumberError(T.error.invalidPhone);
+      if(isEmpty(phoneNumberError)){
+        setPhoneNumberError(T.error.invalidPhone);
+      }
       if(!disableSignUp){
         setDisableSignUp(true);
       }
+    } else if (isEmpty(inputPhoneNumber)) {
+      setPhoneNumberError('');
+      setPhoneNumber(inputPhoneNumber);
+      enableSignUpButton();
     } else {
       setPhoneNumberError('');
       setPhoneNumber(inputPhoneNumber);
@@ -122,6 +134,7 @@ const SignUpView : React.FC = () => {
         phoneNumber
       }
 
+      console.log("sign in user: ", user)
       if(!isEmpty(email) && !isEmpty(phoneNumber)){
         navigation.navigate('options', {
           user,
@@ -130,7 +143,6 @@ const SignUpView : React.FC = () => {
       else if(!isEmpty(phoneNumber)){
         try{
           await AuthService.signUpViaPhone(user);
-          setLoading(false);
         } 
         catch(err:any){
           console.log('Could not log in', err);
@@ -143,21 +155,22 @@ const SignUpView : React.FC = () => {
       else  {
         try{
           await AuthService.signUpViaEmail(user);
-          setLoading(false);
         } 
         catch(err:any){
           console.log('Could not log in', err);
           setErrorMessage(err.message);
           setLoading(false);
+          setDisableSignUp(false);
           return;
         }
-
         navigation.navigate('email');
       }
 
     } else {
       setErrorMessage(T.error.provideValidEmailPassword);
     }
+
+    setLoading(false);
   };
 
   const enableSignUpButton = () => {
@@ -186,7 +199,7 @@ const SignUpView : React.FC = () => {
           <TextInput placeholder={T.signUp.password} secureTextEntry onChangeText={onChangePassword} style={styles.textBox}></TextInput>
           {!isEmpty(passwordError) && <Text style={styles.validation}>{passwordError}</Text>}
           <TextInput placeholder={T.signUp.phoneNumber} keyboardType='numeric' onChangeText={onChangePhoneNumber} style={styles.textBox}></TextInput>
-          {!isEmpty(phoneNumberError) && <Text style={styles.validation}>{phoneNumberError}</Text>}
+          {!isEmpty(phoneNumberError) && (<Text style={styles.validation}>{phoneNumberError}</Text>)}
         </View>
 
         <View>
