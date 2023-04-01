@@ -3,7 +3,5 @@
 		"dev:android": "npx concurrently -n \"Android,Server\" \"npm run run:android\" \"npm run run:server\"",
 		"run:android": "cd react-native-app && npm run android",
 		"run:server": "cd server && npm run dev"
-	},
-	"dependencies": {
 	}
 }

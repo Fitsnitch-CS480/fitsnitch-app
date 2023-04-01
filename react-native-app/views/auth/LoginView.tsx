@@ -5,8 +5,9 @@ import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
 import AuthService from '../../services/AuthService';
+import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
-export default function LoginView() {
+const LoginView : React.FC = () => {
 	const navigation = useNavigation<any>();
 	const [email, onChangeEmail] = useState('');
 	const [password, onChangePassword] = useState('');
@@ -40,6 +41,19 @@ export default function LoginView() {
 			setLoading(false)
 		}
 	};
+
+	const signInWithGoogle = async () => {
+		setLoading(true);
+		try{
+			const user:any = await AuthService.googleSignIn();
+			console.log("google user: ", user)
+			setLoading(false);
+			setAuthUser(user);
+		}catch(error:any){
+			setLoading(false);
+			setErrorMessage(error);
+		}
+	}
 
 	return (
 		<ScrollView style={styles.screen}>
@@ -77,7 +91,7 @@ export default function LoginView() {
 				<View>
 					<TouchableOpacity
 						style={styles.buttonGPlusStyle}
-						onPress={() => loading ? null : signInFunction()}
+						onPress={() => loading ? null : signInWithGoogle()}
 						activeOpacity={0.5}>
 						<Image
 							source={{
@@ -88,9 +102,16 @@ export default function LoginView() {
 						/>
 						<View style={styles.buttonIconSeparatorStyle} />
 						<Text style={styles.buttonTextStyle}>
-							Login Using Google
+							Sign in with Google
 						</Text>
 					</TouchableOpacity>
+					{/* <GoogleSigninButton
+  style={{ width: 192, height: 48, }}
+  size={GoogleSigninButton.Size.Wide}
+  color={GoogleSigninButton.Color.Light}
+//   onPress={this._signIn}
+//   disabled={this.state.isSigninInProgress}
+/> */}
 				</View>
 			</View>
 		</ScrollView>
@@ -195,3 +216,5 @@ const styles = StyleSheet.create({
 		color: Colors.red,
 	}
 });
+
+export default LoginView;

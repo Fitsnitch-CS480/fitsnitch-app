@@ -2,9 +2,12 @@ import User from "../shared/models/User";
 import ServerFacade from "./ServerFacade";
 import NativeModuleService from "./NativeModuleService";
 import auth from '@react-native-firebase/auth';
+import firebase from '@react-native-firebase/app';
 import { isEmpty } from "lodash";
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const AuthService = {
+	
 	async signUp(user: any) {
 
 		 await auth()
@@ -61,6 +64,37 @@ const AuthService = {
 				console.log(error.code)
 				throw new Error(errorMessage);
 			});
+	},
+
+	async googleSignIn() {
+		GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+		const { idToken } = await GoogleSignin.signIn();
+		const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+		return auth().signInWithCredential(googleCredential).then(async (data)=>{
+			const name = data.user?.displayName;
+			const nameArray: any = name?.split(' ');
+			let firstname = '';
+			let lastname = '';
+			if(!isEmpty(nameArray)){
+				firstname = nameArray[0];
+				if(nameArray.length === 2){
+					lastname = nameArray[1];
+				}
+			}
+			const input:User = {
+				userId: data.user?.uid,
+				email: data.user.email || "",
+				firstname: firstname,
+				lastname: lastname,
+				phone: data.user?.phoneNumber || "",
+			}
+			console.log("input: ", input)
+			return await ServerFacade.createUser(input);
+		})
+		.catch((error)=> {
+			console.log("Error on Google sing in: ", {error});
+			throw new Error(error);
+		});
 	},
 
 	async resendConfirmationEmail()  {

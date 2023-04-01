@@ -9,6 +9,11 @@ import Colors from "../assets/constants/colors";
 import auth from '@react-native-firebase/auth';
 import ServerFacade from "../services/ServerFacade";
 import { isEmpty } from "lodash";
+import { GoogleSignin  } from '@react-native-google-signin/google-signin';
+
+GoogleSignin.configure({
+	webClientId: "1037844578161-20ie56l06g6h78tr1b4fjob40jfgvso2.apps.googleusercontent.com",
+  });
 
 export const authContext = createContext<{ setAuthUser: (user: User | undefined) => void, authUser: User | undefined }>({ authUser: undefined, setAuthUser: () => { } });
 
