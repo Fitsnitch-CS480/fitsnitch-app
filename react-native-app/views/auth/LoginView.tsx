@@ -6,7 +6,7 @@ import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
 import AuthService from '../../services/AuthService';
 import { isEmpty } from "lodash";
-// import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+// import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 const LoginView : React.FC = () => {
 	const navigation = useNavigation<any>();
@@ -89,10 +89,9 @@ const LoginView : React.FC = () => {
 				</View>
 
 
-				{/* <View style={styles.otherSignInButtons}> */}
 				<View>
 					<TouchableOpacity
-						style={styles.buttonGPlusStyle}
+						style={styles.buttonGoogleStyle}
 						onPress={() => loading ? null : signInWithGoogle()}
 						activeOpacity={0.5}>
 						<Image
@@ -109,7 +108,7 @@ const LoginView : React.FC = () => {
 					</TouchableOpacity>
 					{/* Would like to keep the button code for now in case we need to switch to it from the code above*/}
 					{/* <GoogleSigninButton
-						style={{ width: 192, height: 48, }}
+						style={{ width: 215, height: 48, margin: 25, borderRadius: 25 }}
 						size={GoogleSigninButton.Size.Wide}
 						color={GoogleSigninButton.Color.Light}
 						//   onPress={this._signIn}
@@ -141,7 +140,7 @@ const styles = StyleSheet.create({
 		width: 250,
 		marginVertical: 20,
 	},
-	buttonGPlusStyle: {
+	buttonGoogleStyle: {
 		flexDirection: 'row',
 		alignItems: 'center',
 		backgroundColor: Colors.red,
