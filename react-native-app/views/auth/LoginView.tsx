@@ -5,7 +5,8 @@ import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
 import AuthService from '../../services/AuthService';
-import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
+import { isEmpty } from "lodash";
+// import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 const LoginView : React.FC = () => {
 	const navigation = useNavigation<any>();
@@ -46,9 +47,10 @@ const LoginView : React.FC = () => {
 		setLoading(true);
 		try{
 			const user:any = await AuthService.googleSignIn();
-			console.log("google user: ", user)
 			setLoading(false);
-			setAuthUser(user);
+			if(!isEmpty(user)){
+				setAuthUser(user);
+			}
 		}catch(error:any){
 			setLoading(false);
 			setErrorMessage(error);
@@ -102,16 +104,17 @@ const LoginView : React.FC = () => {
 						/>
 						<View style={styles.buttonIconSeparatorStyle} />
 						<Text style={styles.buttonTextStyle}>
-							Sign in with Google
+							{T.logIn.google}
 						</Text>
 					</TouchableOpacity>
+					{/* Would like to keep the button code for now in case we need to switch to it from the code above*/}
 					{/* <GoogleSigninButton
-  style={{ width: 192, height: 48, }}
-  size={GoogleSigninButton.Size.Wide}
-  color={GoogleSigninButton.Color.Light}
-//   onPress={this._signIn}
-//   disabled={this.state.isSigninInProgress}
-/> */}
+						style={{ width: 192, height: 48, }}
+						size={GoogleSigninButton.Size.Wide}
+						color={GoogleSigninButton.Color.Light}
+						//   onPress={this._signIn}
+						//   disabled={this.state.isSigninInProgress}
+						/> */}
 				</View>
 			</View>
 		</ScrollView>
