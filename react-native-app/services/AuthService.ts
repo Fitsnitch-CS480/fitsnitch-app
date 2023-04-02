@@ -108,7 +108,7 @@ const AuthService = {
 
 	async logout() {
 		await auth().signOut();
-		// NativeModuleService.getModule().stopBackgroundLocation();
+		NativeModuleService.getModule().stopBackgroundLocation();
 	}
 }
 
