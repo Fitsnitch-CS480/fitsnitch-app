@@ -7,10 +7,10 @@ import AuthWrapper from './views/authWrapper';
 Amplify.configure(config);
 
 
-export default function App(props){
+export default function App(props) {
   console.log("*****FIT INITIAL PROPS", props)
 
-  return(
-	<AuthWrapper input={props as NativeInput} />
+  return (
+      <AuthWrapper input={props as NativeInput} />
   )
 }

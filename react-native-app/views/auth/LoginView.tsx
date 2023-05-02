@@ -99,13 +99,13 @@ const styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
 	dontHaveAccount: {
-		fontFamily: "roboto-regular",
+		// fontFamily: "roboto-regular",
 		color: Colors.white,
 		marginRight: 5,
 		fontSize: 15,
 	},
 	signUpText: {
-		fontFamily: "roboto-regular",
+		// fontFamily: "roboto-regular",
 		fontSize: 15,
 		fontWeight: 'bold',
 		color: Colors.red,

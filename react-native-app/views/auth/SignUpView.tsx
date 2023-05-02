@@ -212,19 +212,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   alreadyHaveText: {
-    fontFamily: "roboto-regular",
+    // fontFamily: "roboto-regular",
     fontSize: 15,
     color: Colors.white,
     marginRight: 5,
   },
   logInText: {
-    fontFamily: "roboto-regular",
+    // fontFamily: "roboto-regular",
     fontSize: 15,
     fontWeight: 'bold',
     color: Colors.red,
   },
   signUpOAuthText: {
-    fontFamily: "roboto-regular",
+    // fontFamily: "roboto-regular",
     color: Colors.white,
     marginRight: 6,
   },

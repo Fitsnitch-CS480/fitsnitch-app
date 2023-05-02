@@ -1,5 +1,5 @@
 import { NativeModules, NativeEventEmitter, Platform, AppState, PermissionsAndroid } from "react-native";
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
 import { request } from "./ServerFacade";
 import notifee from '@notifee/react-native';
 
@@ -22,21 +22,21 @@ class PushNotificationService {
 			
 		});
 
-		/*** Prepare to Handle Incoming Notifications ***/
-		messaging().onMessage(this.handleRemoteMessage);
+		// /*** Prepare to Handle Incoming Notifications ***/
+		// messaging().onMessage(this.handleRemoteMessage);
 
-		/*** Setup Token For Pushing to this device ***/
-		// Register the device with FCM
-		await messaging().registerDeviceForRemoteMessages();
-		const token = await messaging().getToken();
-		console.log("Got FCM Token!", token);
-		// Save the token
-		try {
-			request.post('user/saveNotificationToken', { userId, token })
-		}
-		catch (e) {
-			console.log('Error saving user device token.', e)
-		}
+		// /*** Setup Token For Pushing to this device ***/
+		// // Register the device with FCM
+		// await messaging().registerDeviceForRemoteMessages();
+		// const token = await messaging().getToken();
+		// console.log("Got FCM Token!", token);
+		// // Save the token
+		// try {
+		// 	request.post('user/saveNotificationToken', { userId, token })
+		// }
+		// catch (e) {
+		// 	console.log('Error saving user device token.', e)
+		// }
 		this.isInitialized = true;
 	}
 
