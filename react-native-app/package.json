@@ -7,7 +7,7 @@
     "android:dev": "react-native run-android --mode=dev",
     "android:beta": "react-native run-android --mode=beta",
     "android:prod": "react-native run-android --mode=release",
-	"tunnel:android": "adb reverse tcp:4000 tcp:4000",
+    "tunnel:android": "adb reverse tcp:4000 tcp:4000",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",

@@ -1,0 +1,44 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    userId                 String   @id
+    firstname              String
+    lastname               String
+    email                  String
+    image                  String?
+    phone                  String?
+    cheatmealSchedule      String?
+    associatedDeviceTokens String[]
+}
+
+model TrainerClientPair {
+    trainerId String
+    clientId  String
+
+    @@id([trainerId, clientId])
+}
+
+model SnitchEvent {
+    snitchId       String   @id @default(uuid())
+    userId         String
+    timestamp      DateTime
+    lat            Decimal
+    lon            Decimal
+    restaurantName String
+}
+
+model CheatMealEvent {
+    snitchId       String   @id @default(uuid())
+    userId         String
+    timestamp      DateTime
+    lat            Decimal
+    lon            Decimal
+    restaurantName String
+}
