@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Keyboard, ScrollView} from 'react-native';
+import { Button, StyleSheet, Text, View, Image, TextInput, Keyboard, ScrollView, ActivityIndicator} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import {Auth} from '@aws-amplify/auth';
-import User from '../../shared/models/User';
-import ServerFacade from '../../services/ServerFacade';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import {isEmpty} from 'lodash';
+import AuthService from '../../services/AuthService';
 
 const SignUpView : React.FC = () => {
 
@@ -24,9 +22,8 @@ const SignUpView : React.FC = () => {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [disableSignUp, setDisableSignUp] = useState(true);
+  const [loading, setLoading] = useState<boolean>(false);
   
-
-
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
       setHideView(false)
@@ -107,7 +104,7 @@ const SignUpView : React.FC = () => {
   }
 
   const signUpFunction = async () => {
-        
+    setLoading(true);
     if (email.length > 4 && password.length > 2) {
       let newphoneNumber = phoneNumber;
       //may need to take this out of the signUpFunction since it's not doing the change immediatly as the Auth.signUp gets called
@@ -116,36 +113,29 @@ const SignUpView : React.FC = () => {
         //onChangePhoneNumber(phoneNumber => "+1".concat(phoneNumber))
         newphoneNumber = "+1".concat(phoneNumber)
       }
-      
-      await Auth.signUp({
-        username : email,
-        password : password,
-        attributes: {
-          email : email,
-          phone_number : newphoneNumber,
-        }
-      })
-        .then(async (cognitoSignUp) => {
-          console.log('Return from signUp information: ', cognitoSignUp);
-          
-          // Create User in DynamoDB too
-          let user = new User(cognitoSignUp.userSub,cognitoSignUp.user.getUsername(),firstName,lastName,undefined, newphoneNumber)
-          await ServerFacade.createUser(user);
-          
-          //Move to confirmation screen, user should get code in email.
-          navigation.navigate('confirmation', {
-            email,
-            password,
-            newphoneNumber
-          });
-        })
-        .catch((err) => {
-          console.log('Error when signing up: ', err);
-          Alert.alert(T.error.tryAgain, err.message || err);
-        });
+
+      const user:any = {
+        email,
+        password,
+        firstName,
+        lastName,
+        phoneNumber
+      }
+      try{
+        await AuthService.signUp(user);
+        setLoading(false);
+      }catch(err:any){
+        console.log('Could not log in', err);
+				setErrorMessage(err.message);
+        setLoading(false);
+        return;
+      }
+
+      navigation.navigate('confirmation', {
+        email,
+      });
     } else {
       setErrorMessage(T.error.provideValidEmailPassword);
-      Alert.alert('Error:', errorMessage);
     }
   };
 
@@ -178,8 +168,16 @@ const SignUpView : React.FC = () => {
           {!isEmpty(phoneNumberError) && <Text style={styles.validation}>{phoneNumberError}</Text>}
         </View>
 
+        <View>
+				<Text style={styles.errorMessage}>{errorMessage}</Text>
+				</View>
+
         <View style={styles.materialButtonPrimary}>
+        {loading ?
+						<ActivityIndicator color={Colors.red} size={30} />
+						:
           <Button disabled={disableSignUp} color={Colors.red} title={T.signUp.title} onPress={signUpFunction}></Button>
+        }
         </View>
         
         <View style={styles.textContainer}>
@@ -251,7 +249,10 @@ const styles = StyleSheet.create({
     color: Colors.red, 
     flex: 1,
     fontSize: 12,
-  }
+  },
+  errorMessage: {
+		color: Colors.red,
+	}
 });
 
 export default SignUpView;

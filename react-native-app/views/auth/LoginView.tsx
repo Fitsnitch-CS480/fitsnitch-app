@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View, Image, Alert, TextInput, Platform, ActivityIndicator, ScrollView } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { Button, StyleSheet, Text, View, Image, TextInput, ActivityIndicator, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
@@ -10,7 +10,7 @@ export default function LoginView() {
 	const navigation = useNavigation<any>();
 	const [email, onChangeEmail] = useState('');
 	const [password, onChangePassword] = useState('');
-	const [errorMessage, setErrorMessage] = useState('');
+	const [error, setErrorMessage] = useState('');
 
 	//Get user from Context from mainNavigator
 	const { authUser, setAuthUser } = useContext(authContext);
@@ -29,21 +29,14 @@ export default function LoginView() {
 				setAuthUser(user);
 			}
 			catch (err:any) {
-				if (err.code === 'UserNotConfirmedException') {
-					console.log('User not confirmed');
-					navigation.navigate('confirmation', {
-						email,
-					});
-				}
-				else {
-					console.log('Could not log in', err);
-					Alert.alert(T.error.noLogIn, err.message);
-				}
+				console.log('Could not log in', err);
+				setErrorMessage(err.message);
 				setLoading(false)
+				return;
 			}
 		}
 		else {
-			Alert.alert("", T.error.provideEmailPassword);
+			setErrorMessage(T.error.provideEmailPassword);
 			setLoading(false)
 		}
 	};
@@ -60,6 +53,10 @@ export default function LoginView() {
 				<View style={styles.materialUnderlineTextboxStack}>
 					<TextInput placeholder={T.signUp.email} onChangeText={onChangeEmail} style={styles.textBox}></TextInput>
 					<TextInput placeholder={T.signUp.password} secureTextEntry onChangeText={onChangePassword} style={styles.textBox}></TextInput>
+				</View>
+
+				<View>
+				<Text style={styles.errorMessage}>{error}</Text>
 				</View>
 
 				<View style={styles.materialButtonPrimary}>
@@ -137,5 +134,8 @@ const styles = StyleSheet.create({
 	materialUnderlineTextbox1: {
 		height: 43,
 		width: 289,
+	},
+	errorMessage: {
+		color: Colors.red,
 	}
 });

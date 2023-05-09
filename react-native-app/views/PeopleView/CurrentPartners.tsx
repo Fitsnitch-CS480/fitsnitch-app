@@ -28,7 +28,7 @@ const CurrentPartners = observer(() => {
   if (partners.length === 0) {
     return (
       <Card title={TITLE}>
-        <Text>{T.people.partner.noPartner}</Text>
+        <Text style={styles.text}>{T.people.partner.noPartner}</Text>
       </Card>
     )
   }
