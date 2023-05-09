@@ -42,6 +42,8 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 
 	if (!authUser) return null;
 
+	NativeModuleService.getModule().saveUserId(authUser.userId);
+
 	let START_SCREEN = 'Tabs';
 	let snitchProps = {};
 
