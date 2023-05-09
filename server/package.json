@@ -41,6 +41,7 @@
     "@prisma/client": "^4.11.0",
     "aws-sdk": "^2.831.0",
     "axios": "^0.24.0",
+    "dayjs": "^1.11.7",
     "dotenv": "^16.0.0",
     "firebase-admin": "^11.5.0",
     "robust-point-in-polygon": "^1.0.3"

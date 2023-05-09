@@ -1,5 +1,7 @@
 package com.fitsnitchapp.location_loop;
 
+import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.IntentService;
@@ -38,6 +40,9 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.CancellationToken;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.gson.Gson;
 
 import retrofit.Callback;
@@ -139,7 +144,7 @@ public class LocationLoopService extends IntentService {
         settingsManager = new SettingsManager(getApplicationContext());
 
         Intent loopIntent = new Intent(getApplicationContext(), LocationLoopService.class);
-        pendingLoopIntent = PendingIntent.getService(getApplicationContext(), 1, loopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingLoopIntent = PendingIntent.getService(getApplicationContext(), 1, loopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         notificationManager = LocationForegroundService.mContext.getSystemService(NotificationManager.class);
         mNotificationChannel = new NotificationChannel(
@@ -178,7 +183,7 @@ public class LocationLoopService extends IntentService {
         Log.i("****FITLOC","requesting current location");
 
         LocationRequest locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                .setPriority(PRIORITY_HIGH_ACCURACY)
                 .setInterval(0)
                 .setFastestInterval(0);
 
@@ -193,11 +198,24 @@ public class LocationLoopService extends IntentService {
             }
         };
 
-        new Handler(getMainLooper()).post(() -> mFusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                mLocationCallback,
-                getMainLooper()
-        ));
+        mFusedLocationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, new CancellationToken() {
+            @NonNull
+            @Override
+            public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
+                return null;
+            }
+
+            @Override
+            public boolean isCancellationRequested() {
+                return false;
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                Log.i("***FITLOC", "GOT LOCATION!!!");
+                handleNewLocation(location);
+            }
+        });
     }
 
     /**
@@ -234,12 +252,12 @@ public class LocationLoopService extends IntentService {
         double oldLon = lastLocation.getLongitude();
 
         Log.i("********FIT", "lat:" + String.valueOf(newLat) + "      Lon: " + String.valueOf(newLon));
-        Log.i("********FIT", "speed:" + String.valueOf(newLocation.getSpeed()));
+//        Log.i("********FIT", "speed:" + String.valueOf(newLocation.getSpeed()));
 
         double distance = Math.sqrt( Math.pow(newLon - oldLon, 2) + Math.pow(newLat - oldLat, 2) );
 
-        Log.i("********FIT", "dist:" + String.valueOf(distance));
-        Log.i("********FIT", String.valueOf(distance >= sig_radius));
+//        Log.i("********FIT", "dist:" + String.valueOf(distance));
+        Log.i("********FIT", "Moved: " + String.valueOf(distance >= sig_radius));
 
         return distance >= sig_radius;
     }
@@ -322,7 +340,7 @@ public class LocationLoopService extends IntentService {
         notificationIntent.putExtra("ACTION", "START_SNITCH");
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingNotifIntent = PendingIntent.getActivity(getApplicationContext(), NOTIF_ID_WARNING, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingNotifIntent = PendingIntent.getActivity(getApplicationContext(), NOTIF_ID_WARNING, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         warningNotification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentIntent(pendingNotifIntent)
@@ -340,7 +358,7 @@ public class LocationLoopService extends IntentService {
         notificationIntent.putExtra("ACTION", "DID_SNITCH");
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingNotifIntent = PendingIntent.getActivity(getApplicationContext(), NOTIF_ID_SNITCHED, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingNotifIntent = PendingIntent.getActivity(getApplicationContext(), NOTIF_ID_SNITCHED, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         snitchedNotification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentIntent(pendingNotifIntent)
