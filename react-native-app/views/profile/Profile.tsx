@@ -69,7 +69,7 @@ const Profile = observer(({profileOwner}:any) => {
   async function loadNextCheatMealPage(prevPage?: UserCheatMealResponse) {
 
     let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:PAGE_SIZE}
-    let response = await new CheatMealService().getUserChealMealFeedPage(profileOwner.userId,page)
+    let response = await new CheatMealService().getUserCheatMealFeedPage(profileOwner.userId,page)
     response.records.sort((a,b)=>a.created<b.created?1:-1)
     return response;
   }

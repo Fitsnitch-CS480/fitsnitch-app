@@ -13,6 +13,7 @@ import PushNotificationService from "./services/PushNotificationService";
 import SnitchRouter from "./routes/snitch.routes";
 import LambdaRouter from "./routes/lambda.routes";
 import UserRouter from "./routes/user.routes";
+import CheatRouter from "./routes/cheat.routes";
 
 
 
@@ -32,6 +33,7 @@ app.get('/', (req, res) => {
 
 app.use('/user', UserRouter);
 app.use('/snitch', SnitchRouter);
+app.use('/cheat', CheatRouter);
 app.use('/lambda', LambdaRouter);
 
 

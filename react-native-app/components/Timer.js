@@ -21,7 +21,6 @@ class Timer extends React.Component {
   }
 
   componentDidMount() {
-    console.log("MOUNTED NEW TIMER!!!");
     this.resetTimer();
   }
 
@@ -41,8 +40,6 @@ class Timer extends React.Component {
   }
   
   componentDidUpdate(prevProps, prevState, snapShot){
-    console.log("UPDATING TIMER!", this.state.endTime, prevState.endTime)
-    
     if(prevState.remaining !== this.state.remaining && this.state.remaining <= 0){
       clearInterval(this.timer);
       if(this.props.onTimesUp){
