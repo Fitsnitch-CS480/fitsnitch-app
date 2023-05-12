@@ -46,7 +46,7 @@ public class AutoStart extends BroadcastReceiver
 
     static Notification createNotification(Context context) {
         Intent notificationIntent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Notification n = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentIntent(pendingIntent)

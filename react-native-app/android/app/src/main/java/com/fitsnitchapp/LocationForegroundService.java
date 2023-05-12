@@ -62,7 +62,7 @@ public class LocationForegroundService extends Service {
 
     private void startLocationLoop() {
         Intent i = new Intent(getApplicationContext(), LocationLoopService.class);
-        locationLoopIntent = PendingIntent.getService(getApplicationContext(), 1, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        locationLoopIntent = PendingIntent.getService(getApplicationContext(), 1, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         Log.i("****FITLOC","requesting first loop alarm");
         mAlarmManager.setExact(
@@ -118,7 +118,7 @@ public class LocationForegroundService extends Service {
 
     static Notification createNotification() {
         Intent notificationIntent = new Intent(mContext, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         return new NotificationCompat.Builder(mContext, CHANNEL_ID_BG)
                 .setContentIntent(pendingIntent)
