@@ -15,7 +15,14 @@ model User {
     image                  String?
     phone                  String?
     cheatmealSchedule      String?
-    associatedDeviceTokens String[]
+}
+
+model DeviceToken {
+	userId	String
+	token	String
+	type	String?
+
+	@@id([userId, token])
 }
 
 model TrainerClientPair {
@@ -23,6 +30,27 @@ model TrainerClientPair {
     clientId  String
 
     @@id([trainerId, clientId])
+}
+
+model TrainerClientRequest {
+    trainerId String
+    clientId  String
+
+    @@id([trainerId, clientId])
+}
+
+model PartnerPair {
+    partnerId1 String
+    partnerId2 String
+
+    @@id([partnerId1, partnerId2])
+}
+
+model PartnerRequest {
+    requester String
+    requestee String
+
+    @@id([requester, requestee])
 }
 
 model SnitchEvent {

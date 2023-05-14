@@ -1,7 +1,6 @@
 {
 	"scripts": {
-		"dev:android": "npx concurrently -n \"Android,Server\" \"npm run run:android\" \"npm run run:server\"",
-		"run:android": "cd react-native-app && npm run android",
-		"run:server": "cd server && npm run dev"
+		"db:build": "docker build -t fitsnitch-db .",
+		"db:start": "docker run -p 5432:5432 fitsnitch-db"
 	}
 }

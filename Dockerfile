@@ -1,4 +1,6 @@
-FROM postgres
-ENV POSTGRES_PASSWORD docker
-ENV POSTGRES_DB fitsnitch
-COPY /db /docker-entrypoint-initdb.d/
+FROM postgres:15 as db
+
+WORKDIR /app
+
+COPY ./db-init/init.sh /docker-entrypoint-initdb.d
+COPY ./db-init ./db-init
