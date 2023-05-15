@@ -2,6 +2,10 @@ import { UserSearchRequest, UserSearchResponse } from "../../../react-native-app
 import User from "../../../react-native-app/shared/models/User";
 import DaoFactory from "../db/DaoFactory";
 
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
+
 export default class UserService {
     async createUser(data: User) {
         await DaoFactory.getUserDao().createUser(data);
@@ -15,8 +19,10 @@ export default class UserService {
         return await DaoFactory.getUserDao().search(request);
     }
 
-    async getUser(id: string): Promise<User|undefined> {
-        return await DaoFactory.getUserDao().getUser(id);
+    async getUser(id: string): Promise<any> {
+		return await prisma.user.findFirst({
+			where: { userId: id }
+		});
     }
 	
     async addDeviceToken(userId: string, token: string) {

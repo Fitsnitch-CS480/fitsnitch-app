@@ -1,5 +1,5 @@
 {
-  "name": "fitsnitch-lambda-module",
+  "name": "fitsnitch-server",
   "version": "1.0.0",
   "description": "Package of AWS Lambda implementations for FitSnitch backend",
   "main": "dist/index.js",
@@ -17,7 +17,6 @@
   "devDependencies": {
     "@jest/globals": "^27.3.1",
     "@types/aws-lambda": "^8.10.71",
-    "@types/aws-sdk": "^2.7.0",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.3",

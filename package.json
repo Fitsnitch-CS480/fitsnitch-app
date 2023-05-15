@@ -1,6 +1,6 @@
 {
 	"scripts": {
-		"db:build": "docker build -t fitsnitch-db .",
-		"db:start": "docker run -p 5432:5432 fitsnitch-db"
+		"db:build": "docker compose build",
+		"db:up": "docker compose up"
 	}
 }
