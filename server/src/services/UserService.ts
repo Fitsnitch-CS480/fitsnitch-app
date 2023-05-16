@@ -1,18 +1,22 @@
 import { UserSearchRequest, UserSearchResponse } from "../../../react-native-app/shared/models/requests/UserSearchRequest";
-import User from "../../../react-native-app/shared/models/User";
 import DaoFactory from "../db/DaoFactory";
 
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, User } from '@prisma/client'
 
 const prisma = new PrismaClient();
 
 export default class UserService {
     async createUser(data: User) {
-        await DaoFactory.getUserDao().createUser(data);
-    }
+        await prisma.user.create({
+			data,
+		})
+	}
 
     async updateUser(data: User) {
-        await DaoFactory.getUserDao().updateUser(data);
+        await prisma.user.update({
+			where: { userId: data.userId },
+			data,
+		})
     }
 
     async search(request:UserSearchRequest): Promise<UserSearchResponse> {
@@ -26,19 +30,19 @@ export default class UserService {
     }
 	
     async addDeviceToken(userId: string, token: string) {
-        let user = await this.getUser(userId);
-		if (!user) {
-			throw new Error("Can't find user with that ID!");
-		}
-		if (user.associatedDeviceTokens) {
-			if (!user.associatedDeviceTokens.includes(token)) {
-				user.associatedDeviceTokens.push(token);
+        await prisma.deviceToken.upsert({
+			where: {
+				userId_token: { userId, token }
+			},
+			update: {
+				userId,
+				token
+			},
+			create: {
+				userId,
+				token,
 			}
-		}
-		else {
-			user.associatedDeviceTokens = [token];
-		}
-		await this.updateUser(user);
+		})
     }
     
     async getExistingUsers(ids: string[]): Promise<User[]> {
@@ -46,7 +50,7 @@ export default class UserService {
         let users: User[] = [];
         await Promise.all(ids.map(async id=>{
             let user = await dao.getUser(id)
-            if (user) users.push(user)
+            if (user) users.push(user as any)
         }))
         return users;
     }
@@ -57,6 +61,6 @@ export default class UserService {
      */
     async wipeUserData(id: string) {
     //  TODO
-        throw new Error("Not yet implementented!")
+        throw new Error("Not yet implemented!")
     }
 }
