@@ -38,12 +38,12 @@ export default class PartnerAssociationService {
         await DaoFactory.getPartnerAssociationRequestDao().deletePartnerAssociationRequest(data);
     }
     
-    async getRequesteesByRequester(userId:string):Promise<User[]> {
+    async getRequesteesByRequester(userId:string):Promise<any[]> {
         let requests = await DaoFactory.getPartnerAssociationRequestDao().getRequestsByRequestee(userId);
         return new UserService().getExistingUsers(requests.map(r=>r.requestee));
     }
     
-    async getRequestersByRequestee(userId:string):Promise<User[]> {
+    async getRequestersByRequestee(userId:string):Promise<any[]> {
         let requests = await DaoFactory.getPartnerAssociationRequestDao().getRequestsByRequestee(userId);
         return new UserService().getExistingUsers(requests.map(r=>r.requester));
     }
@@ -63,7 +63,7 @@ export default class PartnerAssociationService {
         await DaoFactory.getPartnerAssociationDao().removePartnership(data);
     }
     
-    async getPartnersOfUser(userId:string):Promise<User[]> {
+    async getPartnersOfUser(userId:string):Promise<any[]> {
         let ids = await DaoFactory.getPartnerAssociationDao().getPartnerIdsOfUser(userId);
         return new UserService().getExistingUsers(ids);
     }

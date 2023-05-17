@@ -1,14 +1,21 @@
+import { PrismaClient } from "@prisma/client";
 import RelationshipStatus from "../../../react-native-app/shared/constants/RelationshipStatus";
 import TrainerClientPair from "../../../react-native-app/shared/models/TrainerClientPair";
 import User from "../../../react-native-app/shared/models/User";
 import DaoFactory from "../db/DaoFactory";
 
+const prisma = new PrismaClient();
+
 export default class TrainerService {
 
     async getRelationshipStatus(pair: TrainerClientPair): Promise<RelationshipStatus> {
-        let pending = await DaoFactory.getTrainerRequestDao().existsRequest(pair);
+        let pending = await prisma.trainerClientRequest.findUnique({
+			where: { trainerId_clientId: pair },
+		});
         if (pending) return RelationshipStatus.PENDING;
-        let approved = await DaoFactory.getTrainersDao().isTrainerOfClient(pair);
+        let approved = await prisma.trainerClientPair.findUnique({
+			where: { trainerId_clientId: pair }
+		});
         if (approved) return RelationshipStatus.APPROVED;
 
         return RelationshipStatus.NONEXISTENT;

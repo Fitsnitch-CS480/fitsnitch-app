@@ -19,8 +19,22 @@ export default class UserService {
 		})
     }
 
-    async search(request:UserSearchRequest): Promise<UserSearchResponse> {
-        return await DaoFactory.getUserDao().search(request);
+    async search(query, pageSize = 20, page = 0) {
+		console.log(query, pageSize, page)
+		const terms = query.split(' ').join(' | ');
+		const where = {
+			OR: [
+				{ firstname: { search: terms, } },
+				{ lastname: { search: terms, } },
+			],
+		};
+		const total = await prisma.user.count({ where });
+        const users = await prisma.user.findMany({
+			where,
+			take: pageSize,
+			skip: pageSize * page
+		});
+		return { users, total };
     }
 
     async getUser(id: string): Promise<any> {

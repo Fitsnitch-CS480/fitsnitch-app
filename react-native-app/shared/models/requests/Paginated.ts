@@ -1,12 +1,6 @@
 export class PaginatedRequest {
     constructor(
-        /** When requesting a subsequent page, this will mark the last item
-         *  on the previous page. It will match exactly the same property
-         *  on the response object.
-         * 
-         *  If not specified the API will return the first page.
-         */
-        public pageBreakKey?:string,
+		public pageNumber?:number,
         
         /** 
          * Defines the number of records to expect on each page. Some
@@ -14,7 +8,18 @@ export class PaginatedRequest {
          * use their own set value. The response will always say what
          * pageSize value was used on the backend.
          */
-        public pageSize?:number){}
+        public pageSize?:number,
+
+
+        /** When requesting a subsequent page, this will mark the last item
+         *  on the previous page. It will match exactly the same property
+         *  on the response object.
+         * 
+         *  If not specified the API will return the first page.
+         */
+        public pageBreakKey?:string
+	) {}
+
 }
 
 export class PaginatedResponse<T> {
