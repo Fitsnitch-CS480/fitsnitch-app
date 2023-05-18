@@ -20,7 +20,7 @@ type state = {
   hasMore: boolean,
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 5;
 
 const UserSearch: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -55,7 +55,7 @@ const UserSearch: React.FC = () => {
       loading:false,
       results: page.users,
       pageNumber: 1,
-	  hasMore: state.results.length < page.total
+	  hasMore: page.users.length < page.total
     })
   }
 
@@ -68,7 +68,7 @@ const UserSearch: React.FC = () => {
       loading:false,
       results: state.results.concat(page.users),
       pageNumber: state.pageNumber + 1,
-	  hasMore: state.results.length < page.total
+	  hasMore: state.results.length + page.users.length < page.total
     })
   }
 
