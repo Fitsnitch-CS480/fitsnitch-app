@@ -15,7 +15,7 @@ export default class DynamoCheatMealDao implements CheatMealDao {
     }
 
     async getCheatMeal(request: GetCheatMealRequest): Promise<CheatMealEvent|null> {
-        let matches = await this.table.query(request.userId, SortOp.EQUALS, request.created);
+        let matches = await this.table.query(request.userId, SortOp.EQUALS, request.created_at);
         if (matches.length >= 1) 
             return matches[0];
         else 
@@ -23,7 +23,7 @@ export default class DynamoCheatMealDao implements CheatMealDao {
     }
 
     async getCheatMeals(request: GetCheatMealRequest): Promise<CheatMealEvent[]|null> {
-        let matches = await this.table.query(request.userId, SortOp.MORE_THAN_OR_EQUAL, request.created);
+        let matches = await this.table.query(request.userId, SortOp.MORE_THAN_OR_EQUAL, request.created_at);
         if (matches.length >= 1) 
             return matches;
         else 
@@ -40,6 +40,6 @@ export default class DynamoCheatMealDao implements CheatMealDao {
     }
 
     async deleteCheatMeal(data: CheatMealEvent) {
-        await this.table.deleteByKeys(data.userId, data.created);
+        await this.table.deleteByKeys(data.userId, data.created_at);
     }
 }

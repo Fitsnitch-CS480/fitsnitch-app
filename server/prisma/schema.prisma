@@ -57,17 +57,21 @@ model PartnerRequest {
 model SnitchEvent {
     snitchId       String   @id @default(uuid())
     userId         String
-    timestamp      DateTime
+    created_at      DateTime
     lat            Decimal
     lon            Decimal
     restaurantName String
+    restaurantLat  Decimal
+	restaurantLon  Decimal
 }
 
 model CheatMealEvent {
-    snitchId       String   @id @default(uuid())
+    cheatMealId    String   @id @default(uuid())
     userId         String
-    timestamp      DateTime
+    created_at      DateTime
     lat            Decimal
     lon            Decimal
     restaurantName String
+    restaurantLat  Decimal
+	restaurantLon  Decimal
 }

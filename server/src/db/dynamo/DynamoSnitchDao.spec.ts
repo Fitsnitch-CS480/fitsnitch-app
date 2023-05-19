@@ -20,8 +20,8 @@ describe(DynamoSnitchDao, ()=>{
     let user1Id = "testUser1";
     let created1 = "2022-01-05T5:30:00"
 
-    function generateFakeSnitch(userId,created) {
-        return new SnitchEvent(userId,created,{lat:0,lon:0},{name:"Wendy's",location:{lat:0,lon:0}})
+    function generateFakeSnitch(userId,created_at) {
+        return new SnitchEvent(userId,created_at,{lat:0,lon:0},{name:"Wendy's",location:{lat:0,lon:0}})
     }
 
     beforeEach(()=>{
@@ -47,9 +47,9 @@ describe(DynamoSnitchDao, ()=>{
         //     console.log(response)
 
         //     expect(response.records).toMatchObject([
-        //         { created: '2022-02-02T13:00:00', userId: 'testUser2' },
-        //         { created: '2022-02-02T12:00:00', userId: 'testUser2' },
-        //         { created: '2022-02-02T11:00:00', userId: 'testUser5' }
+        //         { created_at: '2022-02-02T13:00:00', userId: 'testUser2' },
+        //         { created_at: '2022-02-02T12:00:00', userId: 'testUser2' },
+        //         { created_at: '2022-02-02T11:00:00', userId: 'testUser5' }
         //     ])
         //     expect(response.pageBreakKey).toBe(JSON.stringify(response.records[response.records.length-1]))
 
@@ -58,10 +58,10 @@ describe(DynamoSnitchDao, ()=>{
         //     console.log(response)
 
         //     // notice that this case specifies a page break between two snitches with the
-        //     // same created time
+        //     // same created_at time
 
         //     expect(response.records).toMatchObject([
-        //         { created: '2022-02-02T11:00:00', userId: 'testUser2' }
+        //         { created_at: '2022-02-02T11:00:00', userId: 'testUser2' }
         //     ])
         //     expect(response.pageBreakKey).not.toBeDefined();
         // })
@@ -85,7 +85,7 @@ describe(DynamoSnitchDao, ()=>{
 
     //         let snitch = generateFakeSnitch(user1Id, created1)
     //         await dao.createSnitch(snitch);
-    //         let resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created));
+    //         let resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created_at));
 
     //         expect(resSnitch).toMatchObject(snitch)
     //         console.log(resSnitch);
@@ -94,13 +94,13 @@ describe(DynamoSnitchDao, ()=>{
     //         snitch.restaurantData.name = "Domino's"
     //         await dao.updateSnitch(snitch);
 
-    //         resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created));
+    //         resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created_at));
     //         expect(resSnitch).toMatchObject(snitch)
     //         console.log(resSnitch);
 
     //         // DELETE
     //         await dao.deleteSnitch(snitch);
-    //         resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created));
+    //         resSnitch = await dao.getSnitch(new GetSnitchRequest(snitch.userId,snitch.created_at));
     //         expect(resSnitch).toBeNull();
     //         console.log(resSnitch);
     //     })

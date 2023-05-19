@@ -88,7 +88,7 @@ const SnitchEventCard: React.FC<Props> = ({
           </View>
           <View style={styles.detailRow}>
 			<View style={styles.detailRowIcon}><Icon name="event" color={Colors.lightGrey} size={18}></Icon></View>
-			<Text style={styles.text}>{getRelativeTime(snitch.created)}</Text>
+			<Text style={styles.text}>{getRelativeTime(snitch.created_at)}</Text>
           </View>
         </View>
       </View>

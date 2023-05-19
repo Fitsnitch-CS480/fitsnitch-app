@@ -1,4 +1,3 @@
-import { SwitchSnitchToCheatmealRequest } from '../../../../react-native-app/shared/models/requests/SwitchSnitchToCheatmealRequest';
 import { GetSnitchRequest } from "../../../../react-native-app/shared/models/requests/GetSnitchRequest";
 import { UserSnitchesRequest, UserSnitchesResponse } from "../../../../react-native-app/shared/models/requests/UserSnitchesRequest";
 import SnitchEvent from "../../../../react-native-app/shared/models/SnitchEvent";
@@ -17,14 +16,9 @@ export default class DynamoSnitchDao implements SnitchDao {
     }
 
     async getSnitch(request: GetSnitchRequest): Promise<SnitchEvent|null> {
-        let matches = await this.table.query(request.userId, SortOp.EQUALS, request.created);
+        let matches = await this.table.query(request.userId, SortOp.EQUALS, request.created_at);
         if (matches.length >= 1) return matches[0]
         else return null;
-    }
-
-    async switchSnitchToCheatmeal(data: SwitchSnitchToCheatmealRequest){
-      await new DynamoCheatMealDao().createCheatMeal(data);
-      await this.table.deleteByKeys(data.userId,data.created);
     }
 
     async getSnitchesForUsers(request: UserSnitchesRequest): Promise<UserSnitchesResponse> {
@@ -76,16 +70,16 @@ export default class DynamoSnitchDao implements SnitchDao {
         // from the top again
         if (request.pageBreakKey) {
             let pageBreakKey = JSON.parse(request.pageBreakKey) as SnitchEvent;
-            pageBreakCreated = pageBreakKey.created;
+            pageBreakCreated = pageBreakKey.created_at;
             pageBreakUserId = pageBreakKey.userId;
         }
 
         await Promise.all(Array.from(usersWithMoreSnitches).map(async id=>{
             
             // Handle the edge case that the previous page ended between two snictches
-            // that have the same created time and different userIds. In that case,
+            // that have the same created_at time and different userIds. In that case,
             // the pageBreakKey would have a userId "greater than" any of the same
-            // created time that didn't make it on the page, so for any userId "less"
+            // created_at time that didn't make it on the page, so for any userId "less"
             // than that, we need to check for equal timestamps rather than just lesser
             // ones.
             await loadNextForUser(id,pageBreakCreated,id < pageBreakUserId)
@@ -98,7 +92,7 @@ export default class DynamoSnitchDao implements SnitchDao {
 
             if (!nextSnitch) throw new Error("Queue should not be empty of snitches!")
             records.push(nextSnitch);
-            await loadNextForUser(nextSnitch.userId, nextSnitch.created);
+            await loadNextForUser(nextSnitch.userId, nextSnitch.created_at);
         }
 
         // In order to pick up the list exactly where we left off, we must return results ordered
@@ -122,7 +116,7 @@ export default class DynamoSnitchDao implements SnitchDao {
     }
 
     async deleteSnitch(data: SnitchEvent) {
-        await this.table.deleteByKeys(data.userId,data.created);
+        await this.table.deleteByKeys(data.userId,data.created_at);
     }
 }
 
@@ -131,6 +125,6 @@ class SnitchQueue extends PriorityQueue<SnitchEvent> {
     protected isHigherPriority(a: SnitchEvent, b: SnitchEvent): boolean {
         // Datetime must be ISO format, then the "greater" value will be
         // the most recent
-        return `${a.created}_${a.userId}` > `${b.created}_${b.userId}`;
+        return `${a.created_at}_${a.userId}` > `${b.created_at}_${b.userId}`;
     }
 }

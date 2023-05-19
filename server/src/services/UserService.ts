@@ -38,7 +38,7 @@ export default class UserService {
     }
 
     async getUser(id: string): Promise<any> {
-		return await prisma.user.findFirst({
+		return await prisma.user.findUnique({
 			where: { userId: id }
 		});
     }
@@ -60,10 +60,9 @@ export default class UserService {
     }
     
     async getExistingUsers(ids: string[]): Promise<User[]> {
-        let dao = DaoFactory.getUserDao();        
         let users: User[] = [];
         await Promise.all(ids.map(async id=>{
-            let user = await dao.getUser(id)
+            let user = await this.getUser(id)
             if (user) users.push(user as any)
         }))
         return users;
