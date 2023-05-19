@@ -91,6 +91,9 @@ export default class SnitchService {
 			where: { userId: { in: request.userIds } },
 			skip: page * pageSize,
 			take: request.pageSize,
+			orderBy: {
+				created_at: 'desc'
+			}
 		});
 		return new UserSnitchesResponse(snitches.map(s => this.dbToType(s)), pageSize, page, total);
 	}

@@ -42,7 +42,10 @@ export default class CheatMealService {
 		let meals = await prisma.snitchEvent.findMany({
 			where: { userId: request.userId },
 			skip: page * pageSize,
-			take: request.pageSize
+			take: request.pageSize,
+			orderBy: {
+				created_at: 'desc'
+			}
 		});
 		return new UserCheatMealResponse(meals.map(s => this.dbToType(s)), pageSize, page, total);
 	}
