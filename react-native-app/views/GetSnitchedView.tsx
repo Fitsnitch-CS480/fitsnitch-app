@@ -118,8 +118,8 @@ export default observer(function GetSnitchedView({ navigation, route, trigger }:
 		console.log("NEW NEW SNITCH", trigger)
 
 		NativeModuleService.getActiveSnitch(lastSnitch => {
-			if (lastSnitch && (!snitch || lastSnitch.created !== snitch.created)) {
-				let endTime = new Date(Number(lastSnitch.created)).getTime() + 30000;
+			if (lastSnitch && (!snitch || lastSnitch.created_at !== snitch.created_at)) {
+				let endTime = new Date(Number(lastSnitch.created_at)).getTime() + 30000;
 				console.log(endTime <= Date.now())
 				setTimePassed(endTime <= Date.now());
 				setSnitch(lastSnitch);
@@ -144,7 +144,7 @@ export default observer(function GetSnitchedView({ navigation, route, trigger }:
 
 
 	const restaurant = snitch.restaurantData;
-	const endTime = new Date(Number(snitch.created)).getTime() + 30000;
+	const endTime = new Date(Number(snitch.created_at)).getTime() + 30000;
 
 
 	let onTimesUp = async () => {

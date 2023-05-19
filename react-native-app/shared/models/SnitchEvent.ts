@@ -12,7 +12,7 @@ export default class SnitchEvent {
          * 
          * ISO Format for sorting in database YYYY-MM-DDThh:mm:ss.msZ
          */
-        public created: string, 
+        public created_at: string, 
         /**
          * The exact location that triggered the snitch alert
          */
@@ -21,5 +21,9 @@ export default class SnitchEvent {
          * Data about the restaurant that the user was determined to be inside of
          */
         public restaurantData: RestaurantData,
+        /**
+         * Primary Key
+         */
+        public snitchId?: string,
     ) {}
 }

@@ -37,12 +37,12 @@ export default class LogStore {
 
 export class LogEntry {
     public id: string;
-    public created: string;
+    public created_at: string;
     public message: string;
 
     constructor (items: any[]) {
         this.id = new Date().toISOString()+Math.ceil(Math.random()*100);
-        this.created = new Date().toTimeString();
+        this.created_at = new Date().toTimeString();
         this.message = "";
         for (let item of items) {
             let itemStr = ""

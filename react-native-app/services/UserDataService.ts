@@ -12,10 +12,6 @@ export default class UserDataService {
         return false;
     }
     
-    public async userSearch(request:UserSearchRequest): Promise<UserSearchResponse> {
-        return await ServerFacade.userSearch(request);
-    }
-    
     public async getUser(userId:string): Promise<User|undefined> {
         return await ServerFacade.getUserById(userId);
     }
