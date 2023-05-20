@@ -1,4 +1,3 @@
-import { UserSearchRequest, UserSearchResponse } from "../shared/models/requests/UserSearchRequest";
 import User from "../shared/models/User";
 import ServerFacade from "./ServerFacade";
 

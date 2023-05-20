@@ -1,7 +1,6 @@
 import PartnerStatusResponse from './../shared/models/requests/PartnerStatusResponse';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
-import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import { UserSnitchesRequest, UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import TrainerClientPair from '../shared/models/TrainerClientPair';
 import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
