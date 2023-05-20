@@ -3,7 +3,6 @@ import CheatMealEvent from "../../../react-native-app/shared/models/CheatMealEve
 import { CreateCheatMealRequest } from "../../../react-native-app/shared/models/requests/CreateCheatMealRequest";
 import { GetCheatMealRequest } from "../../../react-native-app/shared/models/requests/GetCheatMealRequest";
 import { UserCheatMealRequest, UserCheatMealResponse } from "../../../react-native-app/shared/models/requests/UserCheatMealRequest";
-import DaoFactory from "../db/DaoFactory";
 
 const prisma = new PrismaClient();
 
