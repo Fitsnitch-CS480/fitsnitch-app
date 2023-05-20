@@ -47,7 +47,7 @@ export default class CheatMealService {
 				created_at: 'desc'
 			}
 		});
-		return new UserCheatMealResponse(meals.map(s => this.dbToType(s)), pageSize, page, total);
+		return new UserCheatMealResponse(meals.map(s => this.dbToType(s)), page, pageSize, total);
 	}
 
 	async deleteCheatMeal(data: CheatMealEvent) {

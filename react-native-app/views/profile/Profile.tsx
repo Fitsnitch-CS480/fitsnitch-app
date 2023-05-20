@@ -68,9 +68,8 @@ const Profile = observer(({profileOwner}:any) => {
 
   async function loadNextCheatMealPage(prevPage?: UserCheatMealResponse) {
 
-    let page = prevPage || { records: [], pageNumber:0, pageSize: PAGE_SIZE, total: 0 }
+    let page = prevPage || { records: [], pageNumber: -1, pageSize: PAGE_SIZE, total: 0 }
     let response = await new CheatMealService().getUserCheatMealFeedPage(profileOwner.userId, page)
-    response.records.sort((a,b)=>a.created_at<b.created_at?1:-1)
     return response;
   }
 
@@ -79,9 +78,8 @@ const SnitchFeed = () => {
   const [lastSnitch, setLastSnitch] = useState<SnitchEvent|undefined>(undefined);
 
   async function loadNextSnitchPage(prevPage?: UserSnitchesResponse) {
-    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:PAGE_SIZE}
-    let response = await new SnitchService().getUserSnitchFeedPage([profileOwner.userId],page)
-    response.records.sort((a,b)=>a.created_at<b.created_at?1:-1)
+    let page = prevPage || {records: [], pageNumber: -1, pageSize:PAGE_SIZE, total: 0}
+    let response = await new SnitchService().getUserSnitchFeedPage([profileOwner.userId], page)
     if (!prevPage) {
       // The process of loading the feed also gets all feed user data, so let's save that
       // rather than askig for it again later

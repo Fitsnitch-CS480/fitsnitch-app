@@ -23,13 +23,13 @@ export default class SnitchService {
 
   public async getUserSnitchFeedPage(
     feedIds: string[],
-    lastPage?: UserSnitchesResponse,
+    lastPage: UserSnitchesResponse,
   ): Promise<UserSnitchesResponse> {
     return await ServerFacade.getUserSnitchFeedPage(
       new UserSnitchesRequest(
         feedIds,
-        lastPage?.pageSize || 20,
-        lastPage?.pageNumber || 0,
+        lastPage.pageSize,
+        lastPage.pageNumber + 1,
       ),
     );
   }

@@ -20,6 +20,7 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
   const [results, setResults] = useState<TItem[]>(initialPage?.records || []);
   const [lastPage, setLastPage] = useState<TResponse|undefined>(initialPage);
   const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
 
   useEffect(()=>{
     loadMoreResults()
@@ -28,7 +29,7 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
   
   async function loadMoreResults() {
     setLoading(true);
-    let page = await loadUntilResultsOrEnd(lastPage)
+    let page = await loadNextPage(lastPage)
     if (lastPage) {
       setResults(results.concat(page.records))
     }
@@ -36,20 +37,8 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
       setResults(page.records);
     }
     setLastPage(page);
+	setHasMore(results.length + page.records.length < page.total)
     setLoading(false);
-  }
-
-  /**
-   * Sometimes a page returns 0 results but hasn't looked at all records yet.
-   * This should probably be solved on the backend, but for now this method
-   * will keep requesting until it has no more pages or finds some results.
-   */
-  async function loadUntilResultsOrEnd(lastPage?:TResponse): Promise<TResponse> {
-    let page = lastPage;
-    do {
-      page = await loadNextPage(lastPage);
-    } while (page && page.pageBreakKey && page.records.length === 0);
-    return page;
   }
 
   return (
@@ -65,16 +54,16 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
       :
         results.length === 0 ?
           <Text style={styles.text}>{T.list.empty}</Text>
-      :
-        lastPage?.pageBreakKey ?
-          <MatButton 
-            title="Load More" 
-            onPress={loadMoreResults} 
-            outline
-            textColor={Colors.white} 
-            style={styles.button}/>
-      :
-        null
+		:
+			hasMore ?
+				<MatButton 
+					title="Load More" 
+					onPress={loadMoreResults} 
+					outline
+					textColor={Colors.white} 
+					style={styles.button}/>
+			:
+				null
       }
     </ScrollView>
   );

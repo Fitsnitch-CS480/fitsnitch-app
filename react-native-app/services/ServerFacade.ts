@@ -194,6 +194,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
 
   // Cheat Meals
   static async getUserCheatMealFeedPage(pageRequest: UserCheatMealRequest): Promise<UserCheatMealResponse> {
+	console.log(pageRequest)
     let res = await executeRequest<UserCheatMealResponse>("/cheatmeal-get-for-users", pageRequest);
     if (res.error || !res.data) {
       // give error feedback in UI
