@@ -2,8 +2,6 @@ import PartnerStatusResponse from '../../../react-native-app/shared/models/reque
 import RelationshipStatus from "../../../react-native-app/shared/constants/RelationshipStatus";
 import PartnerAssociationPair from "../../../react-native-app/shared/models/PartnerAssociationPair";
 import PartnerRequest from "../../../react-native-app/shared/models/PartnerRequest";
-import DaoFactory from "../db/DaoFactory";
-import User from '../../../react-native-app/shared/models/User';
 import UserService from './UserService';
 import { PartnerPair, PrismaClient } from '@prisma/client';
 

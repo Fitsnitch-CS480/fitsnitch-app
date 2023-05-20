@@ -2,7 +2,6 @@ import SnitchEvent from "../../../react-native-app/shared/models/SnitchEvent";
 import { UserSnitchesRequest, UserSnitchesResponse } from "../../../react-native-app/shared/models/requests/UserSnitchesRequest";
 import { GetSnitchRequest } from "../../../react-native-app/shared/models/requests/GetSnitchRequest";
 import { CreateSnitchRequest } from "../../../react-native-app/shared/models/requests/CreateSnitchRequest";
-import DaoFactory from "../db/DaoFactory";
 import PartnerAssociationService from './PartnerAssociationService';
 import TrainerService from './TrainerService';
 import PushNotificationService, { PresetOptions } from './PushNotificationService';

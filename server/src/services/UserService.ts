@@ -1,6 +1,3 @@
-import { UserSearchRequest, UserSearchResponse } from "../../../react-native-app/shared/models/requests/UserSearchRequest";
-import DaoFactory from "../db/DaoFactory";
-
 import { PrismaClient, User } from '@prisma/client'
 
 const prisma = new PrismaClient();
