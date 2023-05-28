@@ -8,9 +8,10 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server/src/server.js",
-    "dev": "tsc && concurrently -n \"build,log\" \"npm:build:dev\" \"npm:start:dev\"",
-    "start:dev": "nodemon dist/server/src/server.js",
+    "start:debug": "tsc && concurrently -n \"build,log\" \"npm:build:dev\" \"npm:run:dev\"",
+    "run:dev": "nodemon dist/server/src/server.js",
     "build:dev": "tsc --watch --preserveWatchOutput",
+    "db:migrate": "prisma migrate deploy --preview-feature",
     "test": "jest",
     "test:watch": "jest --watch"
   },

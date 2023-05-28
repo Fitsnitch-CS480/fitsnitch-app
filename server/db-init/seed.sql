@@ -5,7 +5,7 @@
 -- Dumped from database version 15.3 (Debian 15.3-1.pgdg110+1)
 -- Dumped by pg_dump version 15.2
 
--- Started on 2023-05-14 00:02:08 MDT
+-- Started on 2023-05-20 08:25:47 MDT
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -65,25 +65,64 @@ SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
+
 --
--- TOC entry 217 (class 1259 OID 16417)
+-- TOC entry 214 (class 1259 OID 16448)
+-- Name: _prisma_migrations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public._prisma_migrations (
+    id character varying(36) NOT NULL,
+    checksum character varying(64) NOT NULL,
+    finished_at timestamp with time zone,
+    migration_name character varying(255) NOT NULL,
+    logs text,
+    rolled_back_at timestamp with time zone,
+    started_at timestamp with time zone DEFAULT now() NOT NULL,
+    applied_steps_count integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public._prisma_migrations OWNER TO postgres;
+
+--
+-- TOC entry 3344 (class 0 OID 16448)
+-- Dependencies: 214
+-- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public._prisma_migrations VALUES ('f5412102-74cb-4046-b873-fa3dfc97ad5b', '671eb11d310f3da0e5a61fc131842a33112e92930b7e6baff84dd78e5b7915f6', '2023-05-28 04:56:40.583375+00', '20230528045640_init', NULL, NULL, '2023-05-28 04:56:40.548669+00', 1);
+
+
+--
+-- TOC entry 3201 (class 2606 OID 16456)
+-- Name: _prisma_migrations _prisma_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public._prisma_migrations
+ADD CONSTRAINT _prisma_migrations_pkey PRIMARY KEY (id);
+
+--
+-- TOC entry 214 (class 1259 OID 16385)
 -- Name: CheatMealEvent; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public."CheatMealEvent" (
-    "snitchId" text NOT NULL,
     "userId" text NOT NULL,
-    "timestamp" timestamp(3) without time zone NOT NULL,
     lat numeric(65,30) NOT NULL,
     lon numeric(65,30) NOT NULL,
-    "restaurantName" text NOT NULL
+    "restaurantName" text NOT NULL,
+    "restaurantLat" numeric(65,30) NOT NULL,
+    "restaurantLon" numeric(65,30) NOT NULL,
+    created_at timestamp(3) without time zone NOT NULL,
+    "cheatMealId" text NOT NULL
 );
 
 
 ALTER TABLE public."CheatMealEvent" OWNER TO postgres;
 
 --
--- TOC entry 218 (class 1259 OID 16424)
+-- TOC entry 215 (class 1259 OID 16390)
 -- Name: DeviceToken; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -97,7 +136,7 @@ CREATE TABLE public."DeviceToken" (
 ALTER TABLE public."DeviceToken" OWNER TO postgres;
 
 --
--- TOC entry 219 (class 1259 OID 16431)
+-- TOC entry 216 (class 1259 OID 16395)
 -- Name: PartnerPair; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -110,7 +149,7 @@ CREATE TABLE public."PartnerPair" (
 ALTER TABLE public."PartnerPair" OWNER TO postgres;
 
 --
--- TOC entry 221 (class 1259 OID 16445)
+-- TOC entry 217 (class 1259 OID 16400)
 -- Name: PartnerRequest; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -123,24 +162,26 @@ CREATE TABLE public."PartnerRequest" (
 ALTER TABLE public."PartnerRequest" OWNER TO postgres;
 
 --
--- TOC entry 216 (class 1259 OID 16410)
+-- TOC entry 218 (class 1259 OID 16405)
 -- Name: SnitchEvent; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public."SnitchEvent" (
     "snitchId" text NOT NULL,
     "userId" text NOT NULL,
-    "timestamp" timestamp(3) without time zone NOT NULL,
     lat numeric(65,30) NOT NULL,
     lon numeric(65,30) NOT NULL,
-    "restaurantName" text NOT NULL
+    "restaurantName" text NOT NULL,
+    "restaurantLat" numeric(65,30) NOT NULL,
+    "restaurantLon" numeric(65,30) NOT NULL,
+    created_at timestamp(3) without time zone NOT NULL
 );
 
 
 ALTER TABLE public."SnitchEvent" OWNER TO postgres;
 
 --
--- TOC entry 215 (class 1259 OID 16403)
+-- TOC entry 219 (class 1259 OID 16410)
 -- Name: TrainerClientPair; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -153,7 +194,7 @@ CREATE TABLE public."TrainerClientPair" (
 ALTER TABLE public."TrainerClientPair" OWNER TO postgres;
 
 --
--- TOC entry 220 (class 1259 OID 16438)
+-- TOC entry 220 (class 1259 OID 16415)
 -- Name: TrainerClientRequest; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -166,7 +207,7 @@ CREATE TABLE public."TrainerClientRequest" (
 ALTER TABLE public."TrainerClientRequest" OWNER TO postgres;
 
 --
--- TOC entry 214 (class 1259 OID 16396)
+-- TOC entry 221 (class 1259 OID 16420)
 -- Name: User; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -184,24 +225,26 @@ CREATE TABLE public."User" (
 ALTER TABLE public."User" OWNER TO postgres;
 
 --
--- TOC entry 3364 (class 0 OID 16417)
--- Dependencies: 217
+-- TOC entry 3361 (class 0 OID 16385)
+-- Dependencies: 214
 -- Data for Name: CheatMealEvent; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public."CheatMealEvent" VALUES ('H71fNMImtbRcbL2NqMcSKNGjMf32', 40.251001666666670000000000000000, -111.667183333333300000000000000000, 'Chick-fil-A', 0.000000000000000000000000000000, 0.000000000000000000000000000000, '2023-05-19 09:52:26.265', '06dfe911-5ed2-49f7-90a9-19e60822789d');
 
 
 --
--- TOC entry 3365 (class 0 OID 16424)
--- Dependencies: 218
+-- TOC entry 3362 (class 0 OID 16390)
+-- Dependencies: 215
 -- Data for Name: DeviceToken; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public."DeviceToken" VALUES ('H71fNMImtbRcbL2NqMcSKNGjMf32', 'fRbfWyjnQC21LKYhOiuh6Q:APA91bF_RVBwhBWDC9TIy7iNyvctiS6YrKRSjCZLXfEAZ5xG2AQ9Io1J_mNWKeTgm27pe1zpvFSAA2intkOKAuk-s4ZlQ2o_igM8iI2rb8HyP-JNEA6Dfq1KoHERRqjjisV4W3ZgAEGU', NULL);
 
 
 --
--- TOC entry 3366 (class 0 OID 16431)
--- Dependencies: 219
+-- TOC entry 3363 (class 0 OID 16395)
+-- Dependencies: 216
 -- Data for Name: PartnerPair; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -215,11 +258,12 @@ INSERT INTO public."PartnerPair" VALUES ('81885d13-1288-4298-ab5d-eaf85d9b2594',
 INSERT INTO public."PartnerPair" VALUES ('81885d13-1288-4298-ab5d-eaf85d9b2594', 'testUser3');
 INSERT INTO public."PartnerPair" VALUES ('81885d13-1288-4298-ab5d-eaf85d9b2594', 'testUser4');
 INSERT INTO public."PartnerPair" VALUES ('81885d13-1288-4298-ab5d-eaf85d9b2594', 'testUser6');
+INSERT INTO public."PartnerPair" VALUES ('H71fNMImtbRcbL2NqMcSKNGjMf32', 'cedd436c-1103-4360-85af-ab72e28f2f91');
 
 
 --
--- TOC entry 3368 (class 0 OID 16445)
--- Dependencies: 221
+-- TOC entry 3364 (class 0 OID 16400)
+-- Dependencies: 217
 -- Data for Name: PartnerRequest; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -232,16 +276,25 @@ INSERT INTO public."PartnerRequest" VALUES ('81885d13-1288-4298-ab5d-eaf85d9b259
 
 
 --
--- TOC entry 3363 (class 0 OID 16410)
--- Dependencies: 216
+-- TOC entry 3365 (class 0 OID 16405)
+-- Dependencies: 218
 -- Data for Name: SnitchEvent; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public."SnitchEvent" VALUES ('b0630390-6953-4b1b-932f-f5ce88f17684', 'H71fNMImtbRcbL2NqMcSKNGjMf32', 0.000000000000000000000000000000, 0.000000000000000000000000000000, 'Chick-fil-A', 0.000000000000000000000000000000, 0.000000000000000000000000000000, '2023-05-19 09:47:45.117');
+INSERT INTO public."SnitchEvent" VALUES ('6d0d4ad1-63c6-4940-bfee-3d50ae54d187', 'H71fNMImtbRcbL2NqMcSKNGjMf32', 0.000000000000000000000000000000, 0.000000000000000000000000000000, 'Chick-fil-A', 0.000000000000000000000000000000, 0.000000000000000000000000000000, '2023-05-19 10:27:31.335');
+INSERT INTO public."SnitchEvent" VALUES ('30f9ebb5-6e26-44a2-bd18-28d9f72fcff1', 'H71fNMImtbRcbL2NqMcSKNGjMf32', 0.000000000000000000000000000000, 0.000000000000000000000000000000, 'Chick-fil-A', 0.000000000000000000000000000000, 0.000000000000000000000000000000, '2023-05-19 10:28:34.187');
+INSERT INTO public."SnitchEvent" VALUES ('384d05db-862c-4ed6-a0e2-f4e39ef38649', 'H71fNMImtbRcbL2NqMcSKNGjMf32', 0.000000000000000000000000000000, 0.000000000000000000000000000000, 'Chick-fil-A', 0.000000000000000000000000000000, 0.000000000000000000000000000000, '2023-05-19 10:30:29.036');
+INSERT INTO public."SnitchEvent" VALUES ('cb24e5ce-230b-47e3-b295-f1fbf74fcebf', 'H71fNMImtbRcbL2NqMcSKNGjMf32', 40.251001666666670000000000000000, -111.667183333333300000000000000000, 'Chick-fil-A', 0.000000000000000000000000000000, 0.000000000000000000000000000000, '2023-05-19 10:30:29.073');
+INSERT INTO public."SnitchEvent" VALUES ('0af2c397-791d-4c34-830a-e5c2f3c63115', 'H71fNMImtbRcbL2NqMcSKNGjMf32', 0.000000000000000000000000000000, 0.000000000000000000000000000000, 'Chick-fil-A', 0.000000000000000000000000000000, 0.000000000000000000000000000000, '2023-05-19 10:33:12.878');
+INSERT INTO public."SnitchEvent" VALUES ('1cc962e1-6604-40fc-bdf5-8ee763dec2c0', 'H71fNMImtbRcbL2NqMcSKNGjMf32', 40.251001666666670000000000000000, -111.667183333333300000000000000000, 'Chick-fil-A', 0.000000000000000000000000000000, 0.000000000000000000000000000000, '2023-05-19 10:33:40.301');
+INSERT INTO public."SnitchEvent" VALUES ('744cfe8a-498e-486a-8868-ef93317c36b6', 'H71fNMImtbRcbL2NqMcSKNGjMf32', 0.000000000000000000000000000000, 0.000000000000000000000000000000, 'Chick-fil-A', 0.000000000000000000000000000000, 0.000000000000000000000000000000, '2023-05-19 10:39:37.53');
+INSERT INTO public."SnitchEvent" VALUES ('770a1d77-232d-42bc-83aa-dca2cfcfe9dd', 'H71fNMImtbRcbL2NqMcSKNGjMf32', 0.000000000000000000000000000000, 0.000000000000000000000000000000, 'Chick-fil-A', 0.000000000000000000000000000000, 0.000000000000000000000000000000, '2023-05-19 10:41:34.698');
 
 
 --
--- TOC entry 3362 (class 0 OID 16403)
--- Dependencies: 215
+-- TOC entry 3366 (class 0 OID 16410)
+-- Dependencies: 219
 -- Data for Name: TrainerClientPair; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -254,16 +307,17 @@ INSERT INTO public."TrainerClientPair" VALUES ('81885d13-1288-4298-ab5d-eaf85d9b
 
 
 --
--- TOC entry 3367 (class 0 OID 16438)
+-- TOC entry 3367 (class 0 OID 16415)
 -- Dependencies: 220
 -- Data for Name: TrainerClientRequest; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
+INSERT INTO public."TrainerClientRequest" VALUES ('testPartner1', 'H71fNMImtbRcbL2NqMcSKNGjMf32');
 
 
 --
--- TOC entry 3361 (class 0 OID 16396)
--- Dependencies: 214
+-- TOC entry 3368 (class 0 OID 16420)
+-- Dependencies: 221
 -- Data for Name: User; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -295,7 +349,6 @@ INSERT INTO public."User" VALUES ('testUser10', 'Test 10', 'User', '10test@email
 INSERT INTO public."User" VALUES ('testUser30', 'Test 30', 'User', '30test@email.com', NULL, NULL, NULL);
 INSERT INTO public."User" VALUES ('testUser17', 'Test 17', 'User', '17test@email.com', NULL, NULL, NULL);
 INSERT INTO public."User" VALUES ('testUser24', 'Test 24', 'User', '24test@email.com', NULL, NULL, NULL);
-INSERT INTO public."User" VALUES ('H71fNMImtbRcbL2NqMcSKNGjMf32', 'FitSnitch', 'Dev', 'fitsnitchdev@gmail.com', NULL, NULL, 'month_20');
 INSERT INTO public."User" VALUES ('testUser8', 'Test 8', 'User', '8test@email.com', NULL, NULL, NULL);
 INSERT INTO public."User" VALUES ('testUser6', 'Test 6', 'User', '6test@email.com', NULL, NULL, NULL);
 INSERT INTO public."User" VALUES ('testUser23', 'Test 23', 'User', '23test@email.com', NULL, NULL, NULL);
@@ -304,19 +357,20 @@ INSERT INTO public."User" VALUES ('testUser28', 'Test 28', 'User', '28test@email
 INSERT INTO public."User" VALUES ('testUser12', 'Test 12', 'User', '12test@email.com', NULL, NULL, NULL);
 INSERT INTO public."User" VALUES ('testUser2', 'Test 2', 'User', '2test@email.com', NULL, NULL, 'week_2');
 INSERT INTO public."User" VALUES ('testPartner1', 'Chef', 'Rush', 'chef@rush.com', NULL, NULL, NULL);
+INSERT INTO public."User" VALUES ('H71fNMImtbRcbL2NqMcSKNGjMf32', 'FitSnitch', 'Dev', 'fitsnitchdev@gmail.com', NULL, NULL, 'week_20');
 
 
 --
--- TOC entry 3210 (class 2606 OID 16423)
+-- TOC entry 3204 (class 2606 OID 16446)
 -- Name: CheatMealEvent CheatMealEvent_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."CheatMealEvent"
-    ADD CONSTRAINT "CheatMealEvent_pkey" PRIMARY KEY ("snitchId");
+    ADD CONSTRAINT "CheatMealEvent_pkey" PRIMARY KEY ("cheatMealId");
 
 
 --
--- TOC entry 3212 (class 2606 OID 16430)
+-- TOC entry 3206 (class 2606 OID 16428)
 -- Name: DeviceToken DeviceToken_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -325,7 +379,7 @@ ALTER TABLE ONLY public."DeviceToken"
 
 
 --
--- TOC entry 3214 (class 2606 OID 16437)
+-- TOC entry 3208 (class 2606 OID 16430)
 -- Name: PartnerPair PartnerPair_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -334,7 +388,7 @@ ALTER TABLE ONLY public."PartnerPair"
 
 
 --
--- TOC entry 3218 (class 2606 OID 16451)
+-- TOC entry 3210 (class 2606 OID 16432)
 -- Name: PartnerRequest PartnerRequest_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -343,7 +397,7 @@ ALTER TABLE ONLY public."PartnerRequest"
 
 
 --
--- TOC entry 3208 (class 2606 OID 16416)
+-- TOC entry 3212 (class 2606 OID 16434)
 -- Name: SnitchEvent SnitchEvent_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -352,7 +406,7 @@ ALTER TABLE ONLY public."SnitchEvent"
 
 
 --
--- TOC entry 3206 (class 2606 OID 16409)
+-- TOC entry 3214 (class 2606 OID 16436)
 -- Name: TrainerClientPair TrainerClientPair_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -361,7 +415,7 @@ ALTER TABLE ONLY public."TrainerClientPair"
 
 
 --
--- TOC entry 3216 (class 2606 OID 16444)
+-- TOC entry 3216 (class 2606 OID 16438)
 -- Name: TrainerClientRequest TrainerClientRequest_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -370,7 +424,7 @@ ALTER TABLE ONLY public."TrainerClientRequest"
 
 
 --
--- TOC entry 3204 (class 2606 OID 16402)
+-- TOC entry 3218 (class 2606 OID 16440)
 -- Name: User User_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -378,7 +432,7 @@ ALTER TABLE ONLY public."User"
     ADD CONSTRAINT "User_pkey" PRIMARY KEY ("userId");
 
 
--- Completed on 2023-05-14 00:02:08 MDT
+-- Completed on 2023-05-20 08:25:47 MDT
 
 --
 -- PostgreSQL database dump complete

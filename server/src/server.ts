@@ -14,8 +14,11 @@ import SnitchRouter from "./routes/snitch.routes";
 import LambdaRouter from "./routes/lambda.routes";
 import UserRouter from "./routes/user.routes";
 import CheatRouter from "./routes/cheat.routes";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 
+const envMode = process.env.NODE_ENV || '';
 
 const app = express();
 app.use(cors());
