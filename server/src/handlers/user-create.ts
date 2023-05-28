@@ -1,7 +1,7 @@
 import { APIGatewayProxyEventV2 } from "aws-lambda";
 import LambaUtils from "../utils/LambdaUtils";
 import UserService from "../services/UserService";
-import User from "../../../react-native-app/shared/models/User";
+import { User } from "@prisma/client";
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
     return await LambaUtils.handleEventWithBody<User>(event, async (newUserData,res)=>{
