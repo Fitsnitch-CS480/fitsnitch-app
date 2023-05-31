@@ -1,0 +1,4 @@
+FROM postgres:15 as db
+
+COPY ./db-init/init.sh /docker-entrypoint-initdb.d
+COPY ./db-init .

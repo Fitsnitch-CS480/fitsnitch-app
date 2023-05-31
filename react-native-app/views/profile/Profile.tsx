@@ -68,9 +68,8 @@ const Profile = observer(({profileOwner}:any) => {
 
   async function loadNextCheatMealPage(prevPage?: UserCheatMealResponse) {
 
-    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:PAGE_SIZE}
-    let response = await new CheatMealService().getUserCheatMealFeedPage(profileOwner.userId,page)
-    response.records.sort((a,b)=>a.created<b.created?1:-1)
+    let page = prevPage || { records: [], pageNumber: -1, pageSize: PAGE_SIZE, total: 0 }
+    let response = await new CheatMealService().getUserCheatMealFeedPage(profileOwner.userId, page)
     return response;
   }
 
@@ -79,9 +78,8 @@ const SnitchFeed = () => {
   const [lastSnitch, setLastSnitch] = useState<SnitchEvent|undefined>(undefined);
 
   async function loadNextSnitchPage(prevPage?: UserSnitchesResponse) {
-    let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:PAGE_SIZE}
-    let response = await new SnitchService().getUserSnitchFeedPage([profileOwner.userId],page)
-    response.records.sort((a,b)=>a.created<b.created?1:-1)
+    let page = prevPage || {records: [], pageNumber: -1, pageSize:PAGE_SIZE, total: 0}
+    let response = await new SnitchService().getUserSnitchFeedPage([profileOwner.userId], page)
     if (!prevPage) {
       // The process of loading the feed also gets all feed user data, so let's save that
       // rather than askig for it again later
@@ -95,7 +93,7 @@ const SnitchFeed = () => {
     <Card title="Snitches" headerRight={<SnitchFreeStreak lastSnitch={lastSnitch} size={35} />}>
       <PaginatedList
             loadNextPage={loadNextSnitchPage}
-            itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
+            itemKey={(snitch:SnitchEvent)=>snitch.created_at+snitch.userId}
             renderItem={(snitch=>(
             <View>
               <SnitchEventCard onSwitch={()=>setRefreshSCnt(refreshCnt+1)}
@@ -143,7 +141,7 @@ const SnitchFeed = () => {
               }
               <PaginatedList
                   loadNextPage={loadNextCheatMealPage}
-                  itemKey={(meal:CheatMealEvent)=>meal.created+meal.userId}
+                  itemKey={(meal:CheatMealEvent)=>meal.created_at+meal.userId}
                   renderItem={(meal=>(
                   <View>
                     <CheatMealEventCard meal={meal} user={profileOwner}></CheatMealEventCard>

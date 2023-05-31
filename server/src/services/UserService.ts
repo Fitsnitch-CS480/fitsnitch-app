@@ -1,46 +1,66 @@
-import { UserSearchRequest, UserSearchResponse } from "../../../react-native-app/shared/models/requests/UserSearchRequest";
-import User from "../../../react-native-app/shared/models/User";
-import DaoFactory from "../db/DaoFactory";
+import { PrismaClient, User } from '@prisma/client'
+
+const prisma = new PrismaClient();
 
 export default class UserService {
     async createUser(data: User) {
-        await DaoFactory.getUserDao().createUser(data);
-    }
+        await prisma.user.create({
+			data,
+		})
+	}
 
     async updateUser(data: User) {
-        await DaoFactory.getUserDao().updateUser(data);
+        await prisma.user.update({
+			where: { userId: data.userId },
+			data,
+		})
     }
 
-    async search(request:UserSearchRequest): Promise<UserSearchResponse> {
-        return await DaoFactory.getUserDao().search(request);
+    async search(query, pageSize = 20, page = 0) {
+		console.log(query, pageSize, page)
+		const terms = query.split(' ').join(' | ');
+		const where = {
+			OR: [
+				{ firstname: { search: terms, } },
+				{ lastname: { search: terms, } },
+			],
+		};
+		const total = await prisma.user.count({ where });
+        const users = await prisma.user.findMany({
+			where,
+			take: pageSize,
+			skip: pageSize * page
+		});
+		return { users, total };
     }
 
-    async getUser(id: string): Promise<User|undefined> {
-        return await DaoFactory.getUserDao().getUser(id);
+    async getUser(id: string): Promise<any> {
+		return await prisma.user.findUnique({
+			where: { userId: id }
+		});
     }
 	
     async addDeviceToken(userId: string, token: string) {
-        let user = await this.getUser(userId);
-		if (!user) {
-			throw new Error("Can't find user with that ID!");
-		}
-		if (user.associatedDeviceTokens) {
-			if (!user.associatedDeviceTokens.includes(token)) {
-				user.associatedDeviceTokens.push(token);
+        await prisma.deviceToken.upsert({
+			where: {
+				userId_token: { userId, token }
+			},
+			update: {
+				userId,
+				token
+			},
+			create: {
+				userId,
+				token,
 			}
-		}
-		else {
-			user.associatedDeviceTokens = [token];
-		}
-		await this.updateUser(user);
+		})
     }
     
     async getExistingUsers(ids: string[]): Promise<User[]> {
-        let dao = DaoFactory.getUserDao();        
         let users: User[] = [];
         await Promise.all(ids.map(async id=>{
-            let user = await dao.getUser(id)
-            if (user) users.push(user)
+            let user = await this.getUser(id)
+            if (user) users.push(user as any)
         }))
         return users;
     }
@@ -51,6 +71,6 @@ export default class UserService {
      */
     async wipeUserData(id: string) {
     //  TODO
-        throw new Error("Not yet implementented!")
+        throw new Error("Not yet implemented!")
     }
 }

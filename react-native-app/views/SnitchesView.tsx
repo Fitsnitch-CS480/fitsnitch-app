@@ -40,7 +40,7 @@ const SnitchesView: React.FC = () => {
     if (!feedIds) throw new Error("There are no users for the feed!")
     let page = prevPage || {records:[],pageBreakKey:undefined,pageSize:PAGE_SIZE}
     let response = await new SnitchService().getUserSnitchFeedPage(feedIds,page)
-    response.records.sort((a,b)=>a.created<b.created?1:-1)
+    response.records.sort((a,b)=>a.created_at<b.created_at?1:-1)
     if (!prevPage) {
       // The process of loading the feed also gets all feed user data, so let's save that
       // rather than askig for it again later
@@ -60,7 +60,7 @@ const SnitchesView: React.FC = () => {
       <Card title="Recent Snitches">
         <PaginatedList
           loadNextPage={loadNextPage}
-          itemKey={(snitch:SnitchEvent)=>snitch.created+snitch.userId}
+          itemKey={(snitch:SnitchEvent)=>snitch.created_at+snitch.userId}
           renderItem={(snitch=>(
             <View style={styles.snitchContainer}>
               <SnitchEventCard snitch={snitch} user={userDict.get(snitch.userId)}></SnitchEventCard>

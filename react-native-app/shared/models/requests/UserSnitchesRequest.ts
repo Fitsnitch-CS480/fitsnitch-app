@@ -5,15 +5,15 @@ import { PaginatedRequest, PaginatedResponse } from "./Paginated";
 export class UserSnitchesRequest extends PaginatedRequest {
     constructor(
         public userIds:string[],
-        pageSize?:number,
-        pageBreakKey?:string,
+        public pageSize:number,
+        public pageNumber:number,
     ) {
-        super(pageBreakKey,pageSize)
+        super(pageNumber, pageSize)
     }
 }
 
 export class UserSnitchesResponse extends PaginatedResponse<SnitchEvent> {
-    constructor(records: SnitchEvent[], pageBreakKey?:string, pageSize?:number) {
-        super(records,pageBreakKey,pageSize)
+    constructor(public records: SnitchEvent[], public pageSize:number, public pageNumber:number, public total:number) {
+        super(records, pageSize, pageNumber, total)
     }
 }

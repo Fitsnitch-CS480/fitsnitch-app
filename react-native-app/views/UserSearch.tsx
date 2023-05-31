@@ -2,22 +2,23 @@ import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState } from 'react';
 import { Button, Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import UserDataService from '../services/UserDataService';
 import ProfileImage from '../components/ProfileImage';
 import { globalContext } from '../views/appNavigator';
-import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import User from '../shared/models/User';
 import Colors from '../assets/constants/colors';
 import T from '../assets/constants/text';
+import { request } from '../services/ServerFacade';
+import { notifyMessage } from '../utils/UiUtils';
 
 type state = {
   results: User[],
-  lastPageBreakKey?: string,
+  pageNumber: number,
   loading: boolean,
   query?:string
+  hasMore: boolean,
 }
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 5;
 
 const UserSearch: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -26,9 +27,10 @@ const UserSearch: React.FC = () => {
 
   const [state, setState] = useState<state>({
     results: [],
-    lastPageBreakKey: undefined,
+    pageNumber: 0,
     loading: false,
     query: undefined,
+	hasMore: false
   });
 
   let flexibleState: state = {...state};
@@ -38,17 +40,20 @@ const UserSearch: React.FC = () => {
   }
 
   async function loadNewResults() {
+	console.log("here!!!", state.pageNumber)
     Keyboard.dismiss();
     if (!state.query) {
       updateState({results:[]})
       return;
     }
     updateState({loading:true})
-    let page = await loadUntilResultsOrEnd(state.query, state.lastPageBreakKey)
+    let page = await getPage(state.query, 0)
+	console.log(page)
     updateState({
       loading:false,
-      results: page.records,
-      lastPageBreakKey: page.pageBreakKey
+      results: page.users,
+      pageNumber: 1,
+	  hasMore: page.users.length < page.total
     })
   }
 
@@ -56,36 +61,30 @@ const UserSearch: React.FC = () => {
   async function loadMoreResults() {
     if (!state.query) return;
     updateState({loading:true})
-    let page = await loadUntilResultsOrEnd(state.query, state.lastPageBreakKey)
+    let page = await getPage(state.query, state.pageNumber)
     updateState({
       loading:false,
-      results: state.results.concat(page.records),
-      lastPageBreakKey: page.pageBreakKey
+      results: state.results.concat(page.users),
+      pageNumber: state.pageNumber + 1,
+	  hasMore: state.results.length + page.users.length < page.total
     })
   }
 
-  /**
-   * Sometimes a page returns 0 results but hasn't looked at all records yet.
-   * This should probably be solved on the backend, but for now this method
-   * will keep requesting until it has no more pages or finds some results.
-   */
-  async function loadUntilResultsOrEnd(query:string, lastPageBreakKey:any): Promise<UserSearchResponse> {
-    let page = await new UserDataService().userSearch(new UserSearchRequest(
-      query, lastPageBreakKey, PAGE_SIZE))
-
-    while (page.pageBreakKey && page.records.length === 0) {
-      page = await new UserDataService().userSearch(new UserSearchRequest(
-      query, page.pageBreakKey, PAGE_SIZE))
-    }
-
-    return page;
+  async function getPage(query:string, pageNumber:any) {
+	try {
+		const { data } = await request.get(`/user/search?query=${query}&page=${pageNumber}&pageSize=${PAGE_SIZE}`);
+		return data;
+	}
+	catch (e) {
+		notifyMessage("Could not load users");
+		throw e;
+	}
   }
 
   function updateQuery(text:string) {
     updateState({
-      query:text,
-      results: [],
-      lastPageBreakKey: undefined
+      query: text,
+      pageNumber: 0
     })
   }
 
@@ -111,11 +110,11 @@ const UserSearch: React.FC = () => {
           </View>
         ))}
 
-        { state.lastPageBreakKey && state.results.length > 0 ?
+        { state.hasMore ?
           <Button title="Load More" onPress={loadMoreResults} color={Colors.darkBlue}></Button>
-        :
-          <></>
-        }
+		  :
+		  state.results.length ? <Text style={styles.noMore}>No more results</Text> : null
+		}
       </ScrollView>
     </>
   );
@@ -145,7 +144,11 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 10, 
     fontSize: 15,
-    color: Colors.white
+  },
+  noMore: {
+    textAlign: 'center',
+    color: Colors.white,
+	margin: 10
   },
   icon: {
     color: Colors.white

@@ -61,7 +61,7 @@ const CheatMealEventCard: React.FC<Props> = ({
           </View>
           <View style={styles.detailRow}>
           <View style={styles.detailRowIcon}><Icon name="event" color="#888" size={18}></Icon></View>
-		  	<Text style={styles.text}>{getRelativeTime(meal.created)}</Text>
+		  	<Text style={styles.text}>{getRelativeTime(meal.created_at)}</Text>
           </View>
     
           {/* <View style={styles.shareButton} onTouchEnd={()=>shareMeal(meal)}><Icon name="share" size={20}></Icon></View> */}

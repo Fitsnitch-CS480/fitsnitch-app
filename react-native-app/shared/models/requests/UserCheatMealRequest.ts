@@ -5,15 +5,15 @@ import { PaginatedRequest, PaginatedResponse } from "./Paginated";
 export class UserCheatMealRequest extends PaginatedRequest {
     constructor(
         public userId:string,
-        pageSize?:number,
-        pageBreakKey?:string,
+        public pageNumber:number,
+        public pageSize:number,
     ) {
-        super(pageBreakKey, pageSize);
+        super(pageNumber, pageSize);
     }
 }
 
 export class UserCheatMealResponse extends PaginatedResponse<CheatMealEvent> {
-    constructor(records: CheatMealEvent[], pageBreakKey?:string, pageSize?:number) {
-        super(records, pageBreakKey, pageSize);
+    constructor(records: CheatMealEvent[], pageNumber:number, pageSize:number, total:number) {
+        super(records, pageNumber, pageSize, total);
     }
 }

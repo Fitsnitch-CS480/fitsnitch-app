@@ -307,7 +307,7 @@ public class LocationLoopService extends IntentService {
     }
 
     public static boolean usedCheatForActiveSnitch() {
-        return lastUsedCheatTime != null && activeSnitch != null && lastUsedCheatTime > activeSnitch.created;
+        return lastUsedCheatTime != null && activeSnitch != null && lastUsedCheatTime > activeSnitch.created_at;
     }
 
     static void publishActiveSnitch() {

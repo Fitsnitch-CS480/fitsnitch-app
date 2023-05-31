@@ -1,0 +1,77 @@
+generator client {
+    provider = "prisma-client-js"
+	previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    userId                 String   @id
+    firstname              String
+    lastname               String
+    email                  String
+    image                  String?
+    phone                  String?
+    cheatmealSchedule      String?
+}
+
+model DeviceToken {
+	userId	String
+	token	String
+	type	String?
+
+	@@id([userId, token])
+}
+
+model TrainerClientPair {
+    trainerId String
+    clientId  String
+
+    @@id([trainerId, clientId])
+}
+
+model TrainerClientRequest {
+    trainerId String
+    clientId  String
+
+    @@id([trainerId, clientId])
+}
+
+model PartnerPair {
+    partnerId1 String
+    partnerId2 String
+
+    @@id([partnerId1, partnerId2])
+}
+
+model PartnerRequest {
+    requester String
+    requestee String
+
+    @@id([requester, requestee])
+}
+
+model SnitchEvent {
+    snitchId       String   @id @default(uuid())
+    userId         String
+    created_at      DateTime
+    lat            Decimal
+    lon            Decimal
+    restaurantName String
+    restaurantLat  Decimal
+	restaurantLon  Decimal
+}
+
+model CheatMealEvent {
+    cheatMealId    String   @id @default(uuid())
+    userId         String
+    created_at      DateTime
+    lat            Decimal
+    lon            Decimal
+    restaurantName String
+    restaurantLat  Decimal
+	restaurantLon  Decimal
+}

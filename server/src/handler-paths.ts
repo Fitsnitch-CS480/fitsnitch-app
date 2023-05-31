@@ -23,12 +23,11 @@ import { handler as trainerRequestCancel } from "./handlers/trainer-request-canc
 import { handler as trainerRequestCreate } from "./handlers/trainer-request-create";
 import { handler as userCreate } from "./handlers/user-create";
 import { handler as userGet } from "./handlers/user-get";
-import { handler as userSearch } from "./handlers/user-search";
 import { handler as userUpdate } from "./handlers/user-update";
+import { handler as switchSnitchToCheatmeal } from "./handlers/switch-snitch-to-cheatmeal";
 
 export const handlers: {[key:string]:(event:APIGatewayProxyEventV2)=>Promise<ProxyResultWrapper>} = {
     "user_get": userGet,
-    "user_search": userSearch,
     "user_create": userCreate,
     "user_update": userUpdate,
     "check-location": checkForRestaurant,
@@ -52,4 +51,5 @@ export const handlers: {[key:string]:(event:APIGatewayProxyEventV2)=>Promise<Pro
     "cheatmeal-create" : cheatmealCreate,
     "cheatmeal-get-for-users" : cheatmealGetForUser,
     "cheatmeal-get" : cheatmealGet,
+	"switch-snitch-to-cheatmeal": switchSnitchToCheatmeal
 }

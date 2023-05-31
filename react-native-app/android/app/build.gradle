@@ -3,7 +3,6 @@ plugins {
 }
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
-apply plugin: "com.google.gms.google-services"
 
 import com.android.build.OutputFile
 
@@ -100,6 +99,7 @@ android {
     namespace "com.fitsnitchapp"
     defaultConfig {
         applicationId "com.fitsnitchapp"
+        resValue "string", "build_config_package", "${applicationId}"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -123,16 +123,40 @@ android {
         }
     }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-        }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
+			versionNameSuffix '-RELEASE'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+			manifestPlaceholders = [appName: "FitSnitch"]
+		}
+        beta {
+			// Still generate keystore because this goes out to public
+            // Caution! In production, you need to generate your own keystore file.
+            // see https://reactnative.dev/docs/signed-apk-android.
+			initWith release
+            applicationIdSuffix ".beta"
+            versionNameSuffix '-BETA'
+            signingConfig signingConfigs.debug
+            minifyEnabled enableProguardInReleaseBuilds
+			manifestPlaceholders = [appName: "Beta FitSnitch"]
+			matchingFallbacks = ['release'] // Which version of dependencies to use
+		}
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix '-DEBUG'
+			manifestPlaceholders = [appName: "Local FitSnitch"] // Sets app label in manifest
+			signingConfig signingConfigs.debug
         }
+        dev {
+			initWith debug
+            applicationIdSuffix ".dev"
+            versionNameSuffix '-DEV'
+			manifestPlaceholders = [appName: "Dev FitSnitch"]
+			matchingFallbacks = ['debug'] // Which version of dependencies to use
+		}
     }
 
     // applicationVariants are e.g. debug, release
@@ -193,7 +217,9 @@ apply from: file("../../node_modules/@react-native-community/cli-platform-androi
 // https://github.com/luggit/react-native-config#different-environments
 
 project.ext.envConfigFiles = [
-	debug: ".env.development",
+	debug: ".env.local",
+	dev: ".env.development",
+	beta: ".env.beta",
 	release: ".env.production",
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
@@ -204,3 +230,6 @@ project.ext.vectoricons = [
     iconFontNames: [ 'MaterialIcons.ttf' ] // Name of the font files you want to copy
 ]
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+// Google-services
+apply plugin: "com.google.gms.google-services"

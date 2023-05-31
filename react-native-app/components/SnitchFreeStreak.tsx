@@ -16,7 +16,7 @@ const SnitchFreeStreak: React.FC<Props> = ({
   
   let streak = (() => {
     if (!lastSnitch) return '--';
-    else return dayjs().diff(dayjs(lastSnitch.created), 'd')
+    else return dayjs().diff(dayjs(lastSnitch.created_at), 'd')
   })();
 
   const fireColor = streak === 0 || streak === '--' ? '#999' : 'red'

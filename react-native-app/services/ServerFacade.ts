@@ -1,8 +1,6 @@
-import { SwitchSnitchToCheatmealRequest } from './../shared/models/requests/SwitchSnitchToCheatmealRequest';
 import PartnerStatusResponse from './../shared/models/requests/PartnerStatusResponse';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
-import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import { UserSnitchesRequest, UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import TrainerClientPair from '../shared/models/TrainerClientPair';
 import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
@@ -95,15 +93,6 @@ class ExecutionError<T> extends ExecutionResult<T> {
     return res.data as User
   }
 
-  static async userSearch(request:UserSearchRequest): Promise<UserSearchResponse> {
-    let res = await executeRequest<UserSearchResponse>("/user_search", request)
-    if (res.error || !res.data) {
-      // give error feedback in UI
-      return new UserSearchResponse([],undefined,undefined)
-    }
-    return res.data
-  }
-
   static async createUser(user: User) {
     let res = await executeRequest("/user_create", user);
   }
@@ -186,7 +175,8 @@ class ExecutionError<T> extends ExecutionResult<T> {
       // give error feedback in UI
       return {
         records:[],
-        pageBreakKey: pageRequest.pageBreakKey,
+        pageNumber: pageRequest.pageNumber,
+        total: 0,
         pageSize: pageRequest.pageSize
       }
     }
@@ -197,18 +187,20 @@ class ExecutionError<T> extends ExecutionResult<T> {
   //   let res = await executeRequest("/snitch-create", snitch);
   // }
 
-  static async switchToCheatmeal(data: SwitchSnitchToCheatmealRequest){
+  static async switchToCheatmeal(data: SnitchEvent){
     let res = await executeRequest("/switch-snitch-to-cheatmeal", data);
   }
 
   // Cheat Meals
   static async getUserCheatMealFeedPage(pageRequest: UserCheatMealRequest): Promise<UserCheatMealResponse> {
+	console.log(pageRequest)
     let res = await executeRequest<UserCheatMealResponse>("/cheatmeal-get-for-users", pageRequest);
     if (res.error || !res.data) {
       // give error feedback in UI
       return {
         records:[],
-        pageBreakKey: pageRequest.pageBreakKey,
+        pageNumber: pageRequest.pageNumber,
+        total: 0,
         pageSize: pageRequest.pageSize
       }
     }

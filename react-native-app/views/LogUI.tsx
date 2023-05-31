@@ -86,7 +86,7 @@ const LogUI = observer(()=>{
             >
                 {logStore.logs.map((entry) => (
                     <View style={styles.entryWrapper} key={entry.id}>
-                        <Text style={[styles.logText, {textAlign:'right'}]}>{entry.created}</Text>
+                        <Text style={[styles.logText, {textAlign:'right'}]}>{entry.created_at}</Text>
                         <Text style={[styles.logText]}>{entry.message}</Text>
                     </View>
                 ))}
