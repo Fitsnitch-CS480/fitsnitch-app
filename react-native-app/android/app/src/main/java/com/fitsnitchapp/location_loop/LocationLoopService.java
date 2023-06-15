@@ -1,10 +1,8 @@
 package com.fitsnitchapp.location_loop;
 
-import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
+import static io.invertase.firebase.app.ReactNativeFirebaseApp.getApplicationContext;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,13 +10,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Handler;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.util.Consumer;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.Operation;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import com.fitsnitchapp.BuildConfig;
 import com.fitsnitchapp.LatLonPair;
@@ -26,55 +25,47 @@ import com.fitsnitchapp.LocationForegroundService;
 import com.fitsnitchapp.R;
 import com.fitsnitchapp.Restaurant;
 import com.fitsnitchapp.SettingsManager;
-//import com.fitsnitchapp.SnitchActivity;
 import com.fitsnitchapp.SnitchActivity;
 import com.fitsnitchapp.SnitchTrigger;
-//import com.fitsnitchapp.api.ApiService;
-//import com.fitsnitchapp.api.CheckLocationRequest;
-//import com.fitsnitchapp.api.CreateSnitchRequest;
 import com.fitsnitchapp.api.ApiService;
 import com.fitsnitchapp.api.CheckLocationRequest;
 import com.fitsnitchapp.api.CreateSnitchRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.CancellationToken;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.gson.Gson;
+
+import java.util.concurrent.TimeUnit;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class LocationLoopService extends IntentService {
+public class LocationLoopService {
     private static final String CHANNEL_ID = "FITSNITCH_SNITCHES";
     private static final String CHANNEL_NAME = "Active Snitch Warnings";
     private static AlarmManager mAlarmManager;
-    private static LoopState loopState = new BaseState();
+
+    public static final String WORKER_TAG = "FIT_LOC_WORKER";
+
+    public static Operation lastOperation;
+    private static LoopState loopState;
     private static PendingIntent pendingLoopIntent;
     private static Notification warningNotification;
     private static Notification snitchedNotification;
     private static SettingsManager settingsManager;
     private static NotificationChannel mNotificationChannel;
-    private FusedLocationProviderClient mFusedLocationClient;
-    private static LocationCallback mLocationCallback;
     private static NotificationManager notificationManager;
     private static Gson mGson;
 
     private static final int NOTIF_ID_WARNING = 0;
     private static final int NOTIF_ID_SNITCHED = 1;
 
-    private static long nextLocationAlarmTime;
-
     // Default values for PROD (overwritten for DEV below)
     public static long IVAL_WARNING = 30000; // 30 seconds
     public static long IVAL_LOOP_SHORT = 60000; // 1 minute
     // public static long IVAL_LOOP_LONG = 30000;
     public static long IVAL_WILL_LEAVE = 30000;
-    public static long IVAL_WILL_STAY = 60000 * 10; // 10 minutes
+    public static long IVAL_WILL_STAY = 3000; // 10 minutes
 
     public static final double SIGNIFICANT_RADIUS = 0.00001f;
 
@@ -84,7 +75,6 @@ public class LocationLoopService extends IntentService {
     private static Long lastUsedCheatTime;
 
     public LocationLoopService() {
-        super(LocationForegroundService.class.getName());
         mGson = new Gson();
 
         if (BuildConfig.BUILD_TYPE == "debug") {
@@ -94,6 +84,11 @@ public class LocationLoopService extends IntentService {
             IVAL_WILL_LEAVE = 30000; // 30 seconds
             IVAL_WILL_STAY = 60000; // 1 minute
         }
+    }
+
+    public void startLoop(Context context) {
+        setup(context);
+        enterLoopState(new BaseState());
     }
 
     public static SnitchTrigger getActiveSnitch() {
@@ -117,34 +112,13 @@ public class LocationLoopService extends IntentService {
         if (ival == 0) {
             ival = IVAL_LOOP_SHORT;
         }
-        setNextAlarm(ival);
+        requestNextJob(getApplicationContext(), ival);
     }
 
-    /**
-     * Called when a new intent is received, either to begin
-     * or continue the loop.
-     * The Application Context is not guaranteed to exist before this time,
-     * so some setup must happen here.
-     * @param intent
-     */
-    @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        Log.i("****FITLOC","Received loop intent");
-        setup();
-        inspectLocation();
-    }
 
-    private void setup() {
-        // This one must be recreated each time
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+    private void setup(Context context) {
+        settingsManager = new SettingsManager(context);
 
-        // If any of these exist it is safe to assume they all do.
-        if (mAlarmManager != null) return;
-        mAlarmManager = (AlarmManager) LocationForegroundService.mContext.getSystemService(Context.ALARM_SERVICE);
-        settingsManager = new SettingsManager(getApplicationContext());
-
-        Intent loopIntent = new Intent(getApplicationContext(), LocationLoopService.class);
-        pendingLoopIntent = PendingIntent.getService(getApplicationContext(), 1, loopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         notificationManager = LocationForegroundService.mContext.getSystemService(NotificationManager.class);
         mNotificationChannel = new NotificationChannel(
@@ -163,60 +137,27 @@ public class LocationLoopService extends IntentService {
      * Ends one iteration of the loop by setting the alarm
      * that will trigger the next.
      * Only call this once per iteration!
+     *
      * @param ival How long to wait before the next iteration.
      */
     static void setNextAlarm(long ival) {
-        nextLocationAlarmTime = System.currentTimeMillis() + ival;
-        mAlarmManager.setExact(
-                AlarmManager.RTC,
-                nextLocationAlarmTime,
-                pendingLoopIntent
-        );
-        Log.i("***FIT", "next alarm in "+ival);
+        requestNextJob(getApplicationContext(), ival);
     }
 
-    /**
-     * Handles getting the location and passing it on to the main handler
-     */
-    @SuppressLint("MissingPermission")
-    private void inspectLocation() {
-        Log.i("****FITLOC","requesting current location");
 
-        LocationRequest locationRequest = LocationRequest.create()
-                .setPriority(PRIORITY_HIGH_ACCURACY)
-                .setInterval(0)
-                .setFastestInterval(0);
-
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                Log.i("****FITLOC","got location");
-
-                Location newLocation = locationResult.getLastLocation();
-                handleNewLocation(newLocation);
-                mFusedLocationClient.removeLocationUpdates(mLocationCallback);
-            }
-        };
-
-        mFusedLocationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, new CancellationToken() {
-            @NonNull
-            @Override
-            public CancellationToken onCanceledRequested(@NonNull OnTokenCanceledListener onTokenCanceledListener) {
-                return null;
-            }
-
-            @Override
-            public boolean isCancellationRequested() {
-                return false;
-            }
-        }).addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                Log.i("***FITLOC", "GOT LOCATION!!!");
-                handleNewLocation(location);
-            }
-        });
+    static void requestNextJob(Context context, long delay) {
+        Log.i("***FIT", "Requesting location worker," + " " + loopState.getClass().getSimpleName() + ", " + delay);
+        WorkRequest locationWorkRequest =
+                new OneTimeWorkRequest.Builder(LocationWorker.class)
+                        .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                        .addTag(WORKER_TAG)
+                        .addTag(loopState.getClass().getSimpleName())
+                        .build();
+        lastOperation = WorkManager
+                .getInstance(context)
+                .enqueue(locationWorkRequest);
     }
+
 
     /**
      * The main body of logic for each loop.
@@ -224,7 +165,7 @@ public class LocationLoopService extends IntentService {
      * All paths MUST terminate with a call to setNextAlarm to keep
      * the loop going.
      */
-    private void handleNewLocation(Location newLocation) {
+    static void handleNewLocation(Location newLocation) {
         Log.i("***FITLOC", "Handling new location: " + loopState.getClass().getSimpleName());
         loopState.handleNewLocation(newLocation);
 
@@ -235,7 +176,7 @@ public class LocationLoopService extends IntentService {
                 lastLocation = newLocation;
             }
         }
-        else {
+		else {
             lastLocation = newLocation;
         }
     }
@@ -254,7 +195,7 @@ public class LocationLoopService extends IntentService {
         Log.i("********FIT", "lat:" + String.valueOf(newLat) + "      Lon: " + String.valueOf(newLon));
 //        Log.i("********FIT", "speed:" + String.valueOf(newLocation.getSpeed()));
 
-        double distance = Math.sqrt( Math.pow(newLon - oldLon, 2) + Math.pow(newLat - oldLat, 2) );
+        double distance = Math.sqrt(Math.pow(newLon - oldLon, 2) + Math.pow(newLat - oldLat, 2));
 
 //        Log.i("********FIT", "dist:" + String.valueOf(distance));
         Log.i("********FIT", "Moved: " + String.valueOf(distance >= sig_radius));
@@ -266,6 +207,7 @@ public class LocationLoopService extends IntentService {
     /**
      * Handles the API request for restaurants.
      * Returns null for any error.
+     *
      * @param location
      * @param cb
      */
@@ -290,6 +232,7 @@ public class LocationLoopService extends IntentService {
      * Do not call enterLoopState when using this method.
      *
      * Handles all setup for snitch warning state.
+     *
      * @param snitch
      */
     static void beginSnitchWarning(SnitchTrigger snitch) {
@@ -297,7 +240,6 @@ public class LocationLoopService extends IntentService {
         activeSnitch = snitch;
         sendWarningNotification();
         enterLoopState(new ActiveSnitchState());
-        // BUG: Snitch triggers irregularly - sometimes 40 seconds, sometimes 15
     }
 
 
@@ -312,7 +254,7 @@ public class LocationLoopService extends IntentService {
 
     static void publishActiveSnitch() {
         String userId = settingsManager.getItem(SettingsManager.USER_ID);
-        Log.i("****FIT", "SENDING SNITCH!! "+userId);
+        Log.i("****FIT", "SENDING SNITCH!! " + userId);
         CreateSnitchRequest request = new CreateSnitchRequest(userId, activeSnitch.originCoords, activeSnitch.restaurantData);
         ApiService.getClient().publishSnitch(request, new Callback<Object>() {
             @Override
@@ -332,7 +274,6 @@ public class LocationLoopService extends IntentService {
         activeSnitch = null;
         lastUsedCheatTime = null;
     }
-
 
 
     private void createWarningNotification() {
@@ -378,9 +319,4 @@ public class LocationLoopService extends IntentService {
         notificationManager.notify(NOTIF_ID_SNITCHED, snitchedNotification);
     }
 
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 }
