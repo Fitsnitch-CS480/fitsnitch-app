@@ -8,8 +8,9 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
+
+import java.security.Security;
 import java.util.List;
-import com.fitsnitchapp.LocationPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -60,5 +61,7 @@ public class MainApplication extends Application implements ReactApplication {
       DefaultNewArchitectureEntryPoint.load();
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
+    // SSL provider for network requests
+    Security.insertProviderAt(new org.conscrypt.OpenSSLProvider(), 1);
   }
 }

@@ -65,7 +65,7 @@ public class LocationLoopService {
     public static long IVAL_LOOP_SHORT = 60000; // 1 minute
     // public static long IVAL_LOOP_LONG = 30000;
     public static long IVAL_WILL_LEAVE = 30000;
-    public static long IVAL_WILL_STAY = 3000; // 10 minutes
+    public static long IVAL_WILL_STAY = 10 * 60000; // 10 minutes
 
     public static final double SIGNIFICANT_RADIUS = 0.00001f;
 
@@ -221,7 +221,7 @@ public class LocationLoopService {
 
             @Override
             public void failure(RetrofitError error) {
-                Log.i("*****FIT CHECK LOCATION", error.getResponse().getReason());
+                Log.i("*****FIT CHECK LOCATION", "RetroFit error:" + error.getMessage());
                 cb.accept(null);
             }
         });
