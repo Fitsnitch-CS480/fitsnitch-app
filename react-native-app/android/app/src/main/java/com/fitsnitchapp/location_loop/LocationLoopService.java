@@ -166,6 +166,9 @@ public class LocationLoopService {
      * the loop going.
      */
     static void handleNewLocation(Location newLocation) {
+        if (loopState == null) {
+            loopState = new BaseState();
+        }
         Log.i("***FITLOC", "Handling new location: " + loopState.getClass().getSimpleName());
         loopState.handleNewLocation(newLocation);
 
