@@ -1,5 +1,6 @@
 package com.fitsnitchapp.location_loop;
 
+import static com.fitsnitchapp.LocationModule.JsLog;
 import static io.invertase.firebase.app.ReactNativeFirebaseApp.getApplicationContext;
 
 import android.app.AlarmManager;
@@ -78,7 +79,7 @@ public class LocationLoopService {
         mGson = new Gson();
 
         if (BuildConfig.BUILD_TYPE == "debug") {
-            Log.i("***FIT", "Setting short loop times for debug");
+            JsLog("Setting short loop times for debug");
             IVAL_WARNING = 30000; // 30 seconds
             IVAL_LOOP_SHORT = 30000; // 30 seconds
             IVAL_WILL_LEAVE = 30000; // 30 seconds
@@ -92,7 +93,7 @@ public class LocationLoopService {
     }
 
     public static SnitchTrigger getActiveSnitch() {
-        Log.i("***FIT", String.valueOf(activeSnitch));
+        JsLog(String.valueOf(activeSnitch));
         return activeSnitch;
     }
 
@@ -106,7 +107,7 @@ public class LocationLoopService {
      * @param newState
      */
     public static void enterLoopState(LoopState newState) {
-        Log.i("***FITLOC", "Entering loop state: " + newState.getClass().getSimpleName());
+        JsLog("Entering loop state: " + newState.getClass().getSimpleName());
         loopState = newState;
         long ival = newState.getInitialLoopIval();
         if (ival == 0) {
@@ -146,7 +147,7 @@ public class LocationLoopService {
 
 
     static void requestNextJob(Context context, long delay) {
-        Log.i("***FIT", "Requesting location worker," + " " + loopState.getClass().getSimpleName() + ", " + delay);
+        JsLog("Requesting location worker," + " " + loopState.getClass().getSimpleName() + ", " + delay);
         WorkRequest locationWorkRequest =
                 new OneTimeWorkRequest.Builder(LocationWorker.class)
                         .setInitialDelay(delay, TimeUnit.MILLISECONDS)
@@ -169,12 +170,16 @@ public class LocationLoopService {
         if (loopState == null) {
             loopState = new BaseState();
         }
-        Log.i("***FITLOC", "Handling new location: " + loopState.getClass().getSimpleName());
+        JsLog("Handling new location: " + loopState.getClass().getSimpleName());
         loopState.handleNewLocation(newLocation);
+
+        JsLog("lat:" + String.valueOf(newLocation.getLatitude()) + "      Lon: " + String.valueOf(newLocation.getLongitude()));
 
         // Save new location if change is significant
         if (lastLocation != null) {
             boolean didChange = didLocationChange(newLocation);
+            JsLog("Moved: " + String.valueOf(didChange));
+
             if (didChange) {
                 lastLocation = newLocation;
             }
@@ -195,14 +200,7 @@ public class LocationLoopService {
         double oldLat = lastLocation.getLatitude();
         double oldLon = lastLocation.getLongitude();
 
-        Log.i("********FIT", "lat:" + String.valueOf(newLat) + "      Lon: " + String.valueOf(newLon));
-//        Log.i("********FIT", "speed:" + String.valueOf(newLocation.getSpeed()));
-
         double distance = Math.sqrt(Math.pow(newLon - oldLon, 2) + Math.pow(newLat - oldLat, 2));
-
-//        Log.i("********FIT", "dist:" + String.valueOf(distance));
-        Log.i("********FIT", "Moved: " + String.valueOf(distance >= sig_radius));
-
         return distance >= sig_radius;
     }
 
@@ -218,13 +216,13 @@ public class LocationLoopService {
         ApiService.getClient().checkLocation(new CheckLocationRequest(location), new Callback<Restaurant>() {
             @Override
             public void success(Restaurant restaurant, Response response) {
-                Log.i("*****FIT CHECK LOCATION", restaurant.name);
+                JsLog("Restaurant: " + restaurant.name);
                 cb.accept(restaurant);
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.i("*****FIT CHECK LOCATION", "RetroFit error:" + error.getMessage());
+                JsLog("RetroFit error:" + error.getMessage());
                 cb.accept(null);
             }
         });
@@ -239,7 +237,7 @@ public class LocationLoopService {
      * @param snitch
      */
     static void beginSnitchWarning(SnitchTrigger snitch) {
-        Log.i("***FIT", "Entering Snitch State!");
+        JsLog("Entering Snitch State!");
         activeSnitch = snitch;
         sendWarningNotification();
         enterLoopState(new ActiveSnitchState());
@@ -248,7 +246,7 @@ public class LocationLoopService {
 
     public static void onUsedCheat() {
         lastUsedCheatTime = System.currentTimeMillis();
-        Log.i("***FIT", "SET USED CHEAT" + String.valueOf(lastUsedCheatTime));
+        JsLog("SET USED CHEAT" + String.valueOf(lastUsedCheatTime));
     }
 
     public static boolean usedCheatForActiveSnitch() {
@@ -257,18 +255,18 @@ public class LocationLoopService {
 
     static void publishActiveSnitch() {
         String userId = settingsManager.getItem(SettingsManager.USER_ID);
-        Log.i("****FIT", "SENDING SNITCH!! " + userId);
+        JsLog("SENDING SNITCH!! " + userId);
         CreateSnitchRequest request = new CreateSnitchRequest(userId, activeSnitch.originCoords, activeSnitch.restaurantData);
         ApiService.getClient().publishSnitch(request, new Callback<Object>() {
             @Override
             public void success(Object obj, Response response) {
-                Log.i("***FIT", "SUCCESS");
+                JsLog("SUCCESS");
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.i("***FIT", "ERROR Could not send snitch");
-                Log.i("***FIT", error.getLocalizedMessage());
+                JsLog("ERROR Could not send snitch");
+                JsLog(error.getLocalizedMessage());
             }
         });
 

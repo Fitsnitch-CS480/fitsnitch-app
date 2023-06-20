@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import OtherUserProfile from './profile/OtherUserProfile';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, NativeEventEmitter, NativeModules, StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import User from "../shared/models/User";
 // import LocationStore from "../stores/LocationStore";
@@ -35,9 +35,15 @@ export var globalContext: React.Context<{
 }>;
 
 const AppNavigator: React.FC<props> = ({ authUser, input }) => {
+	let sub;
+
 	useEffect(()=>{
 		if (authUser) PushNotificationService.init(authUser.userId);
 		NativeModuleService.checkPermissions();
+        
+        return () => {
+            if (sub) sub.remove();
+        }
 	}, []);
 
 	if (!authUser) return null;
@@ -81,6 +87,12 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 		return <GetSnitchedView {...snitchProps} {...props} />
 	}
 
+
+	const androidEventEmitter = new NativeEventEmitter(NativeModules.LocationManager);
+	sub = androidEventEmitter ?
+		androidEventEmitter.addListener('JS_EVENT_LOG', gCtx.logStore.handleNativeLog)
+		: null;
+	
 	NativeModuleService.init();
 
 	return (<>

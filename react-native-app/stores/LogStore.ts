@@ -11,13 +11,17 @@ export default class LogStore {
     @observable recordLogs:boolean = true;
     @observable visible:boolean = false;
     
-    @action log(...items:any[]) {
+	_log(...items:any[]) {
         if (this.recordLogs) {
             // console.log(...items)
-            this.logs.push(new LogEntry(items))
+            this.logs.push(new LogEntry(...items))
             if (this.logs.length > MAX_LOGS) this.logs.shift()
         }
     }
+
+    @action log(...items:any[]) {
+		this._log(items);
+	}
 
     @action setRecordLogs(val:boolean) {
         this.recordLogs = val;
@@ -31,6 +35,9 @@ export default class LogStore {
         this.visible = value
     }
 
+	@action handleNativeLog = (event) => {
+		this._log(event.message, event.extras || '');
+	}
 }
 
 
@@ -40,7 +47,7 @@ export class LogEntry {
     public created_at: string;
     public message: string;
 
-    constructor (items: any[]) {
+    constructor (...items: any[]) {
         this.id = new Date().toISOString()+Math.ceil(Math.random()*100);
         this.created_at = new Date().toTimeString();
         this.message = "";
