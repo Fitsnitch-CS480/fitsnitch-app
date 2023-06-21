@@ -51,7 +51,6 @@ public class LocationForegroundService extends Service {
 
     private void startLocationLoop() {
         Log.i("***FIT_LOC", "Starting loop from foreground");
-        LocationModule.JsLog("message!");
         new LocationLoopService().startLoop(getApplicationContext());
     }
 

@@ -170,21 +170,19 @@ public class LocationLoopService {
         if (loopState == null) {
             loopState = new BaseState();
         }
+
         JsLog("Handling new location: " + loopState.getClass().getSimpleName());
+        JsLog("lat:" + String.valueOf(newLocation.getLatitude()) + "      Lon: " + String.valueOf(newLocation.getLongitude()));
+        boolean didChange = didLocationChange(newLocation);
+        JsLog("Moved: " + String.valueOf(didChange));
+
         loopState.handleNewLocation(newLocation);
 
-        JsLog("lat:" + String.valueOf(newLocation.getLatitude()) + "      Lon: " + String.valueOf(newLocation.getLongitude()));
-
         // Save new location if change is significant
-        if (lastLocation != null) {
-            boolean didChange = didLocationChange(newLocation);
-            JsLog("Moved: " + String.valueOf(didChange));
-
-            if (didChange) {
-                lastLocation = newLocation;
-            }
+        if (didChange) {
+            lastLocation = newLocation;
         }
-		else {
+        else if (lastLocation == null) {
             lastLocation = newLocation;
         }
     }
@@ -195,6 +193,9 @@ public class LocationLoopService {
     }
 
     static boolean didLocationChange(Location newLocation, double sig_radius) {
+        if (lastLocation == null) {
+            return false;
+        }
         double newLat = newLocation.getLatitude();
         double newLon = newLocation.getLongitude();
         double oldLat = lastLocation.getLatitude();
