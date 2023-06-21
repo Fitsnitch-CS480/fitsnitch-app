@@ -1,5 +1,7 @@
 import { observable, action, computed, makeObservable } from "mobx";
+import Config from 'react-native-config';
 
+const { MODE } = Config;
 const MAX_LOGS = 100;
 
 export default class LogStore {
@@ -13,7 +15,10 @@ export default class LogStore {
     
 	_log(...items:any[]) {
         if (this.recordLogs) {
-            // console.log(...items)
+			if (MODE !== 'local') {
+				// Log this to JS for session recordings
+	            console.log(...items);
+			}
             this.logs.push(new LogEntry(...items))
             if (this.logs.length > MAX_LOGS) this.logs.shift()
         }
