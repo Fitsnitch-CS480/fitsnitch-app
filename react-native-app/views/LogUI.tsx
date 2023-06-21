@@ -3,7 +3,6 @@ import { View, Text, ScrollView, StyleSheet, FlatList } from 'react-native';
 import { globalContext } from './appNavigator';
 import { observer } from 'mobx-react-lite'
 
-
 const LogUI = observer(()=>{
     const {logStore} = useContext(globalContext);
 

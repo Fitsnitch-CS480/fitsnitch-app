@@ -35,17 +35,6 @@ export var globalContext: React.Context<{
 }>;
 
 const AppNavigator: React.FC<props> = ({ authUser, input }) => {
-	let sub;
-
-	useEffect(()=>{
-		if (authUser) PushNotificationService.init(authUser.userId);
-		NativeModuleService.checkPermissions();
-        
-        return () => {
-            if (sub) sub.remove();
-        }
-	}, []);
-
 	if (!authUser) return null;
 
 	NativeModuleService.getModule().saveUserId(authUser.userId);
@@ -83,17 +72,25 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 
 	globalContext = createContext(gCtx)
 
+	useEffect(()=>{
+		PushNotificationService.init(authUser.userId);
+		NativeModuleService.init();
+		NativeModuleService.checkPermissions();
+        
+		const eventEmitter = new NativeEventEmitter(NativeModules.LocationManager);
+		const sub = eventEmitter ?
+			eventEmitter.addListener('JS_EVENT_LOG', gCtx.logStore.handleNativeLog)
+			: null;
+	
+        return () => {
+            if (sub) sub.remove();
+        }
+	}, []);
+
+
 	const SnitchView: React.FC<any> = (props) => {
 		return <GetSnitchedView {...snitchProps} {...props} />
 	}
-
-
-	const androidEventEmitter = new NativeEventEmitter(NativeModules.LocationManager);
-	sub = androidEventEmitter ?
-		androidEventEmitter.addListener('JS_EVENT_LOG', gCtx.logStore.handleNativeLog)
-		: null;
-	
-	NativeModuleService.init();
 
 	return (<>
 		<globalContext.Provider value={gCtx}>
