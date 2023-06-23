@@ -171,11 +171,8 @@ public class LocationLoopService {
         if (loopState == null) {
             loopState = new BaseState();
         }
-
         JsLog("Handling new location: " + loopState.getClass().getSimpleName());
-        JsLog("lat:" + String.valueOf(newLocation.getLatitude()) + "      Lon: " + String.valueOf(newLocation.getLongitude()));
-        boolean didChange = didLocationChange(newLocation);
-        JsLog("Moved: " + String.valueOf(didChange));
+        boolean didChange = didLocationChange(newLocation, true);
 
         loopState.handleNewLocation(newLocation);
 
@@ -190,11 +187,18 @@ public class LocationLoopService {
 
 
     static boolean didLocationChange(Location newLocation) {
-        return didLocationChange(newLocation, SIGNIFICANT_RADIUS);
+        return didLocationChange(newLocation, SIGNIFICANT_RADIUS, false);
     }
 
-    static boolean didLocationChange(Location newLocation, double sig_radius) {
+    static boolean didLocationChange(Location newLocation, boolean printLogs) {
+        return didLocationChange(newLocation, SIGNIFICANT_RADIUS, printLogs);
+    }
+
+
+
+    static boolean didLocationChange(Location newLocation, double sig_radius, boolean printLogs) {
         if (lastLocation == null) {
+            JsLog("No previous location");
             return false;
         }
         double newLat = newLocation.getLatitude();
@@ -203,7 +207,16 @@ public class LocationLoopService {
         double oldLon = lastLocation.getLongitude();
 
         double distance = Math.sqrt(Math.pow(newLon - oldLon, 2) + Math.pow(newLat - oldLat, 2));
-        return distance >= sig_radius;
+        boolean didChange = distance >= sig_radius;
+
+        if (printLogs) {
+            JsLog("Handling new location: " + loopState.getClass().getSimpleName());
+            JsLog("Loc: " + String.valueOf(newLocation.getLatitude()) + ", " + String.valueOf(newLocation.getLongitude()));
+            JsLog("Speed (m/s): " + String.valueOf(newLocation.getSpeed()) + ", " + String.valueOf(newLocation.getLongitude()));
+            JsLog("Distance moved: " + distance + ". Significant: " + String.valueOf(didChange));
+        }
+
+        return didChange;
     }
 
 
