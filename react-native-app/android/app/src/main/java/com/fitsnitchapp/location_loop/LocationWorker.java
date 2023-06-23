@@ -1,5 +1,6 @@
 package com.fitsnitchapp.location_loop;
 
+import static com.fitsnitchapp.LocationModule.JsLog;
 import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
 import android.Manifest;
@@ -15,6 +16,7 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 import androidx.work.impl.utils.futures.SettableFuture;
 
+import com.fitsnitchapp.LocationModule;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationToken;
@@ -22,9 +24,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.common.util.concurrent.ListenableFuture;
 
-public class LocationWorker extends ListenableWorker {
+import java.util.Set;
+
+public class LocationWorker extends Worker {
     private final FusedLocationProviderClient mFusedLocationClient;
     Context mContext;
+    Set<String> tags;
 
     public LocationWorker(
             @NonNull Context context,
@@ -36,18 +41,14 @@ public class LocationWorker extends ListenableWorker {
 
     @NonNull
     @Override
-    public ListenableFuture<Result> startWork() {
-        SettableFuture<Result> future = SettableFuture.create();
-
-        // Do the work here--in this case, upload the images.
-        Log.i("***FIT_LOC", "Doing worker!!!");
-//        LocationLoopService.requestNextJob(mContext, 1000, "do it again");
+    public Result doWork() {
+        if (!tags.contains(String.valueOf(LocationLoopService.currentOpId))) {
+            JsLog("Worker is not current - skipping");
+            return Result.failure();
+        }
         inspectLocation();
 
-        // Indicate whether the work finished successfully with the Result
-//        return Result.success();
-        future.set(Result.success());
-        return future;
+        return Result.success();
     }
 
 
@@ -55,9 +56,9 @@ public class LocationWorker extends ListenableWorker {
      * Handles getting the location and passing it on to the main handler
      */
     private void inspectLocation() {
-        Log.i("****FITLOC", "requesting current location");
+        JsLog("requesting current location");
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.e("***FIT_LOC", "Insufficient location permission!");
+            JsLog("Insufficient location permission!");
             return;
         }
         mFusedLocationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY, new CancellationToken() {
@@ -74,7 +75,6 @@ public class LocationWorker extends ListenableWorker {
         }).addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                Log.i("***FITLOC", "GOT LOCATION!!!");
                 LocationLoopService.handleNewLocation(location);
             }
         });

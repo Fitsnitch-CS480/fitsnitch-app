@@ -50,6 +50,7 @@ public class LocationLoopService {
     public static final String WORKER_TAG = "FIT_LOC_WORKER";
 
     public static Operation lastOperation;
+    public static int currentOpId = 0;
     private static LoopState loopState;
     private static PendingIntent pendingLoopIntent;
     private static Notification warningNotification;
@@ -154,6 +155,7 @@ public class LocationLoopService {
                         .setInitialDelay(delay, TimeUnit.MILLISECONDS)
                         .addTag(WORKER_TAG)
                         .addTag(loopState.getClass().getSimpleName())
+                        .addTag(String.valueOf(currentOpId++))
                         .build();
         lastOperation = WorkManager
                 .getInstance(context)
@@ -211,9 +213,8 @@ public class LocationLoopService {
 
         if (printLogs) {
             JsLog("Handling new location: " + loopState.getClass().getSimpleName());
-            JsLog("Loc: " + String.valueOf(newLocation.getLatitude()) + ", " + String.valueOf(newLocation.getLongitude()));
-            JsLog("Speed (m/s): " + String.valueOf(newLocation.getSpeed()) + ", " + String.valueOf(newLocation.getLongitude()));
-            JsLog("Distance moved: " + distance + ". Significant: " + String.valueOf(didChange));
+            JsLog("Loc: " + String.valueOf(newLocation.getLatitude()) + ", " + String.valueOf(newLocation.getLongitude() + ". Speed: " + String.valueOf(newLocation.getSpeed()) + "m/s"));
+            JsLog("Distance moved: " + String.format("%.6f",distance) + ". Significant: " + String.valueOf(didChange));
         }
 
         return didChange;
