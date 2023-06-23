@@ -1,5 +1,6 @@
 package com.fitsnitchapp.api;
 
+import com.fitsnitchapp.CheckLocationResponse;
 import com.fitsnitchapp.Restaurant;
 import com.fitsnitchapp.SnitchTrigger;
 
@@ -12,7 +13,7 @@ public interface ApiInterface {
     @POST("/lambda/check-location") // specify the sub url for our base url
     public void checkLocation(
             @Body CheckLocationRequest request,
-            Callback<Restaurant> callback
+            Callback<CheckLocationResponse> callback
     );
 
     @POST("/snitch/publishNewSnitch") // specify the sub url for our base url

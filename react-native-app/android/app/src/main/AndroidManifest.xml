@@ -76,6 +76,5 @@
             android:enabled="true"
             />
 
-        <service android:name=".location_loop.LocationLoopService" />
     </application>
 </manifest>

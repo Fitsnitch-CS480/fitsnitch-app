@@ -21,6 +21,7 @@ import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
 import com.fitsnitchapp.BuildConfig;
+import com.fitsnitchapp.CheckLocationResponse;
 import com.fitsnitchapp.LatLonPair;
 import com.fitsnitchapp.LocationForegroundService;
 import com.fitsnitchapp.R;
@@ -214,11 +215,17 @@ public class LocationLoopService {
      * @param cb
      */
     public static void checkForRestaurant(LatLonPair location, Consumer<Restaurant> cb) {
-        ApiService.getClient().checkLocation(new CheckLocationRequest(location), new Callback<Restaurant>() {
+        ApiService.getClient().checkLocation(new CheckLocationRequest(location), new Callback<CheckLocationResponse>() {
             @Override
-            public void success(Restaurant restaurant, Response response) {
-                JsLog("Restaurant: " + restaurant.name);
-                cb.accept(restaurant);
+            public void success(CheckLocationResponse responseData, Response response) {
+                if (responseData.isRestaurant) {
+                    JsLog("Is at restaurant: " + responseData.restaurant.name);
+                    cb.accept(responseData.restaurant);
+                }
+                else {
+                    JsLog("Found no restaurant");
+                    cb.accept(null);
+                }
             }
 
             @Override
