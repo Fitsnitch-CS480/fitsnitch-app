@@ -15,12 +15,13 @@ export default class LogStore {
     
 	_log(...items:any[]) {
         if (this.recordLogs) {
+			const newLog = new LogEntry(...items);
+            this.logs.push(newLog);
+            if (this.logs.length > MAX_LOGS) this.logs.shift()
 			if (MODE !== 'local') {
 				// Log this to JS for session recordings
-	            console.log(...items);
+	            console.log(newLog.message);
 			}
-            this.logs.push(new LogEntry(...items))
-            if (this.logs.length > MAX_LOGS) this.logs.shift()
         }
     }
 
