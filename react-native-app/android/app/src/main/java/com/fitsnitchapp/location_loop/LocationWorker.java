@@ -7,22 +7,17 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.work.ListenableWorker;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-import androidx.work.impl.utils.futures.SettableFuture;
 
-import com.fitsnitchapp.LocationModule;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
-import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.Set;
 
@@ -36,14 +31,15 @@ public class LocationWorker extends Worker {
             @NonNull WorkerParameters params) {
         super(context, params);
         mContext = context;
+        tags = params.getTags();
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
     }
 
     @NonNull
     @Override
     public Result doWork() {
-        if (!tags.contains(String.valueOf(LocationLoopService.currentOpId))) {
-            JsLog("Worker is not current - skipping");
+        if (!LocationLoopManager.getInstance().isDoingLoop) {
+            JsLog("Loop was stopped - skipping worker");
             return Result.failure();
         }
         inspectLocation();
@@ -75,7 +71,7 @@ public class LocationWorker extends Worker {
         }).addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                LocationLoopService.handleNewLocation(location);
+                LocationLoopManager.getInstance().handleNewLocation(location);
             }
         });
     }

@@ -1,6 +1,5 @@
 package com.fitsnitchapp;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,8 +13,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.fitsnitchapp.location_loop.LocationLoopService;
-import com.google.gson.Gson;
+import com.fitsnitchapp.location_loop.LocationLoopManager;
 
 public class LocationForegroundService extends Service {
     public static final String CHANNEL_ID_BG = "FITSNITCH_BG";
@@ -26,7 +24,6 @@ public class LocationForegroundService extends Service {
     public static final String JS_LOCATION_TIME_KEY = "timestamp";
     public static final String JS_LOCATION_EVENT_NAME = "location_received";
 
-    private Gson mGson;
     public static Context mContext;
 
 
@@ -34,7 +31,6 @@ public class LocationForegroundService extends Service {
     public void onCreate() {
         Log.i("******FIT", "CREATED LOCATION FOREGROUND SERVICE");
         super.onCreate();
-        mGson = new Gson();
         mContext = getApplicationContext();
     }
 
@@ -51,7 +47,7 @@ public class LocationForegroundService extends Service {
 
     private void startLocationLoop() {
         Log.i("***FIT_LOC", "Starting loop from foreground");
-        new LocationLoopService().startLoop(getApplicationContext());
+        LocationLoopManager.getInstance().startLoop(getApplicationContext());
     }
 
 
@@ -63,6 +59,7 @@ public class LocationForegroundService extends Service {
 
     @Override
     public void onDestroy() {
+        LocationLoopManager.getInstance().stopLoop();
         stopSelf();
         super.onDestroy();
     }

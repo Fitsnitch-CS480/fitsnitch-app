@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -15,7 +14,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.fitsnitchapp.location_loop.LocationLoopService;
+import com.fitsnitchapp.location_loop.LocationLoopManager;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -64,30 +63,33 @@ public class LocationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void stopBackgroundLocation() {
-         rContext.stopService(mForegroundServiceIntent);
+        rContext.stopService(mForegroundServiceIntent);
     }
 
+    @ReactMethod
+    public void isDoingBackgroundLocation(Callback cb) {
+        cb.invoke(LocationLoopManager.getInstance().isDoingLoop);
+    }
 
     @ReactMethod
     public void getActiveSnitch(Callback cb) {
-         cb.invoke(gson.toJson(LocationLoopService.getActiveSnitch()));
-    };
+         cb.invoke(gson.toJson(LocationLoopManager.getInstance().getActiveSnitch()));
+    }
 
 //    @ReactMethod
 //    public void setWillLeave() {
 //        LocationLoopService.onWillLeave();
-//    };
+//    }
 
     @ReactMethod
     public void setUsedCheat() {
-         LocationLoopService.onUsedCheat();
-    };
+         LocationLoopManager.getInstance().onUsedCheat();
+    }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @ReactMethod
     public void saveUserId(String id) {
          new SettingsManager(rContext).saveItem(SettingsManager.USER_ID, id);
-    };
+    }
 
 
 

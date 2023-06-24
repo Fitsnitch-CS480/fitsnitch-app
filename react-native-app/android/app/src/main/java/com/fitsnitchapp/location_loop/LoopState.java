@@ -3,6 +3,8 @@ package com.fitsnitchapp.location_loop;
 import android.location.Location;
 
 public abstract class LoopState {
+    protected final LocationLoopManager loopManager = LocationLoopManager.getInstance();
+
     /**
      * Performs the logic for a particular loop in the current state
      * @param location
@@ -20,10 +22,10 @@ public abstract class LoopState {
     };
 
     protected void continueLoop(long waitTime) {
-        LocationLoopService.setNextAlarm(waitTime);
+        LocationLoopManager.getInstance().setNextAlarm(waitTime);
     }
 
     public void nextState(LoopState newState) {
-        LocationLoopService.enterLoopState(newState);
+        LocationLoopManager.getInstance().enterLoopState(newState);
     }
 }
