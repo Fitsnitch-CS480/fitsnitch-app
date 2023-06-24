@@ -76,15 +76,6 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 		PushNotificationService.init(authUser.userId);
 		NativeModuleService.init();
 		NativeModuleService.checkPermissions();
-        
-		const eventEmitter = new NativeEventEmitter(NativeModules.LocationManager);
-		const sub = eventEmitter ?
-			eventEmitter.addListener('JS_EVENT_LOG', gCtx.logStore.handleNativeLog)
-			: null;
-	
-        return () => {
-            if (sub) sub.remove();
-        }
 	}, []);
 
 

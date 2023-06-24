@@ -1,10 +1,22 @@
-import React, { useContext, useState } from 'react'
-import { View, Text, ScrollView, StyleSheet, FlatList } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react'
+import { View, Text, ScrollView, StyleSheet, FlatList, NativeEventEmitter, NativeModules } from 'react-native';
 import { globalContext } from './appNavigator';
 import { observer } from 'mobx-react-lite'
 
 const LogUI = observer(()=>{
     const {logStore} = useContext(globalContext);
+	const length = logStore.logs.length;
+
+	useEffect(() => {
+		const eventEmitter = new NativeEventEmitter(NativeModules.LocationManager);
+		const sub = eventEmitter ?
+			eventEmitter.addListener('JS_EVENT_LOG', logStore.handleNativeLog)
+			: null;
+	
+        return () => {
+            if (sub) sub.remove();
+        }
+	}, [])
 
     const scrollViewRef:any = React.useRef();
 
@@ -69,6 +81,7 @@ const LogUI = observer(()=>{
                 <ToolBarButton title="Clear"
                     onPress={()=>logStore.clear()}
                 />
+				<Text style={{color: 'white'}}>{String(length)}</Text>
             </View>
 
 
