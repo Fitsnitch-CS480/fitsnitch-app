@@ -1,15 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import CheatMealEvent from "../../../react-native-app/shared/models/CheatMealEvent";
-import { CreateCheatMealRequest } from "../../../react-native-app/shared/models/requests/CreateCheatMealRequest";
 import { GetCheatMealRequest } from "../../../react-native-app/shared/models/requests/GetCheatMealRequest";
 import { UserCheatMealRequest, UserCheatMealResponse } from "../../../react-native-app/shared/models/requests/UserCheatMealRequest";
 
 const prisma = new PrismaClient();
 
 export default class CheatMealService {
-	async createCheatMeal(data: CreateCheatMealRequest): Promise<CheatMealEvent> {
-		let cheatMeal = new CheatMealEvent(data.userId, new Date().toISOString(), data.originCoords, data.restaurantData)
-		await prisma.snitchEvent.create({
+	async createCheatMeal(cheatMeal: CheatMealEvent): Promise<CheatMealEvent> {
+		await prisma.cheatMealEvent.create({
 			data: this.typeToDb(cheatMeal)
 		})
 		return cheatMeal;
@@ -37,8 +35,8 @@ export default class CheatMealService {
 	async getUserCheatMeals(request: UserCheatMealRequest): Promise<UserCheatMealResponse> {
 		const page = request.pageNumber || 0;
 		const pageSize = request.pageSize || 20;
-		let total = await prisma.snitchEvent.count({ where: { userId: request.userId } });
-		let meals = await prisma.snitchEvent.findMany({
+		let total = await prisma.cheatMealEvent.count({ where: { userId: request.userId } });
+		let meals = await prisma.cheatMealEvent.findMany({
 			where: { userId: request.userId },
 			skip: page * pageSize,
 			take: request.pageSize,
