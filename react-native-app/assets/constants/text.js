@@ -16,7 +16,8 @@ const T = {
     },
     logIn: {
         title: "Log In",
-        dontHaveAccount: "Don't have an account?"
+        dontHaveAccount: "Don't have an account?",
+        google: "Sign in with Google"
     },
     error: {
         noLogIn: "Could not log in",

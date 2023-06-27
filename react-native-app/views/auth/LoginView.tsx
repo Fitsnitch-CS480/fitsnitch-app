@@ -1,12 +1,14 @@
 import React, { useContext, useState } from 'react';
-import { Button, StyleSheet, Text, View, Image, TextInput, ActivityIndicator, ScrollView } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, TextInput, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
 import AuthService from '../../services/AuthService';
+import { isEmpty } from "lodash";
+// import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
-export default function LoginView() {
+const LoginView : React.FC = () => {
 	const navigation = useNavigation<any>();
 	const [email, onChangeEmail] = useState('');
 	const [password, onChangePassword] = useState('');
@@ -41,6 +43,20 @@ export default function LoginView() {
 		}
 	};
 
+	const signInWithGoogle = async () => {
+		setLoading(true);
+		try{
+			const user:any = await AuthService.googleSignIn();
+			setLoading(false);
+			if(!isEmpty(user)){
+				setAuthUser(user);
+			}
+		}catch(error:any){
+			setLoading(false);
+			setErrorMessage(error);
+		}
+	}
+
 	return (
 		<ScrollView style={styles.screen}>
 			<View style={styles.container}>
@@ -71,6 +87,34 @@ export default function LoginView() {
 					<Text style={styles.dontHaveAccount}>{T.logIn.dontHaveAccount}</Text>
 					<Text style={styles.signUpText} onPress={() => navigation.navigate('signup')}>{T.signUp.title}</Text>
 				</View>
+
+
+				<View>
+					<TouchableOpacity
+						style={styles.buttonGoogleStyle}
+						onPress={() => loading ? null : signInWithGoogle()}
+						activeOpacity={0.5}>
+						<Image
+							source={{
+							uri:
+								'https://uploads-ssl.webflow.com/5fc772e04f6c876a6ec3bf00/60c750a809c0a67367e7ddc6_Blog_HowToInvestInAlphabet.png',
+							}}
+							style={styles.buttonImageIconStyle}
+						/>
+						<View style={styles.buttonIconSeparatorStyle} />
+						<Text style={styles.buttonTextStyle}>
+							{T.logIn.google}
+						</Text>
+					</TouchableOpacity>
+					{/* Would like to keep the button code for now in case we need to switch to it from the code above*/}
+					{/* <GoogleSigninButton
+						style={{ width: 215, height: 48, margin: 25, borderRadius: 25 }}
+						size={GoogleSigninButton.Size.Wide}
+						color={GoogleSigninButton.Color.Light}
+						//   onPress={this._signIn}
+						//   disabled={this.state.isSigninInProgress}
+						/> */}
+				</View>
 			</View>
 		</ScrollView>
 	);
@@ -91,6 +135,41 @@ const styles = StyleSheet.create({
 		width: 289,
 		marginVertical: 20,
 	},
+	otherSignInButtons: {
+		height: 36,
+		width: 250,
+		marginVertical: 20,
+	},
+	buttonGoogleStyle: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		backgroundColor: Colors.red,
+		borderWidth: 1,
+		borderColor: '#fff',
+		height: 40,
+		borderRadius: 50,
+		marginVertical: 20,
+		width: 230,
+		margin: 25,
+	  },
+	  buttonImageIconStyle: {
+		padding: 5,
+		margin: 15,
+		height: 36,
+		width: 25,
+		// resizeMode: 'stretch',
+	  },
+	  buttonTextStyle: {
+		color: Colors.white,
+		fontWeight: "bold",
+		marginBottom: 4,
+		marginLeft: 15,
+	  },
+	  buttonIconSeparatorStyle: {
+		backgroundColor: '#fff',
+		width: 1,
+		height: 40,
+	  },
 	textContainer: {
 		flex: 2,
 		flexDirection: 'row'
@@ -139,3 +218,5 @@ const styles = StyleSheet.create({
 		color: Colors.red,
 	}
 });
+
+export default LoginView;
