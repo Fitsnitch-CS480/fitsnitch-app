@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   resultRow: {
     backgroundColor: Colors.lightBackground,
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd'
+    borderBottomColor: '#888'
   },
   loadingWrapper: {
     padding: 20,

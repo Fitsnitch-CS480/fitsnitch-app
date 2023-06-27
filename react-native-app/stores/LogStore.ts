@@ -1,23 +1,37 @@
 import { observable, action, computed, makeObservable } from "mobx";
+import Config from 'react-native-config';
 
+const { MODE } = Config;
 const MAX_LOGS = 100;
 
 export default class LogStore {
     constructor() {
-	    makeObservable(this)
+	    makeObservable(this);
+		this.id = Date.now();
+		console.log("\n\nCREATED LOG STORE!!", this.id)
     }
 
+    @observable id:number;
     @observable logs:LogEntry[] = [];
     @observable recordLogs:boolean = true;
     @observable visible:boolean = false;
     
-    @action log(...items:any[]) {
+	_log(...items:any[]) {
         if (this.recordLogs) {
-            // console.log(...items)
-            this.logs.push(new LogEntry(items))
+			const newLog = new LogEntry(...items);
+            this.logs.push(newLog);
             if (this.logs.length > MAX_LOGS) this.logs.shift()
+			console.log(this.id, 'Got new log!', this.logs.length)
+			if (MODE !== 'local') {
+				// Log this to JS for session recordings
+	            console.log(newLog.message);
+			}
         }
     }
+
+    @action log(...items:any[]) {
+		this._log(items);
+	}
 
     @action setRecordLogs(val:boolean) {
         this.recordLogs = val;
@@ -31,6 +45,9 @@ export default class LogStore {
         this.visible = value
     }
 
+	@action handleNativeLog = (event) => {
+		this._log(event.message, event.extras || '');
+	}
 }
 
 
@@ -40,7 +57,7 @@ export class LogEntry {
     public created_at: string;
     public message: string;
 
-    constructor (items: any[]) {
+    constructor (...items: any[]) {
         this.id = new Date().toISOString()+Math.ceil(Math.random()*100);
         this.created_at = new Date().toTimeString();
         this.message = "";

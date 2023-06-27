@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
-import androidx.core.content.ContextCompat;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
@@ -15,7 +14,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
-import com.fitsnitchapp.location_loop.LocationLoopService;
+import com.fitsnitchapp.location_loop.LocationLoopManager;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -27,6 +26,9 @@ import javax.annotation.Nullable;
 
 public class LocationModule extends ReactContextBaseJavaModule {
     private static final String MODULE_NAME = "LocationManager";
+    private static final String JS_EVENT_LOG = "JS_EVENT_LOG";
+    private static final String JS_EVENT_LOG_MESSAGE = "JS_EVENT_LOG_MESSAGE";
+    private static final String JS_EVENT_LOG_EXTRAS = "JS_EVENT_LOG_EXTRAS";
     private static final String CONST_JS_LOCATION_EVENT_NAME = "JS_LOCATION_EVENT_NAME";
     private static final String CONST_JS_LOCATION_LAT = "JS_LOCATION_LAT_KEY";
     private static final String CONST_JS_LOCATION_LON = "JS_LOCATION_LON_KEY";
@@ -61,30 +63,33 @@ public class LocationModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void stopBackgroundLocation() {
-         rContext.stopService(mForegroundServiceIntent);
+        rContext.stopService(mForegroundServiceIntent);
     }
 
+    @ReactMethod
+    public void isDoingBackgroundLocation(Callback cb) {
+        cb.invoke(LocationLoopManager.getInstance().isDoingLoop);
+    }
 
     @ReactMethod
     public void getActiveSnitch(Callback cb) {
-         cb.invoke(gson.toJson(LocationLoopService.getActiveSnitch()));
-    };
+         cb.invoke(gson.toJson(LocationLoopManager.getInstance().getActiveSnitch()));
+    }
 
 //    @ReactMethod
 //    public void setWillLeave() {
 //        LocationLoopService.onWillLeave();
-//    };
+//    }
 
     @ReactMethod
     public void setUsedCheat() {
-         LocationLoopService.onUsedCheat();
-    };
+         LocationLoopManager.getInstance().onUsedCheat();
+    }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @ReactMethod
     public void saveUserId(String id) {
          new SettingsManager(rContext).saveItem(SettingsManager.USER_ID, id);
-    };
+    }
 
 
 
@@ -98,7 +103,10 @@ public class LocationModule extends ReactContextBaseJavaModule {
          constants.put(CONST_JS_LOCATION_EVENT_NAME, LocationForegroundService.JS_LOCATION_EVENT_NAME);
          constants.put(CONST_JS_LOCATION_LAT, LocationForegroundService.JS_LOCATION_LAT_KEY);
          constants.put(CONST_JS_LOCATION_LON, LocationForegroundService.JS_LOCATION_LON_KEY);
-         constants.put(CONST_JS_LOCATION_TIME, LocationForegroundService.JS_LOCATION_TIME_KEY);
+            constants.put(CONST_JS_LOCATION_TIME, LocationForegroundService.JS_LOCATION_TIME_KEY);
+        constants.put(JS_EVENT_LOG, JS_EVENT_LOG);
+        constants.put(JS_EVENT_LOG_MESSAGE, JS_EVENT_LOG_MESSAGE);
+        constants.put(JS_EVENT_LOG_EXTRAS, JS_EVENT_LOG_EXTRAS);
         return constants;
     }
 
@@ -109,7 +117,10 @@ public class LocationModule extends ReactContextBaseJavaModule {
     }
 
     public static void sendEventToJS(String eventName, Bundle bundle) {
-        WritableMap map = bundleToMap(bundle);
+        WritableMap map = null;
+        if (bundle != null) {
+            map = bundleToMap(bundle);
+        }
         sendEventToJS(eventName, map);
     }
 
@@ -123,6 +134,10 @@ public class LocationModule extends ReactContextBaseJavaModule {
         Set<String> keys = bundle.keySet();
         for (String key : keys) {
             Object val = bundle.get(key);
+            if (val == null) {
+                map.putNull(key);
+                continue;
+            }
             String type = val.getClass().getSimpleName();
             if (type.equals("String")) {
                 map.putString(key, (String) val);
@@ -133,10 +148,32 @@ public class LocationModule extends ReactContextBaseJavaModule {
             if (type.equals("Double")) {
                 map.putDouble(key, (Double) val);
             }
+            if (type.equals("Long")) {
+                map.putDouble(key, ((Long)val).doubleValue());
+            }
             if (type.equals("Boolean")) {
                 map.putBoolean(key, (Boolean) val);
             }
+            if (type.equals("Bundle")) {
+                map.putMap(key, bundleToMap((Bundle) val));
+            }
         }
         return map;
+    }
+
+    public static void JsLog(String message, Bundle extras) {
+        Log.i("***FIT_LOC", message);
+        if (extras != null) {
+            Log.i("***FIT_LOC", new Gson().toJson(extras));
+        }
+        Bundle bundle = new Bundle();
+        bundle.putLong("timestamp", System.currentTimeMillis());
+        bundle.putString("message", message);
+        bundle.putBundle("extras", extras);
+        sendEventToJS(JS_EVENT_LOG, bundle);
+    }
+
+    public static void JsLog(String message) {
+        JsLog(message, null);
     }
 }

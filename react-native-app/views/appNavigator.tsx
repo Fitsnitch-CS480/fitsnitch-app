@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import OtherUserProfile from './profile/OtherUserProfile';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, NativeEventEmitter, NativeModules, StyleSheet, Text, View } from 'react-native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import User from "../shared/models/User";
 // import LocationStore from "../stores/LocationStore";
@@ -35,11 +35,6 @@ export var globalContext: React.Context<{
 }>;
 
 const AppNavigator: React.FC<props> = ({ authUser, input }) => {
-	useEffect(()=>{
-		if (authUser) PushNotificationService.init(authUser.userId);
-		NativeModuleService.checkPermissions();
-	}, []);
-
 	if (!authUser) return null;
 
 	NativeModuleService.getModule().saveUserId(authUser.userId);
@@ -77,11 +72,16 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 
 	globalContext = createContext(gCtx)
 
+	useEffect(()=>{
+		PushNotificationService.init(authUser.userId);
+		NativeModuleService.init();
+		NativeModuleService.checkPermissions();
+	}, []);
+
+
 	const SnitchView: React.FC<any> = (props) => {
 		return <GetSnitchedView {...snitchProps} {...props} />
 	}
-
-	NativeModuleService.init();
 
 	return (<>
 		<globalContext.Provider value={gCtx}>

@@ -39,7 +39,7 @@ export const request = axios.create({
 });
 
 async function executeRequest<TResponse>(path:string, payload:any, print:boolean = false): Promise<ExecutionResult<TResponse>> {
-  let tag = path+" "+Date.now();
+  let tag = apiBaseUrl+'/lambda'+path+" "+Date.now();
   if (print) console.log(tag+": Executing Request\n", JSON.stringify(payload,null,2));
   try {
     let res = await axios.post(apiBaseUrl+'/lambda'+path, payload);  

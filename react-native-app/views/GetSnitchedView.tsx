@@ -158,15 +158,12 @@ export default observer(function GetSnitchedView({ navigation, route, trigger }:
 	let commitToLeave = async () => {
 		setButtonPopup(false);
 		Alert.alert("Great Decision! Remember your goals!");
-		// NativeModuleService.getModule().setWillLeave();
 		close();
 	}
 
 	let useCheat = async () => {
-		// locationStore.onSnitchOrCheat(new LatLonPair(0,0))
 		NativeModuleService.getModule().setUsedCheat();
 		setButtonPopup(false);
-		// Alert.alert("Checking if you have cheats available. Otherwise you will be snitched on!");
 		let cheat = new CheatMealEvent(currentUser.userId, new Date().toISOString(), new LatLonPair(0, 0), restaurant)
 		await request.post('/cheat/createCheatMeal', cheat);
 		navigation.goBack(null);

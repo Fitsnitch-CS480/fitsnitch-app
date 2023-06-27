@@ -25,6 +25,10 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_api_key" />
+
         <receiver
 		  android:name=".AutoStart"
           android:exported="true">
@@ -72,6 +76,5 @@
             android:enabled="true"
             />
 
-        <service android:name=".location_loop.LocationLoopService" />
     </application>
 </manifest>

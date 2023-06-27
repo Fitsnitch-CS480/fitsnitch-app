@@ -4,6 +4,7 @@ import CheatMealService from "../services/CheatMealService";
 import UserService from "../services/UserService";
 import dayjs, { OpUnitType } from 'dayjs'
 import { CreateCheatMealRequest } from "../../../react-native-app/shared/models/requests/CreateCheatMealRequest";
+import CheatMealEvent from "../../../react-native-app/shared/models/CheatMealEvent";
 
 const CheatRouter = express();
 
@@ -41,7 +42,7 @@ CheatRouter.get('/summary/:userId', async (req, res, next) => {
 
 
 CheatRouter.post('/createCheatMeal', async (req, res, next) => {
-	const cheatMeal = req.body as CreateCheatMealRequest;
+	const cheatMeal = req.body as CheatMealEvent;
 	try {
 		await new CheatMealService().createCheatMeal(cheatMeal);
 		res.status(200).send({});

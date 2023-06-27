@@ -144,19 +144,19 @@ android {
 			manifestPlaceholders = [appName: "Beta FitSnitch"]
 			matchingFallbacks = ['release'] // Which version of dependencies to use
 		}
+        dev {
+			initWith release
+            applicationIdSuffix ".dev"
+            versionNameSuffix '-DEV'
+			manifestPlaceholders = [appName: "Dev FitSnitch"]
+			matchingFallbacks = ['release'] // Which version of dependencies to use
+		}
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix '-DEBUG'
 			manifestPlaceholders = [appName: "Local FitSnitch"] // Sets app label in manifest
 			signingConfig signingConfigs.debug
         }
-        dev {
-			initWith debug
-            applicationIdSuffix ".dev"
-            versionNameSuffix '-DEV'
-			manifestPlaceholders = [appName: "Dev FitSnitch"]
-			matchingFallbacks = ['debug'] // Which version of dependencies to use
-		}
     }
 
     // applicationVariants are e.g. debug, release
@@ -203,11 +203,18 @@ dependencies {
 
     // Google play services for Location
     implementation 'com.google.android.gms:play-services-location:19.0.1'
+    // To auto-generate google map api key of google-services.json
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
-	// Firebase for push notifications
+    // Worker for scheduled background tasks
+    implementation "androidx.work:work-runtime:2.8.1"
+
+    // Firebase for push notifications
 	implementation platform('com.google.firebase:firebase-bom:31.2.2')
 	implementation 'com.google.firebase:firebase-analytics'
 	implementation 'com.google.firebase:firebase-messaging'
+
+    implementation('org.conscrypt:conscrypt-android:2.0.0')
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
