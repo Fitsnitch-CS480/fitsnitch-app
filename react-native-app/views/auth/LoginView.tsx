@@ -8,7 +8,7 @@ import AuthService from '../../services/AuthService';
 import { isEmpty } from "lodash";
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
-const LoginView : React.FC = () => {
+const LoginView: React.FC = () => {
 	const navigation = useNavigation<any>();
 	const [email, onChangeEmail] = useState('');
 	const [password, onChangePassword] = useState('');
@@ -18,6 +18,7 @@ const LoginView : React.FC = () => {
 	const { authUser, setAuthUser } = useContext(authContext);
 	const [loading, setLoading] = useState<boolean>(false);
 
+	// Currently unused
 	const signInFunction = async () => {
 		if (loading) return;
 		setLoading(true);
@@ -30,7 +31,7 @@ const LoginView : React.FC = () => {
 				setLoading(false);
 				setAuthUser(user);
 			}
-			catch (err:any) {
+			catch (err: any) {
 				console.log('Could not log in', err);
 				setErrorMessage(err.message);
 				setLoading(false)
@@ -45,15 +46,16 @@ const LoginView : React.FC = () => {
 
 	const signInWithGoogle = async () => {
 		setLoading(true);
-		try{
-			const user:any = await AuthService.googleSignIn();
+		try {
+			const user: any = await AuthService.googleSignIn();
 			setLoading(false);
-			if(!isEmpty(user)){
+			if (!isEmpty(user)) {
 				setAuthUser(user);
 			}
-		}catch(error:any){
+		} catch (error: any) {
 			setLoading(false);
-			setErrorMessage(error);
+			console.log(error)
+			setErrorMessage("Could not sign in with Google");
 		}
 	}
 
@@ -66,15 +68,12 @@ const LoginView : React.FC = () => {
 					style={styles.image}
 				/>
 
-				<View style={styles.materialUnderlineTextboxStack}>
+				{/* Disabling email login for now */}
+				{/* <View style={styles.materialUnderlineTextboxStack}>
 					<TextInput placeholder={T.signUp.email} onChangeText={onChangeEmail} style={styles.textBox}></TextInput>
 					<TextInput placeholder={T.signUp.password} secureTextEntry onChangeText={onChangePassword} style={styles.textBox}></TextInput>
 				</View>
-
-				<View>
-				<Text style={styles.errorMessage}>{error}</Text>
-				</View>
-
+				
 				<View style={styles.materialButtonPrimary}>
 					{loading ?
 						<ActivityIndicator color={Colors.red} size={30} />
@@ -82,12 +81,7 @@ const LoginView : React.FC = () => {
 						<Button color={Colors.red} title={T.logIn.title} onPress={() => loading ? null : signInFunction()}></Button>
 					}
 				</View>
-
-				<View style={styles.textContainer}>
-					<Text style={styles.dontHaveAccount}>{T.logIn.dontHaveAccount}</Text>
-					<Text style={styles.signUpText} onPress={() => navigation.navigate('signup')}>{T.signUp.title}</Text>
-				</View>
-
+				*/}
 
 				<View>
 					<TouchableOpacity
@@ -95,13 +89,9 @@ const LoginView : React.FC = () => {
 						onPress={() => loading ? null : signInWithGoogle()}
 						activeOpacity={0.5}>
 						<Image
-							source={{
-							uri:
-								'https://uploads-ssl.webflow.com/5fc772e04f6c876a6ec3bf00/60c750a809c0a67367e7ddc6_Blog_HowToInvestInAlphabet.png',
-							}}
+							source={require("../../assets/images/google.png")}
 							style={styles.buttonImageIconStyle}
 						/>
-						<View style={styles.buttonIconSeparatorStyle} />
 						<Text style={styles.buttonTextStyle}>
 							{T.logIn.google}
 						</Text>
@@ -115,6 +105,23 @@ const LoginView : React.FC = () => {
 						//   disabled={this.state.isSigninInProgress}
 						/> */}
 				</View>
+
+				{loading &&
+					<ActivityIndicator color={Colors.red} size={30} />
+				}
+
+				<View>
+					<Text style={styles.errorMessage}>{error}</Text>
+				</View>
+
+
+				{/* <View style={styles.textContainer}>
+					<Text style={styles.dontHaveAccount}>{T.logIn.dontHaveAccount}</Text>
+					<Text style={styles.signUpText} onPress={() => navigation.navigate('signup')}>{T.signUp.title}</Text>
+				</View> */}
+
+
+
 			</View>
 		</ScrollView>
 	);
@@ -143,33 +150,23 @@ const styles = StyleSheet.create({
 	buttonGoogleStyle: {
 		flexDirection: 'row',
 		alignItems: 'center',
-		backgroundColor: Colors.red,
-		borderWidth: 1,
-		borderColor: '#fff',
+		backgroundColor: Colors.white,
 		height: 40,
 		borderRadius: 50,
 		marginVertical: 20,
 		width: 230,
 		margin: 25,
-	  },
-	  buttonImageIconStyle: {
-		padding: 5,
-		margin: 15,
-		height: 36,
+		paddingHorizontal: 10,
+	},
+	buttonImageIconStyle: {
 		width: 25,
-		// resizeMode: 'stretch',
-	  },
-	  buttonTextStyle: {
-		color: Colors.white,
+		height: 25,
+	},
+	buttonTextStyle: {
+		flexGrow: 1,
 		fontWeight: "bold",
-		marginBottom: 4,
-		marginLeft: 15,
-	  },
-	  buttonIconSeparatorStyle: {
-		backgroundColor: '#fff',
-		width: 1,
-		height: 40,
-	  },
+		textAlign: 'center'
+	},
 	textContainer: {
 		flex: 2,
 		flexDirection: 'row'
@@ -208,7 +205,8 @@ const styles = StyleSheet.create({
 	image: {
 		height: 200,
 		width: 200,
-		marginTop: 50
+		marginTop: 50,
+		marginBottom: 25,
 	},
 	materialUnderlineTextbox1: {
 		height: 43,

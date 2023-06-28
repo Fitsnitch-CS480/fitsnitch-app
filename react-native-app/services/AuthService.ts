@@ -81,33 +81,33 @@ const AuthService = {
 
 	async googleSignIn() {
 		GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-		const { idToken } = await GoogleSignin.signIn();
-		const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-		return auth().signInWithCredential(googleCredential).then(async (data)=>{
-			const name = data?.user?.displayName;
-			const nameArray: any = name?.split(' ');
-			let firstname = '';
-			let lastname = '';
-			if(!isEmpty(nameArray)){
-				firstname = nameArray[0];
-				if(nameArray.length === 2){
-					lastname = nameArray[1];
+		const googleUser = await GoogleSignin.signIn();
+		const googleCredential = auth.GoogleAuthProvider.credential(googleUser.idToken);
+		try {
+			const data = await auth().signInWithCredential(googleCredential)
+			let user = await ServerFacade.getUserById(data?.user?.uid);
+			if (!user) {
+				// Assume this is the user's first log in after verification
+				// They must be added to db
+				// ServerFacade.createUser(new User(userAuth.uid, userAuth.email))
+				console.log("User does not exist - creating new account")
+				user = {
+					userId: data?.user?.uid,
+					email: googleUser.user.givenName || "",
+					firstname: googleUser.user.givenName || "",
+					lastname: googleUser.user.familyName || "",
+					phone: data?.user?.phoneNumber || "",
 				}
+				await ServerFacade.createUser(user);
 			}
-			const input:User = {
-				userId: data?.user?.uid,
-				email: data?.user.email || "",
-				firstname: firstname,
-				lastname: lastname,
-				phone: data?.user?.phoneNumber || "",
-			}
-			await ServerFacade.createUser(input);
-			return await ServerFacade.getUserById(data?.user?.uid);
-		})
-		.catch((error)=> {
-			console.log("Error on Google sing in: ", {error});
+			
+			return user;
+		}
+		catch (error: any) {
+			console.log("Error on Google sign in: ", {error});
+			await GoogleSignin.signOut();
 			throw new Error(error);
-		});
+		}
 	},
 
 	async resendConfirmationEmail()  {
@@ -122,7 +122,8 @@ const AuthService = {
 
 	async logout() {
 		await auth().signOut();
-		NativeModuleService.getModule().stopBackgroundLocation();
+		await GoogleSignin.signOut();
+		await NativeModuleService.getModule().stopBackgroundLocation();
 	}
 }
 
