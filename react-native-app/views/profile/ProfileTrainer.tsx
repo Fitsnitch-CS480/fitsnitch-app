@@ -156,7 +156,6 @@ const ProfileTrainer = observer(() => {
       :
       !state.processing && !trainerStore.data ?
         <IconRow icon="fitness-center">
-          <Text style={styles.rowText}>{T.people.trainer.noTrainer}</Text>
           <MatButton title="Request Trainer" onPress={()=>requestTrainer(profileOwner,currentUser)}></MatButton>
         </IconRow>
       :

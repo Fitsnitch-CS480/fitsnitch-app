@@ -17,7 +17,6 @@ export default class UserService {
     }
 
     async search(query, pageSize = 20, page = 0) {
-		console.log(query, pageSize, page)
 		const terms = query.split(' ').join(' | ');
 		const where = {
 			OR: [

@@ -39,11 +39,12 @@ export var profileContext: React.Context<{
 
 
 const Profile = observer(({profileOwner}:any) => {
-  const [refreshCnt, setRefreshSCnt] = useState(0);
+  const [refreshCnt, setRefreshCnt] = useState(0);
 
   const {currentUser, clientStore, partnerStore, trainerStore} = useContext(globalContext);
 
-  const isCurrentUser = profileOwner.userId === currentUser.userId;
+  // The weird notation here is a dirty trick to get the profile to update properly when the current user changes
+  const isCurrentUser = ({profileOwner, currentUser}) && profileOwner.userId === currentUser.userId;
   
   const profilePartnerStore = isCurrentUser? partnerStore : new PartnerStore(profileOwner);
   const profileClientStore = isCurrentUser? clientStore : new ClientStore(profileOwner);
@@ -54,7 +55,7 @@ const Profile = observer(({profileOwner}:any) => {
   
   const pCtx = {
     refresh() {
-      setRefreshSCnt(refreshCnt+1)
+      setRefreshCnt(refreshCnt+1)
     },
     profileOwner,
     isCurrentUser,
@@ -94,12 +95,15 @@ const SnitchFeed = () => {
       <PaginatedList
             loadNextPage={loadNextSnitchPage}
             itemKey={(snitch:SnitchEvent)=>snitch.created_at+snitch.userId}
-            renderItem={(snitch=>(
-            <View>
-              <SnitchEventCard onSwitch={()=>setRefreshSCnt(refreshCnt+1)}
-                snitch={snitch} user={profileOwner} />
-            </View>
-          ))}
+            renderItem={snitch=>(
+				<View>
+					<SnitchEventCard
+						onSwitch={()=>setRefreshCnt(refreshCnt+1)}
+						snitch={snitch}
+						user={profileOwner}
+					/>
+				</View>
+          )}
         />
     </Card>
   )
@@ -178,20 +182,10 @@ const styles = StyleSheet.create({
     maxHeight: 150,
     position: 'relative',
     flexDirection: 'row',
-    backgroundColor: Colors.darkRed,
     paddingVertical: 20,
     paddingHorizontal: 15,
     textAlign: 'left',
     alignItems: 'center',
-    borderColor: 'black',
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   headerDetails: {
     display: 'flex',
@@ -202,7 +196,6 @@ const styles = StyleSheet.create({
   },
   profileName: {
     flex: 2,
-    backgroundColor: Colors.darkRed,
     fontSize: 28,
     lineHeight: 28,
     fontWeight: 'bold',

@@ -227,7 +227,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
     }
     let request = new GetCheatMealRequest(user.userId, intervalDateTime.toISOString());
     
-    let res = await executeRequest<CheatMealEvent[]>("/cheatmeal-get", request, true);
+    let res = await executeRequest<CheatMealEvent[]>("/cheatmeal-get", request);
     if (res.error || !res.data) {
       // give error feedback in UI
       return null;

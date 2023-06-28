@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ServerFacade from '../services/ServerFacade';
@@ -11,6 +11,7 @@ import PopupMenu from './SnitchOptionsDropdown';
 import CheatMealService from '../services/CheatMealService';
 import Colors from '../assets/constants/colors';
 import T from '../assets/constants/text';
+import { globalContext } from '../views/appNavigator';
 
 export type Props = {
   snitch: SnitchEvent;
@@ -25,7 +26,14 @@ const SnitchEventCard: React.FC<Props> = ({
   const [error, setError] = useState<string>("");
   const [useCheats, setUseCheats] = useState<boolean>(false);
 
+  const {currentUser} = useContext(globalContext);
+
+  // The weird notation here is a dirty trick to get the profile to update properly when the current user changes
+  const isCurrentUser = ({user, currentUser}) && user.userId === currentUser.userId;
+
   async function getCheatMealData() {
+	if (!currentUser) return;
+
     if (user.cheatmealSchedule) {
       let cheatsAllotted = Number(user.cheatmealSchedule.split("_")[1]);
       let cheatMeals = await new CheatMealService().getCheatMeals(user);
@@ -94,11 +102,10 @@ const SnitchEventCard: React.FC<Props> = ({
       </View>
       
       <View style={styles.menuWrapper}>
-        <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20}></Icon></View>
+        <View style={styles.shareButton} onTouchEnd={()=>shareSnitch(snitch)}><Icon name="share" size={20} color={Colors.lightGrey}></Icon></View>
         <View>
-          { useCheats ? 
+          { (isCurrentUser && useCheats) &&
             <PopupMenu actions={['Switch To Cheatmeal']} onPress={onPopupEvent} />
-            : <></>
           }
         </View>
       </View>

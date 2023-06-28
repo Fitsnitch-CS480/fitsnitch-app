@@ -100,7 +100,8 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 						},
 						headerTintColor: Colors.white
 					}} />
-				<Stack.Screen name="OtherUserProfile"
+				<Stack.Screen
+					name="OtherUserProfile"
 					component={OtherUserProfile}
 					options={({ route }) => {
 						let { profileOwner } = route.params as any;

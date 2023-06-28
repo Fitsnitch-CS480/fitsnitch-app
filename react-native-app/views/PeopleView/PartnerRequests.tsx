@@ -45,10 +45,10 @@ const PartnerRequests = observer(() => {
           <View style={styles.resultRow}>
             <View style={styles.clientInfo} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: requester})}}>
               <ProfileImage user={requester} size={35}></ProfileImage>
-              <Text style={{marginLeft:10, fontSize: 15}}>{requester.firstname} {requester.lastname}</Text>  
+              <Text style={{marginLeft:10, fontSize: 15, color: "white"}}>{requester.firstname} {requester.lastname}</Text>  
             </View>
             <Button title="Accept" onPress={()=>approveRequest(requester)} />
-            <View style={styles.deleteButton} onTouchEnd={()=>deleteRequest(requester)}><Icon name="delete" size={25}></Icon></View>
+            <View style={styles.deleteButton} onTouchEnd={()=>deleteRequest(requester)}><Icon name="delete" size={25} color="white"></Icon></View>
           </View>
           { (i < requesters.length - 1) ? <View style={styles.divider} /> : null}
         </View>

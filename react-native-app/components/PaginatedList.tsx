@@ -43,8 +43,8 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
 
   return (
     <ScrollView>
-      { results.map(item =>(
-        <View style={styles.resultRow} key={itemKey(item)}>
+      { results.map((item, i) =>(
+        <View style={[styles.resultRow, i < results.length - 1 && styles.bordered]} key={itemKey(item)}>
           {renderItem(item)}
         </View>
       ))}
@@ -72,8 +72,10 @@ const PaginatedList = <TItem, TResponse extends PaginatedResponse<TItem>> ({
 const styles = StyleSheet.create({
   resultRow: {
     backgroundColor: Colors.lightBackground,
+  },
+  bordered: {
     borderBottomWidth: 1,
-    borderBottomColor: '#888'
+    borderBottomColor: '#444'
   },
   loadingWrapper: {
     padding: 20,

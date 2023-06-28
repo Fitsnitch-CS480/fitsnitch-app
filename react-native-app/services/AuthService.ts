@@ -86,6 +86,14 @@ const AuthService = {
 		try {
 			const data = await auth().signInWithCredential(googleCredential)
 			let user = await ServerFacade.getUserById(data?.user?.uid);
+			if (user) {
+				// Attempt tp update user photo
+				if (user.image !== googleUser.user.photo) {
+					console.log("Updating user image:", googleUser.user.photo)
+					user.image = googleUser.user.photo || "";
+					await ServerFacade.updateUser(user);
+				}
+			}
 			if (!user) {
 				// Assume this is the user's first log in after verification
 				// They must be added to db
@@ -97,6 +105,7 @@ const AuthService = {
 					firstname: googleUser.user.givenName || "",
 					lastname: googleUser.user.familyName || "",
 					phone: data?.user?.phoneNumber || "",
+					image: googleUser.user.photo || "",
 				}
 				await ServerFacade.createUser(user);
 			}
