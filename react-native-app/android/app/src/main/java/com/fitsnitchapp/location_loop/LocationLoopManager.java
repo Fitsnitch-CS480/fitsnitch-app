@@ -328,7 +328,7 @@ public class LocationLoopManager {
         notificationIntent.putExtra("ACTION", "DID_SNITCH");
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingNotifIntent = PendingIntent.getActivity(getApplicationContext(), NOTIF_ID_SNITCHED, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingNotifIntent = PendingIntent.getActivity(getApplicationContext(), NOTIF_ID_SNITCHED, notificationIntent, 0);
 
         snitchedNotification = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
                 .setContentIntent(pendingNotifIntent)
