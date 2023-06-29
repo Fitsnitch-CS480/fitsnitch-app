@@ -115,9 +115,7 @@ const AuthService = {
 		catch (error: any) {
 			console.log("Error on Google sign in: ", {error});
 			const tokens = await GoogleSignin.getTokens();
-			console.log(tokens)
 			await GoogleSignin.clearCachedAccessToken(tokens.accessToken || '');
-			console.log(await GoogleSignin.getTokens())
 			await GoogleSignin.signOut();
 			throw new Error(error);
 		}
