@@ -24,9 +24,9 @@ const SnitchFreeStreak: React.FC<Props> = ({
   const styles = StyleSheet.create({
     streakWrapper: {
       height: size,
-      minWidth: size * .75 + (String(streak).length * size * .5),
-      paddingLeft: size * .8,
-      paddingTop: size * .1,
+      minWidth: size*.75 + (String(streak).length*size*.7),
+      paddingLeft: size*.8,
+      paddingTop: size*.1,
       position: 'relative',
     },
     streakFire: {
@@ -37,7 +37,7 @@ const SnitchFreeStreak: React.FC<Props> = ({
     },
     streakQty: {
       fontSize: size * .8,
-      lineHeight: size * .9,
+      lineHeight: size * .8,
       color: Colors.white
     },
   });
@@ -45,7 +45,7 @@ const SnitchFreeStreak: React.FC<Props> = ({
 
   return (
     <View style={styles.streakWrapper}>
-      <View style={styles.streakFire}><Icon name="whatshot" color={fireColor} size={size * .8} /></View>
+      <View style={styles.streakFire}><Icon name="whatshot" color={fireColor} size={size*.8} /></View>
       <Text style={styles.streakQty}>{streak}</Text>
     </View>
   );
