@@ -1,4 +1,4 @@
-import { PrismaClient, User } from '@prisma/client'
+import { DeviceToken, PrismaClient, User } from '@prisma/client'
 
 const prisma = new PrismaClient();
 
@@ -52,6 +52,14 @@ export default class UserService {
 				userId,
 				token,
 			}
+		})
+    }
+
+    async getUserTokens(userId: string): Promise<DeviceToken[]> {
+        return await prisma.deviceToken.findMany({
+			where: {
+				userId
+			},
 		})
     }
     

@@ -7,7 +7,6 @@ export default class User {
         public image?: string,
         public phone?: string,
         public cheatmealSchedule?: string,
-        public associatedDeviceTokens?: string[],
     ) {}
 }
 

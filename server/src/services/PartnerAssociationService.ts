@@ -3,7 +3,7 @@ import RelationshipStatus from "../../../react-native-app/shared/constants/Relat
 import PartnerAssociationPair from "../../../react-native-app/shared/models/PartnerAssociationPair";
 import PartnerRequest from "../../../react-native-app/shared/models/PartnerRequest";
 import UserService from './UserService';
-import { PartnerPair, PrismaClient } from '@prisma/client';
+import { PartnerPair, PrismaClient, User } from '@prisma/client';
 
 const prisma = new PrismaClient();
 export default class PartnerAssociationService {
@@ -66,7 +66,7 @@ export default class PartnerAssociationService {
 		await prisma.partnerPair.delete({ where: { partnerId1_partnerId2: data } });
     }
     
-    async getPartnersOfUser(userId:string):Promise<any[]> {
+    async getPartnersOfUser(userId:string):Promise<User[]> {
 		let partners = await prisma.partnerPair.findMany({
 			where: {
 				// Pairs can be saved with either partner as 1 or 2

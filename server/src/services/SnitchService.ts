@@ -6,7 +6,7 @@ import PartnerAssociationService from './PartnerAssociationService';
 import TrainerService from './TrainerService';
 import PushNotificationService, { PresetOptions } from './PushNotificationService';
 import UserService from './UserService';
-import { PrismaClient } from '@prisma/client';
+import { DeviceToken, PrismaClient, User } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -27,22 +27,15 @@ export default class SnitchService {
 		console.log("Related Users List is: ", relatedUsersList);
 
 		let trainer = await new TrainerService().getTrainerOfClient(newSnitchData.userId)
-		if (trainer != undefined) {
+		if (trainer !== undefined) {
 			console.log("Trainer is: ", relatedUsersList);
 			relatedUsersList.push(trainer)
 		}
 
-		// TODO - This is a string[] right now but we want to make a model. Check TODO on pushSnitchNotification
-		let pushSnitchNotificationList: string[] = [];
-
-		relatedUsersList.forEach(element => {
-			pushSnitchNotificationList.push(element.userId)
-		});
-
 		const snitchOnUser = await new UserService().getUser(newSnitchData.userId);
 
 		let response = await PushNotificationService.sendMessageToUsers(
-			pushSnitchNotificationList,
+			relatedUsersList.map(u => u.userId),
 			{
 				notification: {
 					title: `${snitchOnUser?.firstname} Needs Help!`,

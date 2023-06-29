@@ -1,6 +1,7 @@
 import UserService from "./UserService";
 import * as admin from 'firebase-admin';
 import { MessagingOptions, MessagingPayload } from "firebase-admin/lib/messaging/messaging-api";
+import { DeviceToken } from "@prisma/client";
 
 const { initializeApp } = require("firebase-admin/app");
 initializeApp();
@@ -22,10 +23,11 @@ class PushNotificationService {
 	}
 
 	async sendMessageToUsers(userIds:string[], message: MessagingPayload, options:MessagingOptions) {
-		let tokens: string[] = [] // TODO get tokens by user ids
+		let tokens: DeviceToken[] = [] // TODO get tokens by user ids
 		for (let id of userIds) {
-			let user = await new UserService().getUser(id);
-			tokens.push(...user?.associatedDeviceTokens || []);
+			let userTokens = await new UserService().getUserTokens(id);
+			console.log(id, userTokens)
+			tokens.push(...userTokens);
 		}
 		if (!tokens.length) {
 			console.log("Aborting notification send because no tokens were found.");
@@ -33,7 +35,7 @@ class PushNotificationService {
 		}
 		console.log(message)
 		const res = await admin.messaging().sendToDevice(
-			tokens, // tokens for all user devices
+			tokens.map(t => t.token), // tokens for all user devices
 			message,
 			options
 		);

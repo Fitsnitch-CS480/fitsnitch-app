@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, User } from "@prisma/client";
 import { trace } from "console";
 import RelationshipStatus from "../../../react-native-app/shared/constants/RelationshipStatus";
 import TrainerClientPair from "../../../react-native-app/shared/models/TrainerClientPair";
-import User from "../../../react-native-app/shared/models/User";
 import UserService from "./UserService";
 
 const prisma = new PrismaClient();
