@@ -106,7 +106,15 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 					options={({ route }) => {
 						let { profileOwner } = route.params as any;
 						return {
-							headerTitle: `${profileOwner?.firstname}'s Profile` || "Profile"
+							headerShown: true,
+							headerTitle: `${profileOwner?.firstname}'s Profile` || "Profile",
+							headerStyle: {
+								backgroundColor: Colors.background,
+							},
+							headerTitleStyle: {
+								color: Colors.white
+							},
+							headerTintColor: Colors.white
 						};
 					}} />
 				<Stack.Screen

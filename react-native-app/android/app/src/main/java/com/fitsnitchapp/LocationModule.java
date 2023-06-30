@@ -125,6 +125,10 @@ public class LocationModule extends ReactContextBaseJavaModule {
     }
 
     public static void sendEventToJS(String eventName, @Nullable WritableMap params) {
+        if (rContext == null) {
+            Log.i("***FIT_LOC", "No context for sending logs to RN");
+            return;
+        }
         rContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                 .emit(eventName, params);
     }
