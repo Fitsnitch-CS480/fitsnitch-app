@@ -86,45 +86,46 @@ const Profile = observer(({ profileOwner }: any) => {
 
 		return (
 			<Modal
-					animationType="fade"
-					transparent={true}
-					visible={showEditProfile}
-				>
-					<View style={styles.modalWrapper}>
-						<View style={styles.modalView}>
-							<Text style={styles.modalTitle}>Edit Profile</Text>
-							<Input
-								label="Given Name"
-								value={editData.firstname}
-								onChange={(firstname) => updateEditData({ firstname })}
+				animationType="fade"
+				transparent={true}
+				visible={showEditProfile}
+				onRequestClose={() => setShowEditProfile(false)}
+			>
+				<View style={styles.modalWrapper}>
+					<View style={styles.modalView}>
+						<Text style={styles.modalTitle}>Edit Profile</Text>
+						<Input
+							label="Given Name"
+							value={editData.firstname}
+							onChange={(firstname) => updateEditData({ firstname })}
+						/>
+						<Input
+							label="Family Name"
+							value={editData.lastname}
+							onChange={(lastname) => updateEditData({ lastname })}
+						/>
+						<Input
+							label="Phone"
+							value={editData.phone}
+							onChange={(phone) => updateEditData({ phone })}
+						/>
+						<View>
+							<MatButton
+								title="Save"
+								color={Colors.lightBlue}
+								style={styles.modalButton}
+								onPress={saveEditProfile}
 							/>
-							<Input
-								label="Family Name"
-								value={editData.lastname}
-								onChange={(lastname) => updateEditData({ lastname })}
+							<MatButton
+								title="Cancel"
+								color={Colors.lightBackground}
+								style={styles.modalButton}
+								onPress={() => setShowEditProfile(false)}
 							/>
-							<Input
-								label="Phone"
-								value={editData.phone}
-								onChange={(phone) => updateEditData({ phone })}
-							/>
-							<View>
-								<MatButton
-									title="Save"
-									color={Colors.lightBlue}
-									style={styles.modalButton}
-									onPress={saveEditProfile}
-								/>
-								<MatButton
-									title="Cancel"
-									color={Colors.lightBackground}
-									style={styles.modalButton}
-									onPress={() => setShowEditProfile(false)}
-								/>
-							</View>
 						</View>
 					</View>
-				</Modal>
+				</View>
+			</Modal>
 		)
 
 	};
