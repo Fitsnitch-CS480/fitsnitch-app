@@ -26,6 +26,7 @@ type props = {
 export var globalContext: React.Context<{
 	currentUser: User,
 	// locationStore: LocationStore
+	setCurrentUser: (User)=>void,
 	logStore: LogStore,
 	partnerStore: PartnerStore,
 	clientStore: ClientStore,
@@ -36,6 +37,7 @@ export var globalContext: React.Context<{
 
 const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 	if (!authUser) return null;
+	const [currentUser, setCurrentUser] = useState(authUser);
 
 	NativeModuleService.getModule().saveUserId(authUser.userId);
 
@@ -60,7 +62,8 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 	const Stack = createNativeStackNavigator();
 
 	const gCtx = {
-		currentUser: authUser,
+		currentUser,
+		setCurrentUser,
 		// locationStore: new LocationStore(),
 		logStore: new LogStore(),
 		partnerStore: new PartnerStore(authUser),
