@@ -17,6 +17,7 @@ import NativeModuleService from "../services/NativeModuleService";
 import GetSnitchedView from "./GetSnitchedView";
 import Colors from "../assets/constants/colors";
 import PushNotificationService from "../services/PushNotificationService";
+import PermissionCheckBanner from "./PermissionCheckBanner";
 
 type props = {
 	authUser?: User,
@@ -78,7 +79,6 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 	useEffect(()=>{
 		PushNotificationService.init(authUser.userId);
 		NativeModuleService.init();
-		NativeModuleService.checkPermissions();
 	}, []);
 
 
@@ -88,7 +88,7 @@ const AppNavigator: React.FC<props> = ({ authUser, input }) => {
 
 	return (<>
 		<globalContext.Provider value={gCtx}>
-
+			<PermissionCheckBanner />
 			<Stack.Navigator initialRouteName={START_SCREEN}>
 				<Stack.Screen name="Tabs" component={TabViewNavigator}
 					options={{ headerShown: false }} />

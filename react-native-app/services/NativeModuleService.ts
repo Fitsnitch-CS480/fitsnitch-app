@@ -41,7 +41,7 @@ class NativeModuleService {
 					{
 						title: 'FitSnitch Permission',
 						message:
-							'FitSnitch needs to access your location in order to work',
+							'FitSnitch needs to access your precise location in order to work.',
 						buttonNegative: 'Cancel',
 						buttonPositive: 'OK',
 					}
@@ -56,7 +56,7 @@ class NativeModuleService {
 					{
 						title: 'FitSnitch Permission',
 						message:
-							'FitSnitch needs to access your location in order to work',
+							'Please allow FitSnitch to access your location in the background.',
 						buttonNegative: 'Cancel',
 						buttonPositive: 'OK',
 					},
@@ -67,8 +67,9 @@ class NativeModuleService {
 
 		} catch (err) {
 			console.warn(err);
-			return false;
+			return '';
 		}
+		return '';
 	};
 }
 
