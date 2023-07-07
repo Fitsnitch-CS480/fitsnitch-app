@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, StyleSheet, Text, View, Image, TextInput, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, TextInput, ActivityIndicator, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
@@ -60,28 +60,13 @@ const LoginView: React.FC = () => {
 	}
 
 	return (
-		<ScrollView style={styles.screen}>
-			<View style={styles.container}>
+		<View style={styles.container}>
+			<View style={styles.loginArea}>
 				<Image
 					source={require("../../assets/images/main_logo.png")}
 					resizeMode="contain"
 					style={styles.image}
 				/>
-
-				{/* Disabling email login for now */}
-				{/* <View style={styles.materialUnderlineTextboxStack}>
-					<TextInput placeholder={T.signUp.email} onChangeText={onChangeEmail} style={styles.textBox}></TextInput>
-					<TextInput placeholder={T.signUp.password} secureTextEntry onChangeText={onChangePassword} style={styles.textBox}></TextInput>
-				</View>
-				
-				<View style={styles.materialButtonPrimary}>
-					{loading ?
-						<ActivityIndicator color={Colors.red} size={30} />
-						:
-						<Button color={Colors.red} title={T.logIn.title} onPress={() => loading ? null : signInFunction()}></Button>
-					}
-				</View>
-				*/}
 
 				<View>
 					<TouchableOpacity
@@ -96,14 +81,6 @@ const LoginView: React.FC = () => {
 							{T.logIn.google}
 						</Text>
 					</TouchableOpacity>
-					{/* Would like to keep the button code for now in case we need to switch to it from the code above*/}
-					{/* <GoogleSigninButton
-						style={{ width: 215, height: 48, margin: 25, borderRadius: 25 }}
-						size={GoogleSigninButton.Size.Wide}
-						color={GoogleSigninButton.Color.Light}
-						//   onPress={this._signIn}
-						//   disabled={this.state.isSigninInProgress}
-						/> */}
 				</View>
 
 				{loading &&
@@ -113,39 +90,30 @@ const LoginView: React.FC = () => {
 				<View>
 					<Text style={styles.errorMessage}>{error}</Text>
 				</View>
-
-
-				{/* <View style={styles.textContainer}>
-					<Text style={styles.dontHaveAccount}>{T.logIn.dontHaveAccount}</Text>
-					<Text style={styles.signUpText} onPress={() => navigation.navigate('signup')}>{T.signUp.title}</Text>
-				</View> */}
-
-
-
 			</View>
-		</ScrollView>
+
+			<Text style={styles.policies}>
+				By signing in, you agree to our&nbsp;
+				<Text style={styles.link} onPress={() => Linking.openURL('https://fitsnitch.com/privacy')}>Privacy Policy</Text>
+				&nbsp;and&nbsp;
+				<Text style={styles.link} onPress={() => Linking.openURL('https://fitsnitch.com/privacy')}>Terms of Use</Text>
+			</Text>
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
+		width: '100%',
+		height: '100%',
+		backgroundColor: Colors.background
+	},
+	loginArea: {
 		display: 'flex',
 		flexDirection: 'column',
 		alignItems: 'center',
-		justifyContent: 'center',
-	},
-	screen: {
-		backgroundColor: Colors.background
-	},
-	materialButtonPrimary: {
-		height: 36,
-		width: 289,
-		marginVertical: 20,
-	},
-	otherSignInButtons: {
-		height: 36,
-		width: 250,
-		marginVertical: 20,
+		justifyContent: 'flex-start',
+		flexGrow: 1,
 	},
 	buttonGoogleStyle: {
 		flexDirection: 'row',
@@ -167,52 +135,23 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		textAlign: 'center'
 	},
-	textContainer: {
-		flex: 2,
-		flexDirection: 'row'
-	},
-	dontHaveAccount: {
-		fontFamily: "roboto-regular",
-		color: Colors.white,
-		marginRight: 5,
-		fontSize: 15,
-	},
-	signUpText: {
-		fontFamily: "roboto-regular",
-		fontSize: 15,
-		fontWeight: 'bold',
-		color: Colors.red,
-	},
-	materialUnderlineTextbox: {
-		height: 43,
-		width: 289,
-		position: "absolute",
-		left: 0,
-		top: 0,
-	},
-	materialUnderlineTextboxStack: {
-		width: 289,
-		marginTop: 20
-	},
-	textBox: {
-		backgroundColor: Colors.white,
-		color: Colors.charcoal,
-		borderRadius: 50,
-		marginVertical: 5,
-		paddingLeft: 20,
-		height: 40
-	},
 	image: {
 		height: 200,
 		width: 200,
 		marginTop: 50,
 		marginBottom: 25,
 	},
-	materialUnderlineTextbox1: {
-		height: 43,
-		width: 289,
-	},
 	errorMessage: {
+		color: Colors.red,
+	},
+	policies: {
+		color: 'white',
+		textAlign: 'center',
+		width: '80%',
+		alignSelf: 'center',
+		marginBottom: 50
+	},
+	link: {
 		color: Colors.red,
 	}
 });
