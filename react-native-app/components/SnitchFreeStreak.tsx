@@ -1,54 +1,63 @@
-import React, {  } from 'react';
+import React, { } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import SnitchEvent from '../shared/models/SnitchEvent';
 import dayjs from 'dayjs';
 import Colors from '../assets/constants/colors';
+import MatIcon from './MatIcon';
 
 export type Props = {
-  lastSnitch?: SnitchEvent;
-  size: number;
+	lastSnitch?: SnitchEvent;
+	size: number;
 };
 
 const SnitchFreeStreak: React.FC<Props> = ({
-  lastSnitch, size
+	lastSnitch, size
 }) => {
-  
-  let streak = (() => {
-    if (!lastSnitch) return '--';
-    else return dayjs().diff(dayjs(lastSnitch.created_at), 'd')
-  })();
 
-  const fireColor = streak === 0 || streak === '--' ? '#999' : 'red'
+	let streak = (() => {
+		if (!lastSnitch) return '--';
+		else return dayjs().diff(dayjs(lastSnitch.created_at), 'd')
+	})();
 
-  const styles = StyleSheet.create({
-    streakWrapper: {
-      height: size,
-      minWidth: size*.75 + (String(streak).length*size*.7),
-      paddingLeft: size*.8,
-      paddingTop: size*.1,
-      position: 'relative',
-    },
-    streakFire: {
-      position: "absolute",
-      left: 0,
-      top: size*.1,
-      zIndex: 5
-    },
-    streakQty: {
-      fontSize: size * .8,
-      lineHeight: size * .8,
-      color: Colors.white
-    },
-  });
-  
+	const fireColor = streak === 0 || streak === '--' ? '#999' : 'red'
 
-  return (
-    <View style={styles.streakWrapper}>
-      <View style={styles.streakFire}><Icon name="whatshot" color={fireColor} size={size*.8} /></View>
-      <Text style={styles.streakQty}>{streak}</Text>
-    </View>
-  );
+	const fireSize = size * .8;
+	const numberSize = size * .8;
+
+	const styles = StyleSheet.create({
+		streakWrapper: {
+			height: size,
+			width: (fireSize) + size * String(streak).length * .6,
+			position: 'relative',
+			alignSelf: 'flex-start',
+			textAlign: 'right',
+		},
+		streakFire: {
+			position: "absolute",
+			left: 0,
+			top: '50%',
+			transform: [{ translateY: -(fireSize * .5) }],
+			zIndex: 5
+		},
+		streakQty: {
+			position: "absolute",
+			right: 0,
+			top: '50%',
+			transform: [{ translateY: -(numberSize * .65) }],
+			fontSize: numberSize,
+			lineHeight: size,
+			color: Colors.white
+		},
+	});
+
+
+	return (
+		<View style={styles.streakWrapper}>
+			<Text style={styles.streakQty}>{streak}</Text>
+			<View style={styles.streakFire}><MatIcon name="whatshot" color={fireColor} size={fireSize} /></View>
+		</View>
+	);
 };
 
 

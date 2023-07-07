@@ -17,11 +17,4 @@ const MatIcon: React.FC<props> = (props) => {
   )
 }
 
-const styles = StyleSheet.create({
-  nameLink: {
-    color: 'black',
-    textDecorationLine: 'underline'
-  }
-})
-
 export default MatIcon;

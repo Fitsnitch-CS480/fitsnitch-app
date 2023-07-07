@@ -170,7 +170,7 @@ const Profile = observer(({ profileOwner }: any) => {
 
 
 		return (
-			<Card title="Snitches" headerRight={<SnitchFreeStreak lastSnitch={lastSnitch} size={35} />}>
+			<Card title="Snitches" headerRight={<SnitchFreeStreak lastSnitch={lastSnitch} size={28} />}>
 				<PaginatedList
 					loadNextPage={loadNextSnitchPage}
 					itemKey={(snitch: SnitchEvent) => snitch.created_at + snitch.userId}
