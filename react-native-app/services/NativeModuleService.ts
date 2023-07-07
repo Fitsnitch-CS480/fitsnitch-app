@@ -46,11 +46,7 @@ class NativeModuleService {
 						buttonPositive: 'OK',
 					}
 				);
-
-				if (granted !== "granted") {
-					return granted;
-				}
-
+				
 				granted = await PermissionsAndroid.request(
 					PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
 					{

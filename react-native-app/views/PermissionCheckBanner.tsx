@@ -43,13 +43,17 @@ const PermissionCheckBanner: React.FC<props> = ({}) => {
 				],
 			)
 		}
+		setPermissionStatus(newStatus);
 	}
 
-	if (permissionStatus === 'granted') return null;
+	// BUG Not working on android v9 - always 'never_ask_again' even if manually granted
+	// if (permissionStatus === 'granted') return null;
 
-	return <Pressable onPress={manualRecheck}>
-		<Text style={styles.container}><MatIcon name="warning"  size={12} />  Insufficient permissions</Text>
-	</Pressable>
+	// return <Pressable onPress={manualRecheck}>
+	// 	<Text style={styles.container}><MatIcon name="warning"  size={12} />  Insufficient permissions ({permissionStatus})</Text>
+	// </Pressable>
+
+	return null;
 }
 
 
