@@ -1,8 +1,9 @@
 {
   "name": "fitsnitchapp",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
+    "postversion": "react-native-version --never-amend",
     "android:dev": "react-native run-android --mode=dev --appIdSuffix=dev",
     "android:beta": "react-native run-android --mode=beta --appIdSuffix=beta",
     "android": "adb reverse tcp:4000 tcp:4000 && react-native run-android --mode=debug --appIdSuffix=debug",
@@ -37,7 +38,8 @@
     "react-native-screens": "^3.18.2",
     "react-native-share": "^8.0.0",
     "react-native-sound": "^0.11.2",
-    "react-native-vector-icons": "^9.2.0"
+    "react-native-vector-icons": "^9.2.0",
+    "react-native-version": "^4.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
