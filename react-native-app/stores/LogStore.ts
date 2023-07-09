@@ -8,7 +8,6 @@ export default class LogStore {
     constructor() {
 	    makeObservable(this);
 		this.id = Date.now();
-		console.log("\n\nCREATED LOG STORE!!", this.id)
     }
 
     @observable id:number;
@@ -21,7 +20,6 @@ export default class LogStore {
 			const newLog = new LogEntry(...items);
             this.logs.push(newLog);
             if (this.logs.length > MAX_LOGS) this.logs.shift()
-			console.log(this.id, 'Got new log!', this.logs.length)
 			if (MODE !== 'local') {
 				// Log this to JS for session recordings
 	            console.log(newLog.message);

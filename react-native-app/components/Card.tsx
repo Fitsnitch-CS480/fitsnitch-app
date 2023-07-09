@@ -1,3 +1,4 @@
+import { observer } from "mobx-react-lite";
 import React, { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Colors from '../assets/constants/colors';
@@ -9,7 +10,7 @@ interface Props{
   children?: ReactNode
 }
 
-const Card: React.FC<Props> = ({title,headerRight,footer,children}) => {
+const Card = observer<Props>(({title,headerRight,footer,children}) => {
   return (
     <View style={styles.container}>
       <View style={styles.wrap}>
@@ -23,7 +24,7 @@ const Card: React.FC<Props> = ({title,headerRight,footer,children}) => {
       </View>
     </View>
   );
-}
+})
 
 const spacing = 10
 

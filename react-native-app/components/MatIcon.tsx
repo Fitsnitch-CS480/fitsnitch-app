@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { MatIconName } from './MatIconName';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { observer } from 'mobx-react-lite';
 
 type props = {
   name: MatIconName,
@@ -11,10 +12,10 @@ type props = {
   onPress?: ()=>void
 }
 
-const MatIcon: React.FC<props> = (props) => {
+const MatIcon = observer<props>((props) => {
   return (
     <Icon {...props} />
   )
-}
+})
 
 export default MatIcon;

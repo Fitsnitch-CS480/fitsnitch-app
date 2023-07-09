@@ -7,8 +7,9 @@ import PeopleView from '../views/PeopleView/PeopleView';
 import SettingsView from '../views/SettingsView';
 import Colors from '../assets/constants/colors';
 import CurrentUserProfile from "./profile/CurrentUserProfile";
+import { observer } from "mobx-react-lite";
 
-const HomeNavigator: React.FC = () => {
+const HomeNavigator = observer(() => {
 
 	const Tab = createBottomTabNavigator();
 
@@ -64,6 +65,6 @@ const HomeNavigator: React.FC = () => {
 			/>
 		</Tab.Navigator>
 	);
-}
+})
 
 export default HomeNavigator;

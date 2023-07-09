@@ -1,21 +1,20 @@
 import React, { useContext, useState } from 'react';
 import { Button, StyleSheet, Text, View, Image, TextInput, ActivityIndicator, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { authContext } from '../authWrapper';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
 import AuthService from '../../services/AuthService';
 import { isEmpty } from "lodash";
+import { observer } from 'mobx-react-lite';
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
-const LoginView: React.FC = () => {
+const LoginView = observer(() => {
 	const navigation = useNavigation<any>();
 	const [email, onChangeEmail] = useState('');
 	const [password, onChangePassword] = useState('');
 	const [error, setErrorMessage] = useState('');
 
 	//Get user from Context from mainNavigator
-	const { authUser, setAuthUser } = useContext(authContext);
 	const [loading, setLoading] = useState<boolean>(false);
 
 	// Currently unused
@@ -29,7 +28,6 @@ const LoginView: React.FC = () => {
 				let user = await AuthService.attemptLogin(email, password);
 				// Setting the user will trigger a navigation to the rest of the app
 				setLoading(false);
-				setAuthUser(user);
 			}
 			catch (err: any) {
 				console.log('Could not log in', err);
@@ -49,9 +47,6 @@ const LoginView: React.FC = () => {
 		try {
 			const user: any = await AuthService.googleSignIn();
 			setLoading(false);
-			if (!isEmpty(user)) {
-				setAuthUser(user);
-			}
 		} catch (error: any) {
 			setLoading(false);
 			console.log(error)
@@ -100,7 +95,7 @@ const LoginView: React.FC = () => {
 			</Text>
 		</View>
 	);
-};
+});
 
 const styles = StyleSheet.create({
 	container: {

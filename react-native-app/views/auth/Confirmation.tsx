@@ -7,13 +7,14 @@ import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import AuthService from '../../services/AuthService';
 import {isEmpty} from 'lodash';
+import { observer } from 'mobx-react-lite';
 
 type TProps = {
   route: any;
 }
 
 
-const Confirmation : React.FC<TProps> = ({route}) => {
+const Confirmation = observer<TProps>(({route}) => {
 
     const navigation = useNavigation<any>();
     const [showRensendLink, setShowResendLink] = useState(true);
@@ -46,7 +47,7 @@ const Confirmation : React.FC<TProps> = ({route}) => {
       </View>
 	</View>
   );
-};
+});
 
 
 const styles = StyleSheet.create({

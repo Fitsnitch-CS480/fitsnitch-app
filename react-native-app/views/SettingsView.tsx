@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
-import { authContext } from './authWrapper';
 import { Alert, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
-import { globalContext } from './appNavigator';
+import { globalContext } from './GlobalContext';
 import { observer } from 'mobx-react-lite';
 import T from '../assets/constants/text';
 import Colors from '../assets/constants/colors';
@@ -9,7 +8,6 @@ import AuthService from '../services/AuthService';
 
 const SettingsView = observer(({ navigation }: any) => {
 	//Get user from Context from mainNavigator
-	const { authUser, setAuthUser } = useContext(authContext);
 	const { logStore } = useContext(globalContext);
 
 	let logout = async () => {
@@ -19,7 +17,6 @@ const SettingsView = observer(({ navigation }: any) => {
 		catch (e) {
 			console.log("Error during logout!", e)
 		}
-		setAuthUser(undefined);
 	}
 
 	const promptLogout = () => {

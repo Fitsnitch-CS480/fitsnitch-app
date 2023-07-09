@@ -4,7 +4,7 @@ import Timer from '../components/Timer';
 import ServerFacade, { request } from '../services/ServerFacade';
 // import PushNotificationIOS from '@react-native-community/push-notification-ios';
 import { CreateSnitchRequest } from '../shared/models/requests/CreateSnitchRequest';
-import { globalContext } from '../views/appNavigator';
+import { globalContext } from '../views/GlobalContext';
 import { observer } from 'mobx-react-lite'
 import CheatMealEvent from '../shared/models/CheatMealEvent';
 import Sound from 'react-native-sound';

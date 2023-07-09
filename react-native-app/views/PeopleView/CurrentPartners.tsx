@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
-import { globalContext } from '../../views/appNavigator';
+import { globalContext } from '../../views/GlobalContext';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 
@@ -13,7 +13,8 @@ const TITLE = "Your Partners"
 const CurrentPartners = observer(() => {
   const navigation = useNavigation<any>();
 
-  const {currentUser, partnerStore} = useContext(globalContext);
+  const {userStore, partnerStore} = useContext(globalContext);
+  const currentUser = userStore.currentUser;
 
   const partners = partnerStore.data;
 

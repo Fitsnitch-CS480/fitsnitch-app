@@ -1,14 +1,16 @@
+import { observer } from 'mobx-react-lite';
 import React, { useContext } from 'react';
-import { globalContext } from '../appNavigator';
+import { globalContext } from '../GlobalContext';
 import Profile from './Profile';
 
 
-const CurrentUserProfile: React.FC = () => {
-  const {currentUser} = useContext(globalContext);
+const CurrentUserProfile = observer(() => {
+	const {userStore} = useContext(globalContext);
+	const currentUser = userStore.currentUser;
 
   return (
     <Profile profileOwner={currentUser} />
   );
-};
+});
 
 export default CurrentUserProfile;

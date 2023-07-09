@@ -22,14 +22,23 @@ class PushNotificationService {
 			
 		});
 
-		/*** Prepare to Handle Incoming Notifications ***/
-		messaging().onMessage(this.handleRemoteMessage);
+		let token;
+		try {
+			/*** Prepare to Handle Incoming Notifications ***/
+			messaging().onMessage(this.handleRemoteMessage);
 
-		/*** Setup Token For Pushing to this device ***/
-		// Register the device with FCM
-		await messaging().registerDeviceForRemoteMessages();
-		const token = await messaging().getToken();
-		console.log("Got FCM Token!", token);
+			/*** Setup Token For Pushing to this device ***/
+			// Register the device with FCM
+			await messaging().registerDeviceForRemoteMessages();
+			token = await messaging().getToken();
+			console.log("Got FCM Token!", token);
+		}
+		catch (e) {
+			console.log("Error getting FCM token!")
+			console.log(e)
+			return;
+		}
+
 		// Save the token
 		try {
 			request.post('user/saveNotificationToken', { userId, token })

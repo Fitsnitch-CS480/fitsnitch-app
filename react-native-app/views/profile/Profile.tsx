@@ -21,7 +21,7 @@ import MatButton from '../../components/MatButton';
 import CheatMealSchedule from './CheatMealSchedule';
 import SnitchFreeStreak from '../../components/SnitchFreeStreak';
 import CheatMealRemaining from './CheatMealRemaining';
-import { globalContext } from '../appNavigator';
+import { globalContext } from '../GlobalContext';
 import Colors from '../../assets/constants/colors';
 import Input from '../../components/Input';
 import ServerFacade from '../../services/ServerFacade';
@@ -42,21 +42,29 @@ export var profileContext: React.Context<{
 
 
 const Profile = observer(({ profileOwner }: any) => {
-	const { currentUser, setCurrentUser, clientStore, partnerStore, trainerStore } = useContext(globalContext);
+	if (!profileOwner) return null;
+
+
+	const { userStore, setCurrentUser, clientStore, partnerStore, trainerStore } = useContext(globalContext);
+	const currentUser = userStore.currentUser;
 
 	const [refreshCnt, setRefreshCnt] = useState(0);
 	const [showEditProfile, setShowEditProfile] = useState(false);
 	const [editData, setEditData] = useState({ ...currentUser });
 
+
+	console.log(currentUser)
+
+
 	// The weird notation here is a dirty trick to get the profile to update properly when the current user changes
-	const isCurrentUser = ({ profileOwner, currentUser }) && profileOwner.userId === currentUser.userId;
+	const isCurrentUser = ({ profileOwner, currentUser }) && profileOwner?.userId === currentUser?.userId;
 
 	const profilePartnerStore = isCurrentUser ? partnerStore : new PartnerStore(profileOwner);
 	const profileClientStore = isCurrentUser ? clientStore : new ClientStore(profileOwner);
 	const profileTrainerStore = isCurrentUser ? trainerStore : new TrainerStore(profileOwner);
 
-	const isClientOfCurrentUser = isCurrentUser ? false : clientStore.isClientOfUser(profileOwner.userId);
-	const isPartnerOfCurrentUser = isCurrentUser ? false : partnerStore.isPartnerOfUser(profileOwner.userId);
+	const isClientOfCurrentUser = isCurrentUser ? false : clientStore.isClientOfUser(profileOwner?.userId);
+	const isPartnerOfCurrentUser = isCurrentUser ? false : partnerStore.isPartnerOfUser(profileOwner?.userId);
 
 
 	const EditProfileModal = () => {

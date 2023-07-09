@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -9,7 +10,7 @@ export type Props = {
 	user: User,
 	size: number,
 };
-const ProfileImage: React.FC<Props> = ({
+const ProfileImage = observer<Props>(({
 	user, size
 }) => {
 	const nav = useNavigation();
@@ -29,7 +30,7 @@ const ProfileImage: React.FC<Props> = ({
 			}
 		</View>
 	);
-};
+});
 
 const styles = StyleSheet.create({
 	imageWrapper: {

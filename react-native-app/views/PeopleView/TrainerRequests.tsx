@@ -8,14 +8,15 @@ import User from '../../shared/models/User';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { notifyMessage } from '../../utils/UiUtils';
 import Badge from '../../components/Badge';
-import { globalContext } from '../appNavigator';
+import { globalContext } from '../GlobalContext';
 import { observer } from 'mobx-react-lite';
 
 const TITLE = "Trainer Requests"
 
 const TrainerRequests = observer(() => {
   const navigation = useNavigation<any>();
-  const {currentUser, trainerRequestsForUser, clientStore} = useContext(globalContext);
+  const {userStore, trainerRequestsForUser, clientStore} = useContext(globalContext);
+  const currentUser = userStore.currentUser;
 
   const requests = trainerRequestsForUser.data
 

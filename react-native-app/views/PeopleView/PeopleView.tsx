@@ -9,11 +9,12 @@ import PartnerRequests from './PartnerRequests';
 import CurrentPartners from './CurrentPartners';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
+import { observer } from 'mobx-react-lite';
 
 export type Props = {
 };
 
-const PeopleView: React.FC<Props> = ({
+const PeopleView = observer<Props>(({
 }) => {
 	const navigation = useNavigation<any>();
 
@@ -35,7 +36,7 @@ const PeopleView: React.FC<Props> = ({
 			<CurrentPartners />
 		</ScrollView>
 	);
-};
+});
 
 const styles = StyleSheet.create({
 	screen: {

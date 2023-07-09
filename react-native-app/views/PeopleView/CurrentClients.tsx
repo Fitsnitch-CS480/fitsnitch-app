@@ -6,7 +6,7 @@ import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
-import { globalContext } from '../../views/appNavigator';
+import { globalContext } from '../../views/GlobalContext';
 
 const TITLE = "Your Clients"
 

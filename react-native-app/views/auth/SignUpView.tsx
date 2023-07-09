@@ -5,8 +5,9 @@ import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 import {isEmpty} from 'lodash';
 import AuthService from '../../services/AuthService';
+import { observer } from 'mobx-react-lite';
 
-const SignUpView : React.FC = () => {
+const SignUpView = observer(() => {
 
   const navigation = useNavigation<any>();
   let [email, setEmail] = useState('');
@@ -189,7 +190,7 @@ const SignUpView : React.FC = () => {
       </View>
     </ScrollView>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

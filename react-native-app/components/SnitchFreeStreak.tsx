@@ -5,13 +5,14 @@ import SnitchEvent from '../shared/models/SnitchEvent';
 import dayjs from 'dayjs';
 import Colors from '../assets/constants/colors';
 import MatIcon from './MatIcon';
+import { observer } from 'mobx-react-lite';
 
 export type Props = {
 	lastSnitch?: SnitchEvent;
 	size: number;
 };
 
-const SnitchFreeStreak: React.FC<Props> = ({
+const SnitchFreeStreak = observer<Props>(({
 	lastSnitch, size
 }) => {
 
@@ -58,7 +59,7 @@ const SnitchFreeStreak: React.FC<Props> = ({
 			<View style={styles.streakFire}><MatIcon name="whatshot" color={fireColor} size={fireSize} /></View>
 		</View>
 	);
-};
+});
 
 
 export default SnitchFreeStreak;

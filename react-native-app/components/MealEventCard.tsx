@@ -5,16 +5,17 @@ import CheatMealEvent from '../shared/models/CheatMealEvent';
 import User from '../shared/models/User';
 import ProfileImage from './ProfileImage';
 import dayjs from 'dayjs';
-import { globalContext } from '../views/appNavigator';
+import { globalContext } from '../views/GlobalContext';
 import ServerFacade from '../services/ServerFacade';
 import Colors from '../assets/constants/colors';
+import { observer } from 'mobx-react-lite';
 
 export type Props = {
   meal: CheatMealEvent;
   user?: User;
 };
 
-const CheatMealEventCard: React.FC<Props> = ({
+const CheatMealEventCard = observer<Props>(({
   meal, user
 }) => {
   const [mealOwner, setMealOwner] = useState<User|undefined>(undefined)
@@ -37,7 +38,8 @@ const CheatMealEventCard: React.FC<Props> = ({
   //   new CheatMealService().shareMeal(meal,mealOwner)
   // }
 
-  const {currentUser} = useContext(globalContext);
+  const {userStore} = useContext(globalContext);
+  const currentUser = userStore.currentUser;
 
   if (error) {
     return <Text>{error}</Text>
@@ -70,7 +72,7 @@ const CheatMealEventCard: React.FC<Props> = ({
       </View>
     </View>
   );
-};
+});
 
 function getRelativeTime(time:any) {
   if (dayjs().diff(time, 'd') >= 1) {

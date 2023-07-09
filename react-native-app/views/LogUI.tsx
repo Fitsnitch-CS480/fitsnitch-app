@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View, Text, ScrollView, StyleSheet, FlatList, NativeEventEmitter, NativeModules } from 'react-native';
-import { globalContext } from './appNavigator';
+import { globalContext } from './GlobalContext';
 import { observer } from 'mobx-react-lite'
 
 const LogUI = observer(()=>{

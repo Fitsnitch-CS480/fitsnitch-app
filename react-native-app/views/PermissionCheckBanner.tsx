@@ -3,10 +3,9 @@ import { Alert, Pressable, StyleSheet, Text } from 'react-native';
 import NativeModuleService from "../services/NativeModuleService";
 import Colors from "../assets/constants/colors";
 import MatIcon from "../components/MatIcon";
+import { observer } from "mobx-react-lite";
 
-type props = {}
-
-const PermissionCheckBanner: React.FC<props> = ({}) => {
+const PermissionCheckBanner= observer(() => {
 	const [permissionStatus, setPermissionStatus] = useState('');
 
 	useEffect(() => {
@@ -54,7 +53,7 @@ const PermissionCheckBanner: React.FC<props> = ({}) => {
 	// </Pressable>
 
 	return null;
-}
+})
 
 
 
