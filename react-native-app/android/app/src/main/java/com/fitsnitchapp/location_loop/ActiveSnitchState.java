@@ -1,22 +1,15 @@
 package com.fitsnitchapp.location_loop;
 
 import android.location.Location;
-import android.os.Build;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 
 import com.fitsnitchapp.LatLonPair;
 import com.fitsnitchapp.Restaurant;
-import com.fitsnitchapp.SnitchTrigger;
 
-import static com.fitsnitchapp.location_loop.LocationLoopService.IVAL_LOOP_SHORT;
-import static com.fitsnitchapp.location_loop.LocationLoopService.IVAL_WARNING;
-import static com.fitsnitchapp.location_loop.LocationLoopService.checkForRestaurant;
-import static com.fitsnitchapp.location_loop.LocationLoopService.didLocationChange;
-import static com.fitsnitchapp.location_loop.LocationLoopService.getActiveSnitch;
-import static com.fitsnitchapp.location_loop.LocationLoopService.publishActiveSnitch;
-import static com.fitsnitchapp.location_loop.LocationLoopService.usedCheatForActiveSnitch;
+import static com.fitsnitchapp.LocationModule.JsLog;
+import static com.fitsnitchapp.location_loop.LocationLoopManager.IVAL_WARNING;
+import static com.fitsnitchapp.location_loop.LocationLoopManager.checkForRestaurant;
 
 /**
  * Represents the time during which a snitch warning is active.
@@ -32,16 +25,16 @@ public class ActiveSnitchState extends LoopState {
     }
 
     public void handleNewLocation(Location location) {
-        Log.i("***FIT", "Times up!");
-        if (usedCheatForActiveSnitch()) {
-            Log.i("*****FIT", "User used cheat - not snitching");
+        JsLog("Times up!");
+        if (LocationLoopManager.getInstance().usedCheatForActiveSnitch()) {
+            JsLog("User used cheat - not snitching");
             nextState(new StayingState());
         }
-        else if (didLocationChange(location)) {
+        else if (loopManager.didLocationChange(location)) {
             checkForRestaurant(LatLonPair.fromLocation(location), (Restaurant restaurant)->{
-                if (restaurant == null || !restaurant.name.equals(getActiveSnitch().restaurantData.name)) {
+                if (restaurant == null || !restaurant.name.equals(loopManager.getActiveSnitch().restaurantData.name)) {
                     // User has left restaurant
-                    Log.i("*****FIT", "User left restaurant - not snitching");
+                    JsLog("User left restaurant - not snitching");
 
                     /*
                        TODO handle cases where user left old restaurant but is found in new one
@@ -61,7 +54,7 @@ public class ActiveSnitchState extends LoopState {
     }
 
     private void doSnitch() {
-        publishActiveSnitch();
+        loopManager.publishActiveSnitch();
         nextState(new StayingState());
     }
 }

@@ -3,7 +3,6 @@ plugins {
 }
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
-apply plugin: "com.google.gms.google-services"
 
 import com.android.build.OutputFile
 
@@ -100,10 +99,11 @@ android {
     namespace "com.fitsnitchapp"
     defaultConfig {
         applicationId "com.fitsnitchapp"
+        resValue "string", "build_config_package", "${applicationId}"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 5
+        versionName "0.0.6"
     }
 
     splits {
@@ -123,15 +123,39 @@ android {
         }
     }
     buildTypes {
-        debug {
-            signingConfig signingConfigs.debug
-        }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
+			versionNameSuffix '-RELEASE'
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+			manifestPlaceholders = [appName: "FitSnitch"]
+		}
+        beta {
+			// Still generate keystore because this goes out to public
+            // Caution! In production, you need to generate your own keystore file.
+            // see https://reactnative.dev/docs/signed-apk-android.
+			initWith release
+            applicationIdSuffix ".beta"
+            versionNameSuffix '-BETA'
+            signingConfig signingConfigs.debug
+            minifyEnabled enableProguardInReleaseBuilds
+			manifestPlaceholders = [appName: "Beta FitSnitch"]
+			matchingFallbacks = ['release'] // Which version of dependencies to use
+		}
+        dev {
+			initWith release
+            applicationIdSuffix ".dev"
+            versionNameSuffix '-DEV'
+			manifestPlaceholders = [appName: "Dev FitSnitch"]
+			matchingFallbacks = ['release'] // Which version of dependencies to use
+		}
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix '-DEBUG'
+			manifestPlaceholders = [appName: "Local FitSnitch"] // Sets app label in manifest
+			signingConfig signingConfigs.debug
         }
     }
 
@@ -156,7 +180,7 @@ dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
 
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
@@ -179,11 +203,18 @@ dependencies {
 
     // Google play services for Location
     implementation 'com.google.android.gms:play-services-location:19.0.1'
+    // To auto-generate google map api key of google-services.json
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
-	// Firebase for push notifications
+    // Worker for scheduled background tasks
+    implementation "androidx.work:work-runtime:2.8.1"
+
+    // Firebase for push notifications
 	implementation platform('com.google.firebase:firebase-bom:31.2.2')
 	implementation 'com.google.firebase:firebase-analytics'
 	implementation 'com.google.firebase:firebase-messaging'
+
+    implementation('org.conscrypt:conscrypt-android:2.0.0')
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
@@ -193,7 +224,9 @@ apply from: file("../../node_modules/@react-native-community/cli-platform-androi
 // https://github.com/luggit/react-native-config#different-environments
 
 project.ext.envConfigFiles = [
-	debug: ".env.development",
+	debug: ".env.local",
+	dev: ".env.development",
+	beta: ".env.beta",
 	release: ".env.production",
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
@@ -204,3 +237,6 @@ project.ext.vectoricons = [
     iconFontNames: [ 'MaterialIcons.ttf' ] // Name of the font files you want to copy
 ]
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+// Google-services
+apply plugin: "com.google.gms.google-services"

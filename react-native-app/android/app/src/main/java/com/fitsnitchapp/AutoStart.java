@@ -21,24 +21,16 @@ public class AutoStart extends BroadcastReceiver
     {
         Log.i("******FIT", "Did autostart here");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Log.i("*****FIT", "Sending notification");
+        NotificationChannel serviceChannel = new NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_HIGH
+        );
 
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    CHANNEL_ID,
-                    CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_HIGH
-            );
+        NotificationManager manager = context.getSystemService(NotificationManager.class);
+        manager.createNotificationChannel(serviceChannel);
 
-            NotificationManager manager = context.getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceChannel);
-
-            manager.notify(0, createNotification(context));
-            Log.i("*****FIT", "Sent notification");
-        }
-        else {
-            Log.i("*****FIT", "Did not notification");
-        }
+        manager.notify(0, createNotification(context));
         Log.i("******FIT", "After autostart");
 
     }
@@ -46,7 +38,7 @@ public class AutoStart extends BroadcastReceiver
 
     static Notification createNotification(Context context) {
         Intent notificationIntent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         Notification n = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentIntent(pendingIntent)

@@ -5,9 +5,9 @@ import ServerFacade from "./ServerFacade";
 
 export default class CheatMealService {
 
-    public async getUserChealMealFeedPage(feedId:string,lastPage?:UserCheatMealResponse): Promise<UserCheatMealResponse> {
+    public async getUserCheatMealFeedPage(feedId:string, lastPage:UserCheatMealResponse): Promise<UserCheatMealResponse> {
         return await ServerFacade.getUserCheatMealFeedPage(
-            new UserCheatMealRequest(feedId, lastPage?.pageSize, lastPage?.pageBreakKey)
+            new UserCheatMealRequest(feedId, lastPage.pageNumber + 1, lastPage.pageSize)
         );
     }
 

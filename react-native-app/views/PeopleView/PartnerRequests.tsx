@@ -8,14 +8,15 @@ import User from '../../shared/models/User';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { notifyMessage } from '../../utils/UiUtils';
 import Badge from '../../components/Badge';
-import { globalContext } from '../appNavigator';
+import { globalContext } from '../GlobalContext';
 import { observer } from 'mobx-react-lite';
 
 const TITLE = "Partner Requests"
 
 const PartnerRequests = observer(() => {
   const navigation = useNavigation<any>();
-  const {currentUser, partnerStore, partnerRequestsForUser} = useContext(globalContext);
+  const {userStore, partnerStore, partnerRequestsForUser} = useContext(globalContext);
+  const currentUser = userStore.currentUser;
 
   const requesters = partnerRequestsForUser.data;
 
@@ -45,10 +46,10 @@ const PartnerRequests = observer(() => {
           <View style={styles.resultRow}>
             <View style={styles.clientInfo} onTouchEnd={()=>{navigation.navigate("OtherUserProfile", {profileOwner: requester})}}>
               <ProfileImage user={requester} size={35}></ProfileImage>
-              <Text style={{marginLeft:10, fontSize: 15}}>{requester.firstname} {requester.lastname}</Text>  
+              <Text style={{marginLeft:10, fontSize: 15, color: "white"}}>{requester.firstname} {requester.lastname}</Text>  
             </View>
             <Button title="Accept" onPress={()=>approveRequest(requester)} />
-            <View style={styles.deleteButton} onTouchEnd={()=>deleteRequest(requester)}><Icon name="delete" size={25}></Icon></View>
+            <View style={styles.deleteButton} onTouchEnd={()=>deleteRequest(requester)}><Icon name="delete" size={25} color="white"></Icon></View>
           </View>
           { (i < requesters.length - 1) ? <View style={styles.divider} /> : null}
         </View>

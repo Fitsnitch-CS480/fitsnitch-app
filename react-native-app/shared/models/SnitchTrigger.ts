@@ -3,7 +3,7 @@ import RestaurantData from "./RestaurantData";
 
 export default class SnitchTrigger {
     constructor(
-        public created: number, 
+        public created_at: number, 
         public originCoords: LatLonPair,
         public restaurantData: RestaurantData,
     ) {}

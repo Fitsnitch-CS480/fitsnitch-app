@@ -3,10 +3,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LoginView from "./LoginView";
 import SignUpView from "./SignUpView";
 import Confirmation from "./Confirmation";
+import { observer } from "mobx-react-lite";
 
 const stackNavigator = createNativeStackNavigator();
 
-const LoginNavigator : React.FC = () => {
+const LoginNavigator = observer(() => {
     return(
         <stackNavigator.Navigator>
             <stackNavigator.Screen name="login" component={LoginView} options={{headerShown: false,}}/>
@@ -14,6 +15,6 @@ const LoginNavigator : React.FC = () => {
             <stackNavigator.Screen name="confirmation" component={Confirmation} options={{headerShown: false,}}/>
         </stackNavigator.Navigator>
     )
-}
+})
 
 export default LoginNavigator;

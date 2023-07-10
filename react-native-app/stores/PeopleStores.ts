@@ -4,15 +4,23 @@ import User from "../shared/models/User";
 import CacheStore from "./CacheStore";
 
 export class PartnerStore extends CacheStore<User[]> {
-    private currentUser: User;
+    private currentUser;
 
-    constructor(user:User) {
+    constructor(user = null) {
         super([])
-        this.currentUser = user;
 	    makeObservable(this)
+		if (user) {
+			this.setUser(user);
+		}
     }
 
+	@action setUser(user: User) {
+		this.currentUser = user;
+		this.getData();
+	}
+
     async getData(): Promise<User[]> {
+		if (!this.currentUser) return [];
         return await ServerFacade.getUserPartners(this.currentUser.userId);
     }
 
@@ -23,15 +31,23 @@ export class PartnerStore extends CacheStore<User[]> {
 
 
 export class ClientStore extends CacheStore<User[]> {
-    private currentUser: User;
+    private currentUser;
 
-    constructor(user:User) {
+    constructor(user = null) {
         super([])
-        this.currentUser = user;
 	    makeObservable(this)
+		if (user) {
+			this.setUser(user);
+		}
     }
 
+	@action setUser(user: User) {
+		this.currentUser = user;
+		this.getData();
+	}
+
     async getData(): Promise<User[]> {
+		if (!this.currentUser) return [];
         return await ServerFacade.getUserClients(this.currentUser.userId);
     }
 
@@ -42,15 +58,23 @@ export class ClientStore extends CacheStore<User[]> {
 
 
 export class TrainerStore extends CacheStore<User|null> {
-    private currentUser: User;
+    private currentUser;
 
-    constructor(user:User) {
+    constructor(user = null) {
         super(null)
-        this.currentUser = user;
 	    makeObservable(this)
+		if (user) {
+			this.setUser(user);
+		}
     }
 
+	@action setUser(user: User) {
+		this.currentUser = user;
+		this.getData();
+	}
+
     async getData(): Promise<User|null> {
+		if (!this.currentUser) return null;
         return await ServerFacade.getUserTrainer(this.currentUser.userId);
     }
 

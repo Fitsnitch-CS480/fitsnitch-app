@@ -9,10 +9,8 @@ import androidx.annotation.RequiresApi;
 import com.fitsnitchapp.LatLonPair;
 import com.fitsnitchapp.SnitchTrigger;
 
-import static com.fitsnitchapp.location_loop.LocationLoopService.IVAL_LOOP_SHORT;
-import static com.fitsnitchapp.location_loop.LocationLoopService.IVAL_WILL_STAY;
-import static com.fitsnitchapp.location_loop.LocationLoopService.beginSnitchWarning;
-import static com.fitsnitchapp.location_loop.LocationLoopService.checkForRestaurant;
+import static com.fitsnitchapp.location_loop.LocationLoopManager.IVAL_LOOP_SHORT;
+import static com.fitsnitchapp.location_loop.LocationLoopManager.checkForRestaurant;
 
 public class BaseState extends LoopState {
     @Override
@@ -30,7 +28,7 @@ public class BaseState extends LoopState {
                         triggerLocation,
                         restaurant
                 );
-                beginSnitchWarning(snitch);
+                loopManager.beginSnitchWarning(snitch);
             }
             else {
                 continueLoop(IVAL_LOOP_SHORT);

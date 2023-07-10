@@ -1,15 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
 import React, { useContext } from 'react';
-import { globalContext } from '../appNavigator';
+import { globalContext } from '../GlobalContext';
 import Profile from './Profile';
 
 export type props = {
   route: any
 }
 
-const OtherUserProfile: React.FC<props> = ({route}) => {
+const OtherUserProfile = observer<props>(({route}) => {
   const {profileOwner} = route.params;
-  const {currentUser} = useContext(globalContext);
+  const {userStore} = useContext(globalContext);
+  const currentUser = userStore.currentUser;
 
   if (profileOwner.userId == currentUser.userId) {
     useNavigation<any>().navigate("Profile");
@@ -19,6 +21,6 @@ const OtherUserProfile: React.FC<props> = ({route}) => {
   return (
     <Profile profileOwner={profileOwner} />
   );
-};
+});
 
 export default OtherUserProfile;

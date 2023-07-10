@@ -9,7 +9,6 @@ import {
   UserSnitchesResponse,
 } from '../shared/models/requests/UserSnitchesRequest';
 import User from '../shared/models/User';
-import {SwitchSnitchToCheatmealRequest} from '../shared/models/requests/SwitchSnitchToCheatmealRequest';
 
 export default class SnitchService {
   public async getFeedUsers(userId: string): Promise<User[]> {
@@ -24,13 +23,13 @@ export default class SnitchService {
 
   public async getUserSnitchFeedPage(
     feedIds: string[],
-    lastPage?: UserSnitchesResponse,
+    lastPage: UserSnitchesResponse,
   ): Promise<UserSnitchesResponse> {
     return await ServerFacade.getUserSnitchFeedPage(
       new UserSnitchesRequest(
         feedIds,
-        lastPage?.pageSize,
-        lastPage?.pageBreakKey,
+        lastPage.pageSize,
+        lastPage.pageNumber + 1,
       ),
     );
   }
@@ -57,13 +56,6 @@ export default class SnitchService {
     }
   }
   public async switchToCheatmeal(snitch: SnitchEvent) {
-    await ServerFacade.switchToCheatmeal(
-      new SwitchSnitchToCheatmealRequest(
-        snitch.userId,
-        snitch.created,
-        snitch.restaurantData,
-        snitch.originCoords,
-      ),
-    );
+    await ServerFacade.switchToCheatmeal(snitch);
   }
 }

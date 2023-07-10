@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { profileContext } from './Profile';
 import NameLink from '../../components/NameLink';
 import MatIcon from '../../components/MatIcon';
-import { globalContext } from '../../views/appNavigator';
+import { globalContext } from '../../views/GlobalContext';
 import ClientTrainerService from '../../services/ClientTrainerService';
 import RelationshipStatus from '../../shared/constants/RelationshipStatus';
 import User from '../../shared/models/User';
@@ -23,7 +23,8 @@ type state = {
 }
 
 const ProfileTrainer = observer(() => {
-  const {currentUser, clientStore, trainerRequestsForUser, trainerStore} = useContext(globalContext);
+  const {userStore, clientStore, trainerRequestsForUser, trainerStore} = useContext(globalContext);
+  const currentUser = userStore.currentUser;
   const {profileOwner, profileTrainerStore, isCurrentUser} = useContext(profileContext)
   
   const profileTrainer = profileTrainerStore.data;
@@ -156,7 +157,6 @@ const ProfileTrainer = observer(() => {
       :
       !state.processing && !trainerStore.data ?
         <IconRow icon="fitness-center">
-          <Text style={styles.rowText}>{T.people.trainer.noTrainer}</Text>
           <MatButton title="Request Trainer" onPress={()=>requestTrainer(profileOwner,currentUser)}></MatButton>
         </IconRow>
       :

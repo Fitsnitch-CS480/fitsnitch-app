@@ -1,3 +1,4 @@
+import { observer } from "mobx-react-lite";
 import React, { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Colors from '../assets/constants/colors';
@@ -9,7 +10,7 @@ interface Props{
   children?: ReactNode
 }
 
-const Card: React.FC<Props> = ({title,headerRight,footer,children}) => {
+const Card = observer<Props>(({title,headerRight,footer,children}) => {
   return (
     <View style={styles.container}>
       <View style={styles.wrap}>
@@ -17,37 +18,27 @@ const Card: React.FC<Props> = ({title,headerRight,footer,children}) => {
           <Text style={styles.headerText}>{title}</Text>
           {headerRight}
         </View>
-        <View style={[styles.bodyWrapper, styles.section, styles.sectionWrapper]}>
+        <View style={[styles.bodyWrapper]}>
           {children}
         </View>
-        { footer && <View style={[styles.footerWrapper, styles.section]}>{footer}</View> }
       </View>
     </View>
   );
-}
+})
 
-const spacing = 20
+const spacing = 10
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 5,
-    paddingVertical: 3,
-    width: '100%',
-  },
-  sectionWrapper: {
-    paddingLeft: spacing,
-    paddingRight: spacing,
-    paddingTop: spacing,
+    paddingVertical: 5,
     width: '100%',
   },
   wrap: {
     backgroundColor: Colors.background,
     borderRadius: 10,
     borderColor: Colors.border,
-    borderWidth: 2,
-  },
-  section: {
-    paddingBottom: spacing
+    borderWidth: 1,
   },
   headerWrapper: {
     display: 'flex',
@@ -58,18 +49,18 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.border,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    borderBottomWidth: 2,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
   },
   headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
     color: Colors.white
   },
   bodyWrapper: {
-  },
-  footerWrapper: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    width: '100%',
   },
 });
 

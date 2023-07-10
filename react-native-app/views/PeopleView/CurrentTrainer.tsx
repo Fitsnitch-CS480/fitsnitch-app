@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Button, StyleSheet, Text, View } from 'react-native';
 import Card from '../../components/Card';
 import ProfileImage from '../../components/ProfileImage';
-import { globalContext } from '../../views/appNavigator';
+import { globalContext } from '../../views/GlobalContext';
 import Colors from '../../assets/constants/colors';
 import T from '../../assets/constants/text';
 

@@ -1,6 +1,3 @@
-/**
- * Defines the two properies necessary to retrieve a single CheatMeal
- */
  export class GetCheatMealRequest {
     constructor(
         /**
@@ -8,8 +5,8 @@
          */
         public userId:string,
         /**
-         * Datetime of the CheatMeal, used as a unique identifier
+         * Earliest time for which to get cheat meals
          */
-        public created:string) {
+        public periodStart:string) {
     }
 }

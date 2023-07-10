@@ -7,13 +7,14 @@ import MatButton from '../../components/MatButton';
 import Colors from '../../assets/constants/colors';
 import User from "../../shared/models/User";
 import T from '../../assets/constants/text';
+import { observer } from 'mobx-react-lite';
 
 export type Props = {
   profileOwner: User,
   canEdit: boolean
 }
 
-const CheatMealSchedule: React.FC<Props> = ({
+const CheatMealSchedule = observer<Props>(({
   profileOwner,
   canEdit
 }) => {
@@ -90,7 +91,7 @@ const CheatMealSchedule: React.FC<Props> = ({
       </View>
     </View>
   );
-}
+})
 
 const styles = StyleSheet.create({
   header: {

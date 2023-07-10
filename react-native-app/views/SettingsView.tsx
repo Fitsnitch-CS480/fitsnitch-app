@@ -1,16 +1,13 @@
 import React, { useContext } from 'react';
-import { authContext } from './authWrapper';
-import { Alert, Button, NativeModules, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
-import { globalContext } from './appNavigator';
+import { Alert, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { globalContext } from './GlobalContext';
 import { observer } from 'mobx-react-lite';
-import { LatLonPair } from '../shared/models/CoordinateModels';
 import T from '../assets/constants/text';
 import Colors from '../assets/constants/colors';
 import AuthService from '../services/AuthService';
 
 const SettingsView = observer(({ navigation }: any) => {
 	//Get user from Context from mainNavigator
-	const { authUser, setAuthUser } = useContext(authContext);
 	const { logStore } = useContext(globalContext);
 
 	let logout = async () => {
@@ -20,7 +17,6 @@ const SettingsView = observer(({ navigation }: any) => {
 		catch (e) {
 			console.log("Error during logout!", e)
 		}
-		setAuthUser(undefined);
 	}
 
 	const promptLogout = () => {
@@ -28,15 +24,6 @@ const SettingsView = observer(({ navigation }: any) => {
 			{ text: T.settings.cancel },
 			{ text: T.settings.logout, onPress: logout },
 		]);
-	}
-
-	function demoSnitch() {
-		navigation.navigate('GetSnitchedOn', {
-			restaurant: {
-				name: "Domino's"
-			},
-			coords: new LatLonPair(-41, -111)
-		})
 	}
 
 	return (
@@ -49,10 +36,6 @@ const SettingsView = observer(({ navigation }: any) => {
 					thumbColor={Colors.red}
 					trackColor={{ true: Colors.darkRed, false: Colors.white }} />
 			</View>
-
-			{/* <View style={styles.listItem} onTouchEnd={demoSnitch}>
-        <Text style={styles.optionTitle}>Run Demo Snitch</Text>
-      </View> */}
 
 			<View style={styles.listItem} onTouchEnd={promptLogout}>
 				<Text style={styles.optionTitle}>{T.settings.logout}</Text>

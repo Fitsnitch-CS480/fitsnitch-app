@@ -1,7 +1,6 @@
 {
 	"scripts": {
-		"dev:android": "npx concurrently -n \"Android,Server\" \"npm run run:android\" \"npm run run:server\"",
-		"run:android": "cd react-native-app && npm run android",
-		"run:server": "cd server && npm run dev"
+		"db:build": "docker compose build",
+		"db:up": "docker compose up"
 	}
 }

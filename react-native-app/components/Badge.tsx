@@ -1,3 +1,4 @@
+import { observer } from "mobx-react-lite";
 import React, { Component } from "react";
 import { StyleSheet, View, Text } from "react-native";
 
@@ -9,7 +10,7 @@ interface Props{
   onPress?: ()=>void;
 }
 
-const Badge: React.FC<Props> = ({qty,color,size=20,onPress}) => {
+const Badge = observer<Props>(({qty,color,size=20,onPress}) => {
   const styles = StyleSheet.create({
     container: {
       width: size,
@@ -36,6 +37,6 @@ const Badge: React.FC<Props> = ({qty,color,size=20,onPress}) => {
       </Text>
     </View>
   );
-}
+})
 
 export default Badge;

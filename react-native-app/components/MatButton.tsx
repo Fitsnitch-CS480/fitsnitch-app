@@ -1,3 +1,4 @@
+import { observer } from "mobx-react-lite";
 import React, { ReactNode } from "react";
 import { StyleSheet, TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
 import Colors from "../assets/constants/colors";
@@ -20,7 +21,7 @@ interface Props {
   style?: any
 }
 
-const MatButton: React.FC<Props> = (props) => {
+const MatButton = observer<Props>((props) => {
   const TEXT_COLOR = props.textColor ||  Colors.white;
   const BORDER_COLOR = props.textColor ||  Colors.darkRed;
   const BG_COLOR = props.color || (props.secondary ? Colors.darkRed : Colors.background);
@@ -69,6 +70,6 @@ const MatButton: React.FC<Props> = (props) => {
         </>}
       </TouchableOpacity>
   );
-}
+})
 
 export default MatButton;

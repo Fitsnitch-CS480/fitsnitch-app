@@ -1,8 +1,6 @@
-import { SwitchSnitchToCheatmealRequest } from './../shared/models/requests/SwitchSnitchToCheatmealRequest';
 import PartnerStatusResponse from './../shared/models/requests/PartnerStatusResponse';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import RelationshipStatus from '../shared/constants/RelationshipStatus';
-import { UserSearchRequest, UserSearchResponse } from '../shared/models/requests/UserSearchRequest';
 import { UserSnitchesRequest, UserSnitchesResponse } from '../shared/models/requests/UserSnitchesRequest';
 import TrainerClientPair from '../shared/models/TrainerClientPair';
 import PartnerAssociationPair from '../shared/models/PartnerAssociationPair';
@@ -41,7 +39,7 @@ export const request = axios.create({
 });
 
 async function executeRequest<TResponse>(path:string, payload:any, print:boolean = false): Promise<ExecutionResult<TResponse>> {
-  let tag = path+" "+Date.now();
+  let tag = apiBaseUrl+'/lambda'+path+" "+Date.now();
   if (print) console.log(tag+": Executing Request\n", JSON.stringify(payload,null,2));
   try {
     let res = await axios.post(apiBaseUrl+'/lambda'+path, payload);  
@@ -93,15 +91,6 @@ class ExecutionError<T> extends ExecutionResult<T> {
   static async getUserById(userId: string): Promise<User|undefined> {
     let res = await executeRequest<User|null>("/user_get", asRawString(userId))
     return res.data as User
-  }
-
-  static async userSearch(request:UserSearchRequest): Promise<UserSearchResponse> {
-    let res = await executeRequest<UserSearchResponse>("/user_search", request)
-    if (res.error || !res.data) {
-      // give error feedback in UI
-      return new UserSearchResponse([],undefined,undefined)
-    }
-    return res.data
   }
 
   static async createUser(user: User) {
@@ -186,7 +175,8 @@ class ExecutionError<T> extends ExecutionResult<T> {
       // give error feedback in UI
       return {
         records:[],
-        pageBreakKey: pageRequest.pageBreakKey,
+        pageNumber: pageRequest.pageNumber,
+        total: 0,
         pageSize: pageRequest.pageSize
       }
     }
@@ -197,18 +187,20 @@ class ExecutionError<T> extends ExecutionResult<T> {
   //   let res = await executeRequest("/snitch-create", snitch);
   // }
 
-  static async switchToCheatmeal(data: SwitchSnitchToCheatmealRequest){
+  static async switchToCheatmeal(data: SnitchEvent){
     let res = await executeRequest("/switch-snitch-to-cheatmeal", data);
   }
 
   // Cheat Meals
   static async getUserCheatMealFeedPage(pageRequest: UserCheatMealRequest): Promise<UserCheatMealResponse> {
+	console.log(pageRequest)
     let res = await executeRequest<UserCheatMealResponse>("/cheatmeal-get-for-users", pageRequest);
     if (res.error || !res.data) {
       // give error feedback in UI
       return {
         records:[],
-        pageBreakKey: pageRequest.pageBreakKey,
+        pageNumber: pageRequest.pageNumber,
+        total: 0,
         pageSize: pageRequest.pageSize
       }
     }
@@ -235,7 +227,7 @@ class ExecutionError<T> extends ExecutionResult<T> {
     }
     let request = new GetCheatMealRequest(user.userId, intervalDateTime.toISOString());
     
-    let res = await executeRequest<CheatMealEvent[]>("/cheatmeal-get", request, true);
+    let res = await executeRequest<CheatMealEvent[]>("/cheatmeal-get", request);
     if (res.error || !res.data) {
       // give error feedback in UI
       return null;
