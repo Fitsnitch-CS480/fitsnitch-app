@@ -6,11 +6,11 @@
   "types": "src/types.d.ts",
   "module": "commonjs",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "start": "node dist/server/src/server.js",
-    "start:debug": "tsc && concurrently -n \"build,log\" \"npm:build:dev\" \"npm:run:dev\"",
+    "start:debug": "npx tsc && concurrently -n \"build,log\" \"npm:build:dev\" \"npm:run:dev\"",
     "run:dev": "nodemon dist/server/src/server.js",
-    "build:dev": "tsc --watch --preserveWatchOutput",
+    "build:dev": "npx tsc --watch --preserveWatchOutput",
     "db:migrate": "prisma migrate deploy --preview-feature",
     "test": "jest",
     "test:watch": "jest --watch"
