@@ -19,7 +19,7 @@ GoogleSignin.configure({
 
 
 const AuthWrapper = observer<{ input?: NativeInput }>(({ input }) => {
-	const { setCurrentUser } = useContext(globalContext);
+	const { setCurrentUser, userStore } = useContext(globalContext);
 	const [initializing, setInitializing] = useState(true);
 	const [authUser, setAuthUser] = useState<User | undefined>(undefined);
 
@@ -32,6 +32,7 @@ const AuthWrapper = observer<{ input?: NativeInput }>(({ input }) => {
 			const loggedInUser = await ServerFacade.getUserById(user.uid);
 			setCurrentUser(loggedInUser);
 			setAuthUser(loggedInUser);
+			await userStore._loadUserStorage();
 		}
 
 		if (initializing) setInitializing(false);

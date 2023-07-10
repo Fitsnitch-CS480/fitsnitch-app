@@ -35,6 +35,7 @@ export default class UserStore {
 		await this._loadUserStorage();
 	}
 
+	@action
 	async _loadUserStorage() {
 		try {
 			const storage = this._unstringify(await EncryptedStorage.getItem(this._userStorageKey));

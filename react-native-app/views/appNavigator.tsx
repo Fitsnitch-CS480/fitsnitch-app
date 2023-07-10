@@ -13,6 +13,7 @@ import PushNotificationService from "../services/PushNotificationService";
 import PermissionCheckBanner from "./PermissionCheckBanner";
 import { globalContext } from "./GlobalContext";
 import { observer } from "mobx-react-lite";
+import FirstLaunch from "./FirstLaunch";
 
 type props = {
 	input?: NativeInput
@@ -51,6 +52,10 @@ const AppNavigator = observer<props>(({ input }) => {
 	const SnitchView = observer<any>((props) => {
 		return <GetSnitchedView {...snitchProps} {...props} />
 	})
+
+	if (!userStore.userStorage.acceptedLocation) {
+		return <FirstLaunch />
+	}
 
 	return (<>
 		<PermissionCheckBanner />
