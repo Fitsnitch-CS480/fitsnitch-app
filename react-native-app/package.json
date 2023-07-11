@@ -13,7 +13,9 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "bundle:dev": "cd android && ./gradlew assembleDev"
+    "bundle:dev": "cd android && ./gradlew assembleDev",
+    "bundle:beta": "cd android && ./gradlew bundleBeta",
+	"android:signingReport": "cd android && ./gradlew signingReport"
   },
   "dependencies": {
     "@notifee/react-native": "^7.5.0",
