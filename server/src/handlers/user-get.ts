@@ -11,8 +11,8 @@ export const handler = async (event: APIGatewayProxyEventV2) => {
             res.setCode(200);
         }
         else {
-            res.setBodyToMessage("Could not locate user "+userId);
-            res.setCode(404);
+            res.setBodyToData(null);
+			res.setCode(200);
         }
         return res;
     });
