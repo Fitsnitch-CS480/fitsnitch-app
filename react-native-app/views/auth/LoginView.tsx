@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Button, StyleSheet, Text, View, Image, TextInput, ActivityIndicator, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, TextInput, ActivityIndicator, ScrollView, TouchableOpacity, Linking, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
@@ -11,10 +11,10 @@ import { globalContext } from '../GlobalContext';
 
 const LoginView = observer(() => {
 	const { setCurrentUser } = useContext(globalContext);
-	const navigation = useNavigation<any>();
 	const [email, onChangeEmail] = useState('');
 	const [password, onChangePassword] = useState('');
 	const [error, setErrorMessage] = useState('');
+	const [showBetaModal, setShowBetaModal] = useState(false);
 
 	//Get user from Context from mainNavigator
 	const [loading, setLoading] = useState<boolean>(false);
@@ -62,6 +62,12 @@ const LoginView = observer(() => {
 
 	return (
 		<View style={styles.container}>
+			<TouchableOpacity
+				style={styles.betaWarning}
+				onPress={() => setShowBetaModal(true)}
+			>
+				<Text style={{ color: Colors.white, textAlign: 'center' }}>This app is in Beta. Tap to learn more.</Text>
+			</TouchableOpacity>
 			<View style={styles.loginArea}>
 				<Image
 					source={require("../../assets/images/main_logo.png")}
@@ -99,7 +105,23 @@ const LoginView = observer(() => {
 				&nbsp;and&nbsp;
 				<Text style={styles.link} onPress={() => Linking.openURL('https://fitsnitch.com/privacy')}>Terms of Use</Text>
 			</Text>
-		</View>
+
+
+			<Modal
+				visible={showBetaModal}
+				onRequestClose={() => setShowBetaModal(false)}
+				animationType="slide"
+				transparent
+			>
+				<View style={styles.modalArea}>
+					<View style={styles.modalBox}>
+						<Text style={styles.h3}>Thank you for supporting FitSnitch!</Text>
+						<Text style={styles.p}>While the app is in Beta, you may experiences unexpected changes or data loss.</Text>
+						<Text style={styles.p}>Please contact fitsnitchdev@gmail.com with any questions.</Text>
+					</View>
+				</View>
+			</Modal>
+		</View >
 	);
 });
 
@@ -108,6 +130,38 @@ const styles = StyleSheet.create({
 		width: '100%',
 		height: '100%',
 		backgroundColor: Colors.background
+	},
+	betaWarning: {
+		backgroundColor: Colors.red,
+		padding: 10
+	},
+	modalArea: {
+		width: '100%',
+		height: '100%',
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	modalBox: {
+		width: 400,
+		maxWidth: '80%',
+		padding: 20,
+		margin: 'auto',
+		backgroundColor: Colors.lightGrey,
+		shadowColor: "#000",
+        shadowOpacity: 0.35,
+        shadowRadius: 5,
+        elevation: 2,
+		borderRadius: 10
+	},
+	h3: {
+		fontSize: 20,
+		color: 'white',
+	},
+	p: {
+		fontSize: 14,
+		color: 'white',
+		marginTop: 15
 	},
 	loginArea: {
 		display: 'flex',
