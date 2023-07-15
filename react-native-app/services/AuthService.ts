@@ -87,7 +87,7 @@ const AuthService = {
 			const data = await auth().signInWithCredential(googleCredential)
 			let user = await ServerFacade.getUserById(data?.user?.uid);
 			if (user) {
-				// Attempt tp update user photo
+				// Attempt to update user photo
 				if (user.image !== googleUser.user.photo) {
 					console.log("Updating user image:", googleUser.user.photo)
 					user.image = googleUser.user.photo || "";
@@ -109,7 +109,6 @@ const AuthService = {
 				}
 				await ServerFacade.createUser(user);
 			}
-			
 			return user;
 		}
 		catch (error: any) {
