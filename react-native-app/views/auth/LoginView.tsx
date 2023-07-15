@@ -6,9 +6,11 @@ import Colors from '../../assets/constants/colors';
 import AuthService from '../../services/AuthService';
 import { isEmpty } from "lodash";
 import { observer } from 'mobx-react-lite';
+import { globalContext } from '../GlobalContext';
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 const LoginView = observer(() => {
+	const { setCurrentUser } = useContext(globalContext);
 	const navigation = useNavigation<any>();
 	const [email, onChangeEmail] = useState('');
 	const [password, onChangePassword] = useState('');
@@ -22,7 +24,7 @@ const LoginView = observer(() => {
 		if (loading) return;
 		setLoading(true);
 
-		//If email and password are good, attempt login. Read errors and respond acordingly.
+		//If email and password are good, attempt login. Read errors and respond accordingly.
 		if (email.length > 4 && password.length > 2) {
 			try {
 				let user = await AuthService.attemptLogin(email, password);
@@ -43,9 +45,13 @@ const LoginView = observer(() => {
 	};
 
 	const signInWithGoogle = async () => {
+		setErrorMessage('');
 		setLoading(true);
 		try {
 			const user: any = await AuthService.googleSignIn();
+			if (user) {
+				setCurrentUser(user);
+			}
 			setLoading(false);
 		} catch (error: any) {
 			setLoading(false);

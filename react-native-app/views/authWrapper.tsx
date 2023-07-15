@@ -21,21 +21,27 @@ GoogleSignin.configure({
 const AuthWrapper = observer<{ input?: NativeInput }>(({ input }) => {
 	const { setCurrentUser, userStore } = useContext(globalContext);
 	const [initializing, setInitializing] = useState(true);
-	const [authUser, setAuthUser] = useState<User | undefined>(undefined);
+	const currentUser = userStore.currentUser;
 
 	const onAuthStateChanged = async (user: any) => {
 		if (user === null) {
-			setAuthUser(undefined);
+			setCurrentUser(null);
+			setInitializing(false);
 		}
 
 		if (!isEmpty(user)) {
 			const loggedInUser = await ServerFacade.getUserById(user.uid);
-			setCurrentUser(loggedInUser);
-			setAuthUser(loggedInUser);
-			await userStore._loadUserStorage();
+			if (loggedInUser) {
+				setCurrentUser(loggedInUser);
+				setInitializing(false);
+			}
+			else {
+				// User has not been created in DB
+				// In the future, this is a good spot to trigger an onboarding flow.
+				// For now, wait for user to be created by auth service.
+			}
 		}
 
-		if (initializing) setInitializing(false);
 	}
 
 	useEffect(() => {
@@ -57,10 +63,12 @@ const AuthWrapper = observer<{ input?: NativeInput }>(({ input }) => {
 		)
 	}
 
+	const canEnter = Boolean(currentUser);
+
 	//If user is logged in, go to normal app screens. If not, go to the login screens. 
 	return (
 		<NavigationContainer>
-			{authUser !== undefined ? <AppNavigator input={input} /> : <LoginNavigator />}
+			{canEnter ? <AppNavigator input={input} /> : <LoginNavigator />}
 		</NavigationContainer>
 	)
 })
