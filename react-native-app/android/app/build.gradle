@@ -139,7 +139,7 @@ android {
 		}
         beta {
             initWith release
-            applicationIdSuffix ".beta"
+//            applicationIdSuffix ".beta"
             versionNameSuffix '-BETA'
             manifestPlaceholders = [appName: "Beta FitSnitch"]
             matchingFallbacks = ['release'] // Which version of dependencies to use

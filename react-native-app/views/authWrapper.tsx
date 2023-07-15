@@ -12,9 +12,10 @@ import { isEmpty } from "lodash";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { globalContext } from "./GlobalContext";
 import { observer } from "mobx-react-lite";
+import Config from "react-native-config";
 
 GoogleSignin.configure({
-	webClientId: "1037844578161-b478runkjp68a8795jpapjtuo0rgh5um.apps.googleusercontent.com",
+	webClientId: Config.GOOGLE_CLIENT_ID,
 });
 
 
