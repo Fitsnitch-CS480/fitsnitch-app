@@ -60,7 +60,8 @@ const AppNavigator = observer<props>(({ input }) => {
 		</View>
 	}
 
-	if (!userStore.userStorage.acceptedLocation) {
+
+	if (!userStore.userStorage.didFirstLaunch) {
 		return <FirstLaunch />
 	}
 

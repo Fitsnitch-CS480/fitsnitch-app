@@ -116,7 +116,7 @@ const LoginView = observer(() => {
 				<View style={styles.modalArea}>
 					<View style={styles.modalBox}>
 						<Text style={styles.h3}>Thank you for supporting FitSnitch!</Text>
-						<Text style={styles.p}>While the app is in Beta, you may experiences unexpected changes or data loss.</Text>
+						<Text style={styles.p}>While the app is in Beta, you may experience unexpected changes or data loss.</Text>
 						<Text style={styles.p}>Please contact fitsnitchdev@gmail.com with any questions.</Text>
 					</View>
 				</View>

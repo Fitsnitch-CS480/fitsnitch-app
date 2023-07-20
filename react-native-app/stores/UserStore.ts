@@ -5,6 +5,7 @@ import User from '../shared/models/User';
 
 
 type Storage = null | {
+	didFirstLaunch?: Boolean,
 	acceptedLocation?: boolean,
 }
 
@@ -60,7 +61,8 @@ export default class UserStore {
 		return this._cachedStorage;
 	}
 
-	@action async updateUserStorage(props) {
+	@action async updateUserStorage(props:Storage) {
+		if (!props) return;
 		console.log("Updating user storage", this._userStorageKey, props)
 		try {
 			await EncryptedStorage.setItem(
