@@ -1,6 +1,6 @@
 {
   "name": "fitsnitchapp",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": true,
   "scripts": {
     "postversion": "react-native-version --never-amend",
@@ -15,7 +15,7 @@
     "test": "jest",
     "bundle:dev": "cd android && ./gradlew assembleDev",
     "bundle:beta": "cd android && ./gradlew bundleBeta",
-	"android:signingReport": "cd android && ./gradlew signingReport"
+    "android:signingReport": "cd android && ./gradlew signingReport"
   },
   "dependencies": {
     "@notifee/react-native": "^7.5.0",
