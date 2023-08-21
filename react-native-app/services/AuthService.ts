@@ -3,6 +3,12 @@ import ServerFacade, { request } from "./ServerFacade";
 import NativeModuleService from "./NativeModuleService";
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import Config from "react-native-config";
+
+
+GoogleSignin.configure({
+	webClientId: Config.GOOGLE_CLIENT_ID,
+});
 
 const AuthService = {
 
@@ -39,7 +45,7 @@ const AuthService = {
 
 	async attemptEmailLogin(email: string, password: string): Promise<User | undefined> {
 		try {
-			await auth().signInWithEmailAndPassword(email, password)
+			const authRes = await auth().signInWithEmailAndPassword(email, password)
 		}
 		catch (e: any) {
 			let errorMessage = 'Unknown error';
@@ -62,7 +68,6 @@ const AuthService = {
 		if (!userAuth) return;
 
 		console.log('User is authenticated, loading from DB');
-		console.log(userAuth)
 
 		try {
 			let user = await ServerFacade.getUserById(userAuth.uid);
@@ -80,6 +85,7 @@ const AuthService = {
 		catch (e) {
 			console.log(e);
 		}
+		auth().signOut();
 	},
 
 	async googleSignIn() {

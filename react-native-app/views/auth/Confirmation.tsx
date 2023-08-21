@@ -15,7 +15,7 @@ type TProps = {
 
 
 const Confirmation = observer<TProps>(({route}) => {
-
+	const { email } = route.params;
     const navigation = useNavigation<any>();
     const [showRensendLink, setShowResendLink] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
@@ -34,7 +34,7 @@ const Confirmation = observer<TProps>(({route}) => {
   return (
     <View style={styles.container}>
       <View style={styles.box}>
-        <Text style={styles.text}>{T.confirm.checkEmail}</Text>
+        <Text style={styles.text}>A verification link has been sent to {email || 'your email'}. You may attempt to login once your email has been verified.</Text>
         <View style={styles.buttons}>
           <Button onPress={() => navigation.navigate('login')} backgroundColor={Colors.red}>{T.confirm.login}</Button>
         </View>

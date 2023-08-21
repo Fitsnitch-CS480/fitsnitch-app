@@ -8,6 +8,7 @@ import AuthService from '../../services/AuthService';
 import { observer } from 'mobx-react-lite';
 import MatButton from '../../components/MatButton';
 import MatIcon from '../../components/MatIcon';
+import auth from '@react-native-firebase/auth';
 
 const SignUpView = observer(() => {
 
@@ -126,17 +127,17 @@ const SignUpView = observer(() => {
 			console.log(user)
 			try {
 				await AuthService.emailSignUp(user);
-				setLoading(false);
+				navigation.navigate('confirmation', {
+					email,
+				});
 			} catch (err: any) {
 				console.log('Could not log in', err);
 				setErrorMessage(err.message);
+			}
+			finally {
 				setLoading(false);
-				return;
 			}
 
-			navigation.navigate('confirmation', {
-				email,
-			});
 		} else {
 			setErrorMessage(T.error.provideValidEmailPassword);
 		}

@@ -1,16 +1,14 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View, Image, TextInput, ActivityIndicator, ScrollView, TouchableOpacity, Linking, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import T from '../../assets/constants/text';
 import Colors from '../../assets/constants/colors';
 import AuthService from '../../services/AuthService';
-import { isEmpty } from "lodash";
+import auth from '@react-native-firebase/auth';
 import { observer } from 'mobx-react-lite';
 import { globalContext } from '../GlobalContext';
-import Input from '../../components/Input';
 import MatButton from '../../components/MatButton';
 import MatIcon from '../../components/MatIcon';
-// import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 const LoginView = observer(() => {
 	const navigation = useNavigation<any>();
@@ -20,8 +18,6 @@ const LoginView = observer(() => {
 	const [error, setErrorMessage] = useState('');
 	const [showBetaModal, setShowBetaModal] = useState(false);
 	const [hidePassword, setHidePassword] = useState(true);
-
-	//Get user from Context from mainNavigator
 	const [loading, setLoading] = useState<boolean>(false);
 
 	// Currently unused
@@ -35,7 +31,15 @@ const LoginView = observer(() => {
 				let user = await AuthService.attemptEmailLogin(email, password);
 				// Setting the user will trigger a navigation to the rest of the app
 				setLoading(false);
-				setCurrentUser(user);
+
+				const authUser = auth().currentUser;
+				if (authUser && !authUser.emailVerified) {
+					setErrorMessage('User is not verified');
+					navigation.navigate('confirmation', { email: authUser.email })
+				}
+				else if (user) {
+					setCurrentUser(user);
+				}
 			}
 			catch (err: any) {
 				console.log('Could not log in', err);

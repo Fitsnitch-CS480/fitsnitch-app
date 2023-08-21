@@ -8,16 +8,8 @@ import LoginNavigator from "./auth/loginNavigator";
 import Colors from "../assets/constants/colors";
 import auth from '@react-native-firebase/auth';
 import ServerFacade from "../services/ServerFacade";
-import { isEmpty } from "lodash";
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { globalContext } from "./GlobalContext";
 import { observer } from "mobx-react-lite";
-import Config from "react-native-config";
-
-GoogleSignin.configure({
-	webClientId: Config.GOOGLE_CLIENT_ID,
-});
-
 
 const AuthWrapper = observer<{ input?: NativeInput }>(({ input }) => {
 	const { setCurrentUser, userStore } = useContext(globalContext);
@@ -28,21 +20,20 @@ const AuthWrapper = observer<{ input?: NativeInput }>(({ input }) => {
 		if (user === null) {
 			setCurrentUser(null);
 			setInitializing(false);
+			return;
 		}
 
-		if (!isEmpty(user)) {
+		if(user.emailVerified) {
 			const loggedInUser = await ServerFacade.getUserById(user.uid);
 			if (loggedInUser) {
 				setCurrentUser(loggedInUser);
-				setInitializing(false);
 			}
 			else {
-				// User has not been created in DB
-				// In the future, this is a good spot to trigger an onboarding flow.
-				// For now, wait for user to be created by auth service.
+				console.error("Authenticated as unknown user. Could not find user ID in DB!")
+				console.log(user);
 			}
 		}
-
+		setInitializing(false);
 	}
 
 	useEffect(() => {
