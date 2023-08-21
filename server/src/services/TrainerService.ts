@@ -50,7 +50,7 @@ export default class TrainerService {
 		});
         let requesters: User[] = [];
         await Promise.all(pairs.map(async (pair)=>{
-            let user = await new UserService().getUser(pair.clientId);
+            let user = await UserService.getUser(pair.clientId);
             if (user) requesters.push(user)
         }))
         return requesters;
@@ -82,7 +82,7 @@ export default class TrainerService {
 		});
 		let clients: User[] = [];
         await Promise.all(pairs.map(async (pair) => {
-            let user = await await new UserService().getUser(pair.clientId)
+            let user = await await UserService.getUser(pair.clientId)
             if (user) clients.push(user)
         }))
         return clients;
@@ -93,7 +93,7 @@ export default class TrainerService {
 			where: { clientId: userId }
 		})
 		if (!pair) return;
-        return await new UserService().getUser(pair.trainerId);
+        return await UserService.getUser(pair.trainerId);
     }
 
 

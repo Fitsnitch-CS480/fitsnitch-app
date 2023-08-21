@@ -7,14 +7,19 @@ import AuthService from '../../services/AuthService';
 import { isEmpty } from "lodash";
 import { observer } from 'mobx-react-lite';
 import { globalContext } from '../GlobalContext';
+import Input from '../../components/Input';
+import MatButton from '../../components/MatButton';
+import MatIcon from '../../components/MatIcon';
 // import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 const LoginView = observer(() => {
+	const navigation = useNavigation<any>();
 	const { setCurrentUser } = useContext(globalContext);
 	const [email, onChangeEmail] = useState('');
 	const [password, onChangePassword] = useState('');
 	const [error, setErrorMessage] = useState('');
 	const [showBetaModal, setShowBetaModal] = useState(false);
+	const [hidePassword, setHidePassword] = useState(true);
 
 	//Get user from Context from mainNavigator
 	const [loading, setLoading] = useState<boolean>(false);
@@ -27,9 +32,10 @@ const LoginView = observer(() => {
 		//If email and password are good, attempt login. Read errors and respond accordingly.
 		if (email.length > 4 && password.length > 2) {
 			try {
-				let user = await AuthService.attemptLogin(email, password);
+				let user = await AuthService.attemptEmailLogin(email, password);
 				// Setting the user will trigger a navigation to the rest of the app
 				setLoading(false);
+				setCurrentUser(user);
 			}
 			catch (err: any) {
 				console.log('Could not log in', err);
@@ -62,42 +68,82 @@ const LoginView = observer(() => {
 
 	return (
 		<View style={styles.container}>
-			<TouchableOpacity
-				style={styles.betaWarning}
-				onPress={() => setShowBetaModal(true)}
-			>
-				<Text style={{ color: Colors.white, textAlign: 'center' }}>This app is in Beta. Tap to learn more.</Text>
-			</TouchableOpacity>
-			<View style={styles.loginArea}>
-				<Image
-					source={require("../../assets/images/main_logo.png")}
-					resizeMode="contain"
-					style={styles.image}
-				/>
+			<ScrollView>
+				<TouchableOpacity
+					style={styles.betaWarning}
+					onPress={() => setShowBetaModal(true)}
+				>
+					<Text style={{ color: Colors.white, textAlign: 'center' }}>This app is in Beta. Tap to learn more.</Text>
+				</TouchableOpacity>
 
-				<View>
-					<TouchableOpacity
-						style={styles.buttonGoogleStyle}
-						onPress={() => loading ? null : signInWithGoogle()}
-						activeOpacity={0.5}>
-						<Image
-							source={require("../../assets/images/google.png")}
-							style={styles.buttonImageIconStyle}
+				<View style={styles.loginArea}>
+					<Image
+						source={require("../../assets/images/main_logo.png")}
+						resizeMode="contain"
+						style={styles.image}
+					/>
+
+					<View style={styles.materialUnderlineTextboxStack}>
+						<TextInput
+							placeholder={T.signUp.email}
+							onChangeText={onChangeEmail}
+							style={styles.textBox}
 						/>
-						<Text style={styles.buttonTextStyle}>
-							{T.logIn.google}
-						</Text>
-					</TouchableOpacity>
-				</View>
+						<View style={styles.passwordWrapper}>
+							<TextInput
+								placeholder={T.signUp.password}
+								secureTextEntry={hidePassword}
+								onChangeText={onChangePassword}
+								style={styles.textBox}
+							/>
+							<View
+								style={styles.passwordLock}
+							>
+								<TouchableOpacity onPress={()=>setHidePassword(!hidePassword)}>
+									<MatIcon size={15} name={hidePassword ? 'lock' : 'lock-open'} />
+								</TouchableOpacity>
+							</View>
+						</View>
+					</View>
 
-				{loading &&
-					<ActivityIndicator color={Colors.red} size={30} />
-				}
+					<MatButton
+						color={Colors.red}
+						title={T.logIn.title}
+						onPress={() => loading ? null : signInFunction()}
+						style={styles.loginButton}
+					/>
 
-				<View>
-					<Text style={styles.errorMessage}>{error}</Text>
+
+					{loading &&
+						<ActivityIndicator color={Colors.red} size={30} />
+					}
+
+					<View>
+						<Text style={styles.errorMessage}>{error}</Text>
+					</View>
+
+					<View style={styles.signupPrompt}>
+						<Text style={styles.dontHaveAccount}>{T.logIn.dontHaveAccount}</Text>
+						<Text style={styles.signUpText} onPress={() => navigation.navigate('signup')}>{T.signUp.title}</Text>
+					</View>
+
+					<View>
+						<TouchableOpacity
+							style={styles.buttonGoogleStyle}
+							onPress={() => loading ? null : signInWithGoogle()}
+							activeOpacity={0.5}>
+							<Image
+								source={require("../../assets/images/google.png")}
+								style={styles.buttonImageIconStyle}
+							/>
+							<Text style={styles.buttonTextStyle}>
+								{T.logIn.google}
+							</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
-			</View>
+			</ScrollView>
+
 
 			<Text style={styles.policies}>
 				By signing in, you agree to our&nbsp;
@@ -121,7 +167,7 @@ const LoginView = observer(() => {
 					</View>
 				</View>
 			</Modal>
-		</View >
+		</View>
 	);
 });
 
@@ -149,9 +195,9 @@ const styles = StyleSheet.create({
 		margin: 'auto',
 		backgroundColor: Colors.lightGrey,
 		shadowColor: "#000",
-        shadowOpacity: 0.35,
-        shadowRadius: 5,
-        elevation: 2,
+		shadowOpacity: 0.35,
+		shadowRadius: 5,
+		elevation: 2,
 		borderRadius: 10
 	},
 	h3: {
@@ -170,6 +216,55 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-start',
 		flexGrow: 1,
 	},
+	signupPrompt: {
+		flex: 2,
+		flexDirection: 'row',
+		marginVertical: 20
+	},
+	dontHaveAccount: {
+		fontFamily: "roboto-regular",
+		color: Colors.white,
+		marginRight: 5,
+		fontSize: 15,
+	},
+	signUpText: {
+		fontFamily: "roboto-regular",
+		fontSize: 15,
+		color: Colors.red,
+	},
+	materialUnderlineTextbox: {
+		height: 43,
+		width: 289,
+		position: "absolute",
+		left: 0,
+		top: 0,
+	},
+	materialUnderlineTextboxStack: {
+		width: 275,
+		marginTop: 20
+	},
+	textBox: {
+		backgroundColor: Colors.white,
+		color: Colors.charcoal,
+		borderRadius: 50,
+		marginVertical: 5,
+		paddingLeft: 20,
+		height: 40
+	},
+	passwordWrapper: {
+		position: 'relative',
+	},
+	passwordLock: {
+		position: 'absolute',
+		right: 12,
+		top: 17
+	},
+	loginButton: {
+		borderRadius: 100,
+		height: 40,
+		width: 275,
+		marginVertical: 5,
+	},
 	buttonGoogleStyle: {
 		flexDirection: 'row',
 		alignItems: 'center',
@@ -177,7 +272,7 @@ const styles = StyleSheet.create({
 		height: 40,
 		borderRadius: 50,
 		marginVertical: 20,
-		width: 230,
+		width: 275,
 		margin: 25,
 		paddingHorizontal: 10,
 	},
@@ -191,8 +286,8 @@ const styles = StyleSheet.create({
 		textAlign: 'center'
 	},
 	image: {
-		height: 200,
-		width: 200,
+		height: 150,
+		width: 150,
 		marginTop: 50,
 		marginBottom: 25,
 	},
@@ -204,7 +299,7 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		width: '80%',
 		alignSelf: 'center',
-		marginBottom: 50
+		marginVertical: 25
 	},
 	link: {
 		color: Colors.red,

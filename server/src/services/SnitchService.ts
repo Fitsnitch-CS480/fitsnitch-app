@@ -32,7 +32,7 @@ export default class SnitchService {
 			relatedUsersList.push(trainer)
 		}
 
-		const snitchOnUser = await new UserService().getUser(newSnitchData.userId);
+		const snitchOnUser = await UserService.getUser(newSnitchData.userId);
 
 		let response = await PushNotificationService.sendMessageToUsers(
 			relatedUsersList.map(u => u.userId),

@@ -6,7 +6,7 @@ import { User } from "@prisma/client";
 export const handler = async (event: APIGatewayProxyEventV2) => {
     return await LambaUtils.handleEventWithBody<User>(event, async (newUserData,res)=>{
         try {
-            await new UserService().createUser(newUserData)
+            await UserService.createUser(newUserData)
             res.setBodyToMessage("Successfully created user!");
             res.setCode(200);
         }

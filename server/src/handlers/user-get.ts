@@ -4,7 +4,7 @@ import UserService from "../services/UserService";
 
 export const handler = async (event: APIGatewayProxyEventV2) => {
     return await LambaUtils.handleEventWithBody<string>(event, async (userId,res)=>{
-        let user = await new UserService().getUser(userId);
+        let user = await UserService.getUser(userId);
 		console.log(userId)
         if (user) {
             res.setBodyToData(user);

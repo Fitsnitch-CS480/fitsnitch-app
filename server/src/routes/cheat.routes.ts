@@ -5,14 +5,15 @@ import UserService from "../services/UserService";
 import dayjs, { OpUnitType } from 'dayjs'
 import { CreateCheatMealRequest } from "../../../react-native-app/shared/models/requests/CreateCheatMealRequest";
 import CheatMealEvent from "../../../react-native-app/shared/models/CheatMealEvent";
+import { catchErrors } from "../utils/catchErrors";
 
 const CheatRouter = express();
 
-CheatRouter.get('/summary/:userId', async (req, res, next) => {
+CheatRouter.get('/summary/:userId', catchErrors(async (req, res, next) => {
 	const { userId } = req.params;
 	try {
 		let data;
-		const user = await new UserService().getUser(userId);
+		const user = await UserService.getUser(userId);
 		if (!user) throw new Error('No user by that ID');
 		if (!user.cheatmealSchedule) {
 			data = {
@@ -38,10 +39,10 @@ CheatRouter.get('/summary/:userId', async (req, res, next) => {
 	catch (e) {
 		next(e);
 	}
-});
+}));
 
 
-CheatRouter.post('/createCheatMeal', async (req, res, next) => {
+CheatRouter.post('/createCheatMeal', catchErrors(async (req, res, next) => {
 	const cheatMeal = req.body as CheatMealEvent;
 	try {
 		await new CheatMealService().createCheatMeal(cheatMeal);
@@ -50,6 +51,6 @@ CheatRouter.post('/createCheatMeal', async (req, res, next) => {
 	catch (e) {
 		next(e);
 	}
-});
+}));
 
 export default CheatRouter;

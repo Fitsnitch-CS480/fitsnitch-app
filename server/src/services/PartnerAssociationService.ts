@@ -42,12 +42,12 @@ export default class PartnerAssociationService {
     
     async getRequesteesByRequester(userId:string):Promise<any[]> {
 		let requests = await prisma.partnerRequest.findMany({ where: { requester: userId }});
-        return new UserService().getExistingUsers(requests.map(r=>r.requestee));
+        return UserService.getExistingUsers(requests.map(r=>r.requestee));
     }
     
     async getRequestersByRequestee(userId:string):Promise<any[]> {
 		let requests = await prisma.partnerRequest.findMany({ where: { requestee: userId }});
-        return new UserService().getExistingUsers(requests.map(r=>r.requester));
+        return UserService.getExistingUsers(requests.map(r=>r.requester));
     }
 
     //
@@ -80,7 +80,7 @@ export default class PartnerAssociationService {
 				]
 			}
 		})
-        return new UserService().getExistingUsers(partners.map(p => (
+        return UserService.getExistingUsers(partners.map(p => (
 			p.partnerId1 === userId ? p.partnerId2 : p.partnerId1
 		)));
     }

@@ -4,7 +4,7 @@ import Colors from '../assets/constants/colors';
 
 
 const Input = ({
-	value,
+	value = "",
 	label = "",
 	onChange,
 	...props
