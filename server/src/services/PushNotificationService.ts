@@ -19,13 +19,13 @@ class PushNotificationService {
 
 	async updateUserEndpoint(userId, token) {
 		console.log('saveNotificationToken', token)
-		await new UserService().addDeviceToken(userId, token);
+		await UserService.addDeviceToken(userId, token);
 	}
 
 	async sendMessageToUsers(userIds:string[], message: MessagingPayload, options:MessagingOptions) {
 		let tokens: DeviceToken[] = [] // TODO get tokens by user ids
 		for (let id of userIds) {
-			let userTokens = await new UserService().getUserTokens(id);
+			let userTokens = await UserService.getUserTokens(id);
 			console.log(id, userTokens)
 			tokens.push(...userTokens);
 		}

@@ -5,7 +5,7 @@ import Colors from "../assets/constants/colors";
 import MatIcon from "./MatIcon";
 import { MatIconName } from "./MatIconName";
 
-interface Props {
+type Props = {
   children?: ReactNode,
   icon?: MatIconName,
   primary?: boolean, 
@@ -19,6 +19,7 @@ interface Props {
   loading?: boolean,
   shadow?: boolean,
   style?: any
+  disabled?: boolean
 }
 
 const MatButton = observer<Props>((props) => {
@@ -57,7 +58,7 @@ const MatButton = observer<Props>((props) => {
   });
 
   return (
-    <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress}>
+    <TouchableOpacity style={[styles.container, props.style]} onPress={props.onPress} disabled={props.disabled}>
       { props.loading ? 
         <ActivityIndicator size={SIZE * 1.25} color={TEXT_COLOR} />
       :

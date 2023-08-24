@@ -2,11 +2,12 @@ import { APIGatewayProxyEventV2 } from "aws-lambda";
 import express from "express";
 import { handlers } from "../handler-paths";
 import bodyParser from "body-parser";
+import { catchErrors } from "../utils/catchErrors";
 
 const LambdaRouter = express();
 LambdaRouter.use(bodyParser.text({type: '*/*'}));
 
-LambdaRouter.post("/:path", async (req,res)=>{
+LambdaRouter.post("/:path", catchErrors(async (req,res)=>{
     try {
         let albProxy: Partial<APIGatewayProxyEventV2> = {
             body: typeof req.body === 'object' ? JSON.stringify(req.body) : req.body
@@ -33,7 +34,7 @@ LambdaRouter.post("/:path", async (req,res)=>{
         console.log(e)
         res.status(500).send(e.message)
     }
-})
+}));
 
 
 export default LambdaRouter;

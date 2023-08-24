@@ -8,34 +8,32 @@ import LoginNavigator from "./auth/loginNavigator";
 import Colors from "../assets/constants/colors";
 import auth from '@react-native-firebase/auth';
 import ServerFacade from "../services/ServerFacade";
-import { isEmpty } from "lodash";
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { globalContext } from "./GlobalContext";
 import { observer } from "mobx-react-lite";
-
-GoogleSignin.configure({
-	webClientId: "1037844578161-b478runkjp68a8795jpapjtuo0rgh5um.apps.googleusercontent.com",
-});
-
 
 const AuthWrapper = observer<{ input?: NativeInput }>(({ input }) => {
 	const { setCurrentUser, userStore } = useContext(globalContext);
 	const [initializing, setInitializing] = useState(true);
-	const [authUser, setAuthUser] = useState<User | undefined>(undefined);
+	const currentUser = userStore.currentUser;
 
 	const onAuthStateChanged = async (user: any) => {
 		if (user === null) {
-			setAuthUser(undefined);
+			setCurrentUser(null);
+			setInitializing(false);
+			return;
 		}
 
-		if (!isEmpty(user)) {
+		if(user.emailVerified) {
 			const loggedInUser = await ServerFacade.getUserById(user.uid);
-			setCurrentUser(loggedInUser);
-			setAuthUser(loggedInUser);
-			await userStore._loadUserStorage();
+			if (loggedInUser) {
+				setCurrentUser(loggedInUser);
+			}
+			else {
+				console.error("Authenticated as unknown user. Could not find user ID in DB!")
+				console.log(user);
+			}
 		}
-
-		if (initializing) setInitializing(false);
+		setInitializing(false);
 	}
 
 	useEffect(() => {
@@ -57,10 +55,12 @@ const AuthWrapper = observer<{ input?: NativeInput }>(({ input }) => {
 		)
 	}
 
+	const canEnter = Boolean(currentUser);
+
 	//If user is logged in, go to normal app screens. If not, go to the login screens. 
 	return (
 		<NavigationContainer>
-			{authUser !== undefined ? <AppNavigator input={input} /> : <LoginNavigator />}
+			{canEnter ? <AppNavigator input={input} /> : <LoginNavigator />}
 		</NavigationContainer>
 	)
 })

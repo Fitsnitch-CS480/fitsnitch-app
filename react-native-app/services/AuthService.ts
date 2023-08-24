@@ -1,49 +1,51 @@
 import User from "../shared/models/User";
-import ServerFacade from "./ServerFacade";
+import ServerFacade, { request } from "./ServerFacade";
 import NativeModuleService from "./NativeModuleService";
 import auth from '@react-native-firebase/auth';
-import { isEmpty } from "lodash";
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import Config from "react-native-config";
+
+
+GoogleSignin.configure({
+	webClientId: Config.GOOGLE_CLIENT_ID,
+});
 
 const AuthService = {
-	
-	async signUp(user: any) {
 
-		 await auth()
-        .createUserWithEmailAndPassword(user.email, user.password)
-        .then(async (userCredential) => {
-          userCredential.user.sendEmailVerification();
-		  const data:any = auth().currentUser;
-		  let input: User;
-		  if(!isEmpty(data)){
-			input = {
-				userId: data.uid,
-				email: user.email,
-				firstname: user.firstname,
-				lastname: user.lastname,
-				phone: user?.phoneNumber,
+	async emailSignUp(user: any) {
+		try {
+			const userCredential = await auth().createUserWithEmailAndPassword(user.email, user.password);
+			userCredential.user.sendEmailVerification();
+			const data: any = auth().currentUser;
+			if (data?.uid) {
+				const pendingUser = {
+					pendingUserId: data.uid,
+					email: user.email,
+					firstname: user.firstname,
+					lastname: user.lastname,
+					phone: user?.phoneNumber,
+				}
+				await request.post('/user/create-pending', pendingUser);
 			}
-			await ServerFacade.createUser(input);
-		  }
-        })
-        .catch(error => {
+		}
+		catch (error: any) {
 			let errorMessage = '';
-          if (error.code === 'auth/email-already-in-use') {
-            errorMessage = 'That email address is already in use!';
-          }
+			if (error.code === 'auth/email-already-in-use') {
+				errorMessage = 'That email address is already in use!';
+			}
 
-          if (error.code === 'auth/invalid-email') {
-            errorMessage = "Invalid email!";
-          }
+			if (error.code === 'auth/invalid-email') {
+				errorMessage = "Invalid email!";
+			}
 
-          console.error(error);
-		  throw new Error(errorMessage);
-        });
+			console.error(error);
+			throw new Error(errorMessage);
+		};
 	},
 
-	async attemptLogin(email:string, password:string): Promise<User | undefined> {
+	async attemptEmailLogin(email: string, password: string): Promise<User | undefined> {
 		try {
-			await auth().signInWithEmailAndPassword(email, password)
+			const authRes = await auth().signInWithEmailAndPassword(email, password)
 		}
 		catch (e: any) {
 			let errorMessage = 'Unknown error';
@@ -56,38 +58,45 @@ const AuthService = {
 			if (e.code === 'auth/wrong-password') {
 				errorMessage = "Invalid password";
 			}
+			if (e.code === 'auth/too-many-requests') {
+				errorMessage = "Too many failed attempts. This account has been locked.";
+			}
 			console.log(e, e.code)
 			throw new Error(errorMessage);
 		}
-		const userAuth:any = auth().currentUser;
+		const userAuth = auth().currentUser;
+		if (!userAuth) return;
+
 		console.log('User is authenticated, loading from DB');
-		
+
 		try {
-			console.log(userAuth)
 			let user = await ServerFacade.getUserById(userAuth.uid);
-			if (!user) {
-				// Assume this is the user's first log in after verification
-				// They must be added to db
-				// ServerFacade.createUser(new User(userAuth.uid, userAuth.email))
-				throw new Error("User is not verified");
+			if (user) {
+				return user;
 			}
-			return user;
+			// The user might not exist because it is still pending.
+			// Confirm user from pending state
+			const { data } = await request.post('/user/confirm-pending', { pendingUserId: userAuth.uid });
+			if ( data.success ) {
+				return data.data;
+			}
+			else console.log("Could not find user or pending user");
 		}
 		catch (e) {
 			console.log(e);
-
 		}
+		auth().signOut();
 	},
 
 	async googleSignIn() {
-		GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+		GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 		const googleUser = await GoogleSignin.signIn();
 		const googleCredential = auth.GoogleAuthProvider.credential(googleUser.idToken);
 		try {
 			const data = await auth().signInWithCredential(googleCredential)
 			let user = await ServerFacade.getUserById(data?.user?.uid);
 			if (user) {
-				// Attempt tp update user photo
+				// Attempt to update user photo
 				if (user.image !== googleUser.user.photo) {
 					console.log("Updating user image:", googleUser.user.photo)
 					user.image = googleUser.user.photo || "";
@@ -109,11 +118,10 @@ const AuthService = {
 				}
 				await ServerFacade.createUser(user);
 			}
-			
 			return user;
 		}
 		catch (error: any) {
-			console.log("Error on Google sign in: ", {error});
+			console.log("Error on Google sign in: ", { error });
 			const tokens = await GoogleSignin.getTokens();
 			await GoogleSignin.clearCachedAccessToken(tokens.accessToken || '');
 			await GoogleSignin.signOut();
@@ -121,15 +129,15 @@ const AuthService = {
 		}
 	},
 
-	async resendConfirmationEmail()  {
+	async resendConfirmationEmail() {
 		return await auth().currentUser?.sendEmailVerification()
-		.then(async () => {})
-		.catch(error => {
-			console.log(error)
-			console.log(error.code)
-			throw new Error("Error sending verification email.");
-		});
-	  },
+			.then(async () => { })
+			.catch(error => {
+				console.log(error)
+				console.log(error.code)
+				throw new Error("Error sending verification email.");
+			});
+	},
 
 	async logout() {
 		await auth().signOut();

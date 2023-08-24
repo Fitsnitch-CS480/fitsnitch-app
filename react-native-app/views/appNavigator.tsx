@@ -14,6 +14,7 @@ import PermissionCheckBanner from "./PermissionCheckBanner";
 import { globalContext } from "./GlobalContext";
 import { observer } from "mobx-react-lite";
 import FirstLaunch from "./FirstLaunch";
+import { ActivityIndicator, View } from "react-native";
 
 type props = {
 	input?: NativeInput
@@ -53,7 +54,14 @@ const AppNavigator = observer<props>(({ input }) => {
 		return <GetSnitchedView {...snitchProps} {...props} />
 	})
 
-	if (!userStore.userStorage.acceptedLocation) {
+	if (!userStore.userStorage) {
+		return <View style={{ marginVertical: '50%' }} >
+			<ActivityIndicator color={Colors.red} size={50} />
+		</View>
+	}
+
+
+	if (!userStore.userStorage.didFirstLaunch) {
 		return <FirstLaunch />
 	}
 

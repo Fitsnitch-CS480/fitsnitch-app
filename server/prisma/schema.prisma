@@ -18,6 +18,14 @@ model User {
     cheatmealSchedule      String?
 }
 
+model PendingUser {
+    pendingUserId          String   @id
+    firstname              String
+    lastname               String
+    email                  String
+    phone                  String?
+}
+
 model DeviceToken {
 	userId	String
 	token	String

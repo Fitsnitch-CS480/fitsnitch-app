@@ -3,8 +3,10 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import { observable, action, computed, makeObservable } from "mobx";
 import User from '../shared/models/User';
 
-const defaultStorage = {
-	acceptedLocation: false,
+
+type Storage = null | {
+	didFirstLaunch?: Boolean,
+	acceptedLocation?: boolean,
 }
 
 export default class UserStore {
@@ -13,7 +15,7 @@ export default class UserStore {
     }
 
 	@observable currentUser;
-	@observable _cachedStorage = { ...defaultStorage };
+	@observable _cachedStorage: Storage = null;
 
 	@action setUser(user: User) {
 		this.currentUser = user;
@@ -32,39 +34,48 @@ export default class UserStore {
 	}
 
 	async _init() {
+		this._cachedStorage = null;
 		await this._loadUserStorage();
 	}
 
 	@action
 	async _loadUserStorage() {
+		if (!this.currentUser) {
+			console.log("No current user. Removing user storage.");
+			this._cachedStorage = null;
+			return;
+		}
+		let newStorage;
 		try {
 			const storage = this._unstringify(await EncryptedStorage.getItem(this._userStorageKey));
-			this._cachedStorage = storage || { ... defaultStorage };
-			return this._cachedStorage;
+			newStorage = storage || {};
 		} catch (error) {
 			console.log('Could not get user storage.', error)
-			return this._cachedStorage;
+			newStorage = null;
 		}
+		this._cachedStorage = newStorage;
+		return newStorage;
 	}
 
 	get userStorage() {
 		return this._cachedStorage;
 	}
 
-	@action async updateUserStorage(props) {
+	@action async updateUserStorage(props:Storage) {
+		if (!props) return;
+		console.log("Updating user storage", this._userStorageKey, props)
 		try {
 			await EncryptedStorage.setItem(
 				this._userStorageKey,
 				JSON.stringify({
-					... this._cachedStorage,
-					... props,
+					...(this._cachedStorage || {}),
+					...props,
 				})
 			);
 			await this._loadUserStorage();
-			return this._cachedStorage;
 		} catch (error) {
 			console.log('Could not get user storage.', error)
-			return this._cachedStorage;
 		}
+		return this._cachedStorage;
 	}
 }
