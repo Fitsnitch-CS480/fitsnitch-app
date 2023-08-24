@@ -11,7 +11,7 @@
     "start:debug": "tsc && concurrently -n \"build,log\" \"npm:build:dev\" \"npm:run:dev\"",
     "run:dev": "nodemon dist/server/src/server.js",
     "build:dev": "tsc --watch --preserveWatchOutput",
-    "db:migrate": "prisma migrate deploy --preview-feature",
+    "db:migrate": "prisma migrate deploy --preview-feature && prisma generate",
     "test": "jest",
     "test:watch": "jest --watch"
   },
