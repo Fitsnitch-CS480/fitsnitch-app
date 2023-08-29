@@ -102,8 +102,8 @@ android {
         resValue "string", "build_config_package", "${applicationId}"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "0.0.9"
+        versionCode 9
+        versionName "0.0.10"
     }
 
     splits {
