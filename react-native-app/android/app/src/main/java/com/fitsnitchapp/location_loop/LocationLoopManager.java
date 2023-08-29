@@ -70,11 +70,11 @@ public class LocationLoopManager {
 
     private Location lastLocation;
     private SnitchTrigger activeSnitch;
-    private Long lastWillLeaveTime;
+//    private Long lastWillLeaveTime;
     private Long lastUsedCheatTime;
 
     private LocationLoopManager() {
-        if (BuildConfig.BUILD_TYPE == "debug") {
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
             JsLog("Setting short loop times for debug");
             IVAL_WARNING = 30000; // 30 seconds
             IVAL_LOOP_SHORT = 30000; // 30 seconds
@@ -114,7 +114,6 @@ public class LocationLoopManager {
      *
      * Uses the new state to determine the interval for the new loop.
      * Defaults to IVAL_LOOP_SHORT
-     * @param newState
      */
     public void enterLoopState(LoopState newState) {
         JsLog("Entering loop state: " + newState.getClass().getSimpleName());
@@ -177,21 +176,34 @@ public class LocationLoopManager {
      * the loop going.
      */
     void handleNewLocation(Location newLocation) {
-        if (loopState == null) {
-            loopState = new BaseState();
-        }
-        JsLog("Handling new location: " + loopState.getClass().getSimpleName());
-        boolean didChange = didLocationChange(newLocation, true);
+        try {
+            if (loopState == null) {
+                loopState = new BaseState();
+            }
+            JsLog("Handling new location: " + loopState.getClass().getSimpleName());
+            if (newLocation == null) {
+                JsLog("Got null location! Retrying loop.");
+                requestNextJob(LocationForegroundService.mContext, IVAL_LOOP_SHORT);
+                return;
+            }
+            boolean didChange = didLocationChange(newLocation, true);
 
-        loopState.handleNewLocation(newLocation);
+            loopState.handleNewLocation(newLocation);
 
-        // Save new location if change is significant
-        if (didChange) {
-            lastLocation = newLocation;
+            // Save new location if change is significant
+            if (didChange) {
+                lastLocation = newLocation;
+            }
+            else if (lastLocation == null) {
+                lastLocation = newLocation;
+            }
         }
-        else if (lastLocation == null) {
-            lastLocation = newLocation;
+        catch (Exception e) {
+            JsLog("Error found in location loop");
+            JsLog(e.getLocalizedMessage());
+            requestNextJob(LocationForegroundService.mContext, IVAL_LOOP_SHORT);
         }
+
     }
 
 
@@ -219,8 +231,8 @@ public class LocationLoopManager {
 
         if (printLogs) {
             JsLog("Handling new location: " + loopState.getClass().getSimpleName());
-            JsLog("Loc: " + String.valueOf(newLocation.getLatitude()) + ", " + String.valueOf(newLocation.getLongitude() + ". Speed: " + String.valueOf(newLocation.getSpeed()) + "m/s"));
-            JsLog("Distance moved: " + String.format("%.6f",distance) + ". Significant: " + String.valueOf(didChange));
+            JsLog("Loc: " + newLocation.getLatitude() + ", " + newLocation.getLongitude() + ". Speed: " + newLocation.getSpeed() + "m/s");
+            JsLog("Distance moved: " + String.format("%.6f",distance) + ". Significant: " + didChange);
         }
 
         return didChange;
@@ -230,9 +242,6 @@ public class LocationLoopManager {
     /**
      * Handles the API request for restaurants.
      * Returns null for any error.
-     *
-     * @param location
-     * @param cb
      */
     public static void checkForRestaurant(LatLonPair location, Consumer<Restaurant> cb) {
         ApiService.getClient().checkLocation(new CheckLocationRequest(location), new Callback<CheckLocationResponse>() {
@@ -261,8 +270,6 @@ public class LocationLoopManager {
      * Do not call enterLoopState when using this method.
      *
      * Handles all setup for snitch warning state.
-     *
-     * @param snitch
      */
     void beginSnitchWarning(SnitchTrigger snitch) {
         JsLog("Entering Snitch State!");
@@ -274,7 +281,7 @@ public class LocationLoopManager {
 
     public void onUsedCheat() {
         lastUsedCheatTime = System.currentTimeMillis();
-        JsLog("SET USED CHEAT" + String.valueOf(lastUsedCheatTime));
+        JsLog("SET USED CHEAT" + lastUsedCheatTime);
     }
 
     public boolean usedCheatForActiveSnitch() {
